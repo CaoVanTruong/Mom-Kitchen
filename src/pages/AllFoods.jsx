@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/common-section/CommonSection";
 
@@ -13,10 +13,23 @@ import "../styles/pagination.css";
 
 const AllFoods = () => {
   const [searchTerm, setSearchTerm] = useState("");
-
   const [pageNumber, setPageNumber] = useState(0);
-
-  const searchedProduct = products.filter((item) => {
+  const [allProducts, setAllProducts] = useState([]);
+  useEffect(() => {
+    async function getAllFood() {
+      try {
+        const requestUrl = 'https://6425860f9e0a30d92b34796d.mockapi.io/packageFood'
+        const response = await fetch(requestUrl)
+        const responseJSON = await response.json()
+        const newFood = responseJSON
+        setAllProducts(newFood)
+      } catch (error) {
+        console.log("Failed", error.message)
+      }
+    }
+    getAllFood();
+  }, [])
+  const searchedProduct = allProducts.filter((item) => {
     if (searchTerm.value === "") {
       return item;
     }

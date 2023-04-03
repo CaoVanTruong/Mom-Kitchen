@@ -4,8 +4,8 @@ import products from "../assets/fake-data/products";
 import { useParams } from "react-router-dom";
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/common-section/CommonSection";
-import { Container, Row, Col } from "reactstrap";
-
+import { Container, Row, Col, Alert } from "reactstrap";
+import Select from 'react-select'
 import { useDispatch } from "react-redux";
 import { cartActions } from "../store/shopping-cart/cartSlice";
 
@@ -15,25 +15,46 @@ import ProductCard from "../components/UI/product-card/ProductCard";
 
 const FoodDetails = () => {
   const [tab, setTab] = useState("desc");
+  const [allProducts, setAllProducts] = useState([products]);
   const [enteredName, setEnteredName] = useState("");
   const [enteredEmail, setEnteredEmail] = useState("");
   const [reviewMsg, setReviewMsg] = useState("");
   const { id } = useParams();
   const dispatch = useDispatch();
+  const options = [
+    { value: 2, label: '2 people' },
+    { value: 3, label: '3 people' },
+    { value: 4, label: '4 people' },
+    { value: 5, label: '5 people' }
 
-  const product = products.find((product) => product.id === id);
-  const [previewImg, setPreviewImg] = useState(product.image01);
-  const { title, price, category, desc, image01 } = product;
-
+  ]
+  useEffect(() => {
+    async function getAllFood() {
+      try {
+        const requestUrl = 'https://6425860f9e0a30d92b34796d.mockapi.io/packageFood'
+        const response = await fetch(requestUrl)
+        const responseJSON = await response.json()
+        const newFood = responseJSON
+        setAllProducts(newFood)
+      } catch (error) {
+        console.log("Failed", error.message)
+      }
+    }
+    getAllFood();
+  }, [])
+  console.log(id)
+  const product = allProducts.find((product) => product.id === id);
+  const [previewImg, setPreviewImg] = useState(allProducts.image01);
+  const { title, price, image01, category, desc } = product || {};
   const relatedProduct = products.filter((item) => category === item.category);
-
   const addItem = () => {
     dispatch(
       cartActions.addItem({
         id,
         title,
-        price,
         image01,
+        price,
+
       })
     );
   };
@@ -43,10 +64,6 @@ const FoodDetails = () => {
 
     console.log(enteredName, enteredEmail, reviewMsg);
   };
-
-  useEffect(() => {
-    setPreviewImg(product.image01);
-  }, [product]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -59,33 +76,12 @@ const FoodDetails = () => {
       <section>
         <Container>
           <Row>
-            <Col lg="2" md="2">
-              <div className="product__images ">
-                <div
-                  className="img__item mb-3"
-                  onClick={() => setPreviewImg(product.image01)}
-                >
-                  <img src={product.image01} alt="" className="w-50" />
-                </div>
-                <div
-                  className="img__item mb-3"
-                  onClick={() => setPreviewImg(product.image02)}
-                >
-                  <img src={product.image02} alt="" className="w-50" />
-                </div>
-
-                <div
-                  className="img__item"
-                  onClick={() => setPreviewImg(product.image03)}
-                >
-                  <img src={product.image03} alt="" className="w-50" />
-                </div>
-              </div>
-            </Col>
-
             <Col lg="4" md="4">
               <div className="product__main-img">
-                <img src={previewImg} alt="" className="w-100" />
+                <img
+                  style={{
+                    height: 350,
+                  }} src={image01} alt="" className="w-100" />
               </div>
             </Col>
 
@@ -99,7 +95,10 @@ const FoodDetails = () => {
                 <p className="category mb-5">
                   Category: <span>{category}</span>
                 </p>
-
+                <p>People/PackageFood</p>
+                <Select 
+                  className="mb-5"
+                options={options} />
                 <button onClick={addItem} className="addTOCart__btn">
                   Add to Cart
                 </button>

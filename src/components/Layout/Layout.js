@@ -12,9 +12,7 @@ const Layout = () => {
   return (
     <div>
       <Header />
-
       {showCart && <Carts />}
-
       <div>
         <Routes />
       </div>

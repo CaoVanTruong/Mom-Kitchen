@@ -51,10 +51,25 @@ const featureData = [
 
 const Home = () => {
   const [category, setCategory] = useState("ALL");
-  const [allProducts, setAllProducts] = useState(products);
+  // const [allProducts, setAllProducts] = useState(products);
+  const [allProducts, setAllProducts] = useState([]);
+
 
   const [hotPizza, setHotPizza] = useState([]);
-
+  useEffect(() => {
+    async function getAllFood() {
+      try {
+        const requestUrl = 'https://6425860f9e0a30d92b34796d.mockapi.io/packageFood'
+        const response = await fetch(requestUrl)
+        const responseJSON = await response.json()
+        const newFood = responseJSON
+        setAllProducts(newFood)
+      } catch (error) {
+        console.log("Failed", error.message)
+      }
+    }
+    getAllFood();
+  }, [])
   useEffect(() => {
     const filteredPizza = products.filter((item) => item.category === "Pizza");
     const slicePizza = filteredPizza.slice(0, 4);
@@ -146,9 +161,9 @@ const Home = () => {
         </Container>
       </section>
 
-      <section className="pt-0">
+      {/* <section className="pt-0">
         <Category />
-      </section>
+      </section> */}
 
       <section>
         <Container>
@@ -254,7 +269,7 @@ const Home = () => {
             <Col lg="6" md="6">
               <div className="why__tasty-treat">
                 <h2 className="tasty__treat-title mb-4">
-                  Why <span>Tasty Treat?</span>
+                  Why <span>Mom-Kitchen?</span>
                 </h2>
                 <p className="tasty__treat-desc">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -284,8 +299,7 @@ const Home = () => {
                       Qui, earum.
                     </p>
                   </ListGroupItem>
-
-                  <ListGroupItem className="border-0 ps-0">
+                  {/* <ListGroupItem className="border-0 ps-0">
                     <p className="choose__us-title d-flex align-items-center gap-2 ">
                       <i class="ri-checkbox-circle-line"></i>Order from any
                       location{" "}
@@ -294,7 +308,7 @@ const Home = () => {
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
                       Qui, earum.
                     </p>
-                  </ListGroupItem>
+                  </ListGroupItem> */}
                 </ListGroup>
               </div>
             </Col>
@@ -309,7 +323,7 @@ const Home = () => {
               <h2>Hot Pizza</h2>
             </Col>
 
-            {hotPizza.map((item) => (
+            {allProducts.map((item) => (
               <Col lg="3" md="4" sm="6" xs="6" key={item.id}>
                 <ProductCard item={item} />
               </Col>

@@ -10,9 +10,9 @@ const Checkout = () => {
   const [enterName, setEnterName] = useState("");
   const [enterEmail, setEnterEmail] = useState("");
   const [enterNumber, setEnterNumber] = useState("");
-  const [enterCountry, setEnterCountry] = useState("");
-  const [enterCity, setEnterCity] = useState("");
-  const [postalCode, setPostalCode] = useState("");
+  const [enterAddress, setEnterAddress] = useState("");
+  // const [enterCity, setEnterCity] = useState("");
+  // const [postalCode, setPostalCode] = useState("");
 
   const shippingInfo = [];
   const cartTotalAmount = useSelector((state) => state.cart.totalAmount);
@@ -26,9 +26,7 @@ const Checkout = () => {
       name: enterName,
       email: enterEmail,
       phone: enterNumber,
-      country: enterCountry,
-      city: enterCity,
-      postalCode: postalCode,
+      address: enterAddress,
     };
 
     shippingInfo.push(userShippingAddress);
@@ -72,12 +70,12 @@ const Checkout = () => {
                 <div className="form__group">
                   <input
                     type="text"
-                    placeholder="Country"
+                    placeholder="Address"
                     required
-                    onChange={(e) => setEnterCountry(e.target.value)}
+                    onChange={(e) => setEnterAddress(e.target.value)}
                   />
                 </div>
-                <div className="form__group">
+                {/* <div className="form__group">
                   <input
                     type="text"
                     placeholder="City"
@@ -91,8 +89,8 @@ const Checkout = () => {
                     placeholder="Postal code"
                     required
                     onChange={(e) => setPostalCode(e.target.value)}
-                  />
-                </div>
+                  /> */}
+                {/* </div> */}
                 <button type="submit" className="addTOCart__btn">
                   Payment
                 </button>
