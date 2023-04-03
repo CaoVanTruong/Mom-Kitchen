@@ -8,7 +8,7 @@ import "../styles/hero-section.css";
 
 import { Link } from "react-router-dom";
 
-import Category from "../components/UI/category/Category.jsx";
+// import Category from "../components/UI/category/Category.jsx";
 
 import "../styles/home.css";
 
@@ -55,7 +55,7 @@ const Home = () => {
   const [allProducts, setAllProducts] = useState([]);
 
 
-  const [hotPizza, setHotPizza] = useState([]);
+  // const [hotPizza, setHotPizza] = useState([]);
   useEffect(() => {
     async function getAllFood() {
       try {
@@ -70,11 +70,11 @@ const Home = () => {
     }
     getAllFood();
   }, [])
-  useEffect(() => {
-    const filteredPizza = products.filter((item) => item.category === "Pizza");
-    const slicePizza = filteredPizza.slice(0, 4);
-    setHotPizza(slicePizza);
-  }, []);
+  // useEffect(() => {
+  //   const filteredPizza = products.filter((item) => item.category === "Pizza");
+  //   const slicePizza = filteredPizza.slice(0, 4);
+  //   setHotPizza(slicePizza);
+  // }, []);
 
   useEffect(() => {
     if (category === "ALL") {

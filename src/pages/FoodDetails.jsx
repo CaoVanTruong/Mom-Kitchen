@@ -4,7 +4,7 @@ import products from "../assets/fake-data/products";
 import { useParams } from "react-router-dom";
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/common-section/CommonSection";
-import { Container, Row, Col, Alert } from "reactstrap";
+import { Container, Row, Col} from "reactstrap";
 import Select from 'react-select'
 import { useDispatch } from "react-redux";
 import { cartActions } from "../store/shopping-cart/cartSlice";
@@ -44,7 +44,7 @@ const FoodDetails = () => {
   }, [])
   console.log(id)
   const product = allProducts.find((product) => product.id === id);
-  const [previewImg, setPreviewImg] = useState(allProducts.image01);
+  // const [previewImg, setPreviewImg] = useState(allProducts.image01);
   const { title, price, image01, category, desc } = product || {};
   const relatedProduct = products.filter((item) => category === item.category);
   const addItem = () => {
