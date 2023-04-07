@@ -7,12 +7,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { Container, Row, Col } from "reactstrap";
 import { cartActions } from "../store/shopping-cart/cartSlice";
 import { Link } from "react-router-dom";
-
+import Header from "../components/Header/Header.jsx";
+import Footer from "../components/Footer/Footer.jsx";
+import Carts from "../components/UI/cart/Carts.jsx";
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
+  const showCart = useSelector((state) => state.cartUi.cartIsVisible);
+
   return (
     <Helmet title="Cart">
+      <Header />
+      {showCart && <Carts />}
       <CommonSection title="Your Cart" />
       <section>
         <Container>
@@ -59,12 +65,13 @@ const Cart = () => {
           </Row>
         </Container>
       </section>
+      <Footer/>
     </Helmet>
   );
-};
+};  
 
 const Tr = (props) => {
-  const { id, image01, title, price, quantity, personCount} = props.item;
+  const { id, image01, title, price, quantity, personCount } = props.item;
   const dispatch = useDispatch();
 
   const deleteItem = () => {
@@ -80,7 +87,7 @@ const Tr = (props) => {
       <td className="text-center">{quantity}px</td>
       <td className="text-center">2</td>
       <td className="text-center cart__item-del">
-        <i class="ri-delete-bin-line" onClick={deleteItem}></i>
+        <i className="ri-delete-bin-line" onClick={deleteItem}></i>
       </td>
     </tr>
   );

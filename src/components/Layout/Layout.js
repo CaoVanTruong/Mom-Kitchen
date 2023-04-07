@@ -6,8 +6,9 @@ import Routes from "../../routes/Routers";
 
 import Carts from "../UI/cart/Carts.jsx";
 import { useSelector } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
 
-const Layout = () => {
+function Layout() {
   const showCart = useSelector((state) => state.cartUi.cartIsVisible);
   return (
     <div>

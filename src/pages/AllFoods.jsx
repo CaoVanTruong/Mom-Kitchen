@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/common-section/CommonSection";
 import { Container, Row, Col } from "reactstrap";
@@ -7,7 +7,10 @@ import ReactPaginate from "react-paginate";
 
 import "../styles/all-foods.css";
 import "../styles/pagination.css";
-
+import Header from "../components/Header/Header.jsx";
+import Footer from "../components/Footer/Footer.jsx";
+import Carts from "../components/UI/cart/Carts.jsx";
+import { useSelector } from "react-redux";
 const AllFoods = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
@@ -49,9 +52,12 @@ const AllFoods = () => {
   const changePage = ({ selected }) => {
     setPageNumber(selected);
   };
-
+  const showCart = useSelector((state) => state.cartUi.cartIsVisible);
   return (
+
     <Helmet title="All-Foods">
+      <Header />
+      {showCart && <Carts />}
       <CommonSection title="All Foods" />
       <section>
         <Container>
@@ -65,7 +71,7 @@ const AllFoods = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <span>
-                  <i class="ri-search-line"></i>
+                  <i className="ri-search-line"></i>
                 </span>
               </div>
             </Col>
@@ -99,6 +105,7 @@ const AllFoods = () => {
           </Row>
         </Container>
       </section>
+      <Footer/>
     </Helmet>
   );
 };

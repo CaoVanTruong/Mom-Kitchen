@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-
+import { useSelector } from "react-redux";
 import products from "../assets/fake-data/products";
 import { useParams } from "react-router-dom";
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/common-section/CommonSection";
-import { Container, Row, Col} from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import Select from 'react-select'
 import { useDispatch } from "react-redux";
 import { cartActions } from "../store/shopping-cart/cartSlice";
@@ -12,6 +12,9 @@ import { cartActions } from "../store/shopping-cart/cartSlice";
 import "../styles/product-details.css";
 
 import ProductCard from "../components/UI/product-card/ProductCard";
+import Header from "../components/Header/Header";
+import Footer from "../components/Footer/Footer";
+import Carts from "../components/UI/cart/Carts.jsx";
 
 const FoodDetails = () => {
   const [tab, setTab] = useState("desc");
@@ -68,11 +71,14 @@ const FoodDetails = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [product]);
+  const showCart = useSelector((state) => state.cartUi.cartIsVisible);
 
   return (
     <Helmet title="Product-details">
-      <CommonSection title={title} />
+      <Header />
+      {showCart && <Carts />}
 
+      <CommonSection title={title} />
       <section>
         <Container>
           <Row>
@@ -96,9 +102,9 @@ const FoodDetails = () => {
                   Category: <span>{category}</span>
                 </p>
                 <p>People/PackageFood</p>
-                <Select 
+                <Select
                   className="mb-5"
-                options={options} />
+                  options={options} />
                 <button onClick={addItem} className="addTOCart__btn">
                   Add to Cart
                 </button>
@@ -193,6 +199,7 @@ const FoodDetails = () => {
           </Row>
         </Container>
       </section>
+      <Footer />
     </Helmet>
   );
 };

@@ -4,10 +4,10 @@ import { Container } from "reactstrap";
 import logo from "../../assets/images/res-logo.png";
 import { NavLink, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-
 import { cartUiActions } from "../../store/shopping-cart/cartUiSlice";
 
 import "../../styles/header.css";
+import AdminRouters from "../../routes/AdminRouters";
 
 const nav__links = [
   {
@@ -21,10 +21,6 @@ const nav__links = [
   {
     display: "Cart",
     path: "/cart",
-  },
-  {
-    display: "Contact",
-    path: "/contact",
   },
 ];
 
@@ -42,18 +38,22 @@ const Header = () => {
 
   useEffect(() => {
     window.addEventListener('scroll', () => {
-      if (
-        document.body.scrollTop > 80 ||
-        document.documentElement.scrollTop > 80
-      ) {
-        headerRef.current.classList?.add('header__shrink')
-      } else {
-        headerRef.current.classList?.remove('header__shrink');
+      try {
+        if (
+          document.body.scrollTop > 80 ||
+          document.documentElement.scrollTop > 80
+        ) {
+          headerRef.current.classList.add('header__shrink')
+        } else {
+          headerRef.current.classList.remove('header__shrink');
+        }
+      } catch (e) {
       }
-    });
+    }
+    );
 
-    return () => window.removeEventListener('scroll',null);
-  },[]);
+    return () => window.removeEventListener('scroll', null);
+  }, []);
 
   return (
     <header className="header" ref={headerRef}>
@@ -84,18 +84,20 @@ const Header = () => {
           {/* ======== nav right icons ========= */}
           <div className="nav__right d-flex align-items-center gap-4">
             <span className="cart__icon" onClick={toggleCart}>
-              <i class="ri-shopping-basket-line"></i>
+              <i className="ri-shopping-basket-line"></i>
               <span className="cart__badge">{totalQuantity}</span>
             </span>
 
             <span className="user">
               <Link to="/login">
-                <i class="ri-user-line"></i>
+                <i className="ri-user-line"></i>
               </Link>
+              {/* <Link to='/admin'>
+                <i className="ri-user-line"></i>
+              </Link> */}
             </span>
-
             <span className="mobile__menu" onClick={toggleMenu}>
-              <i class="ri-menu-line"></i>
+              <i className="ri-menu-line"></i>
             </span>
           </div>
         </div>

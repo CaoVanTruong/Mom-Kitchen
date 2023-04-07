@@ -1,7 +1,7 @@
 .footer {
   padding-top: 50px;
   padding-bottom: 30px;
-  background: #fde4e4;
+  background: #fde4e4 ;
 }
 
 .footer__logo img {
@@ -39,7 +39,15 @@
   color: #212245;
   font-weight: 600;
 }
-
+.delivery__time-item{
+  margin-left: -20px;
+}
+.delivery__time-item p{
+  margin-left: 20px;
+}
+.footer__logo img{
+  margin-left: 20px;
+}
 .newsletter {
   padding: 5px;
   border: 1px solid #212245;

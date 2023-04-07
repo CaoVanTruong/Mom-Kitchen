@@ -3,7 +3,9 @@ import React, { useState, useEffect } from "react";
 import Helmet from "../components/Helmet/Helmet.js";
 import { Container, Row, Col, ListGroup, ListGroupItem } from "reactstrap";
 
-import heroImg from "../assets/images/hero.png";
+// import heroImg from "../assets/images/hero.png";
+import heroImg from "../assets/images/Food-Delivery.png";
+
 import "../styles/hero-section.css";
 
 import { Link } from "react-router-dom";
@@ -18,9 +20,9 @@ import featureImg03 from "../assets/images/service-03.png";
 
 import products from "../assets/fake-data/products.js";
 
-import foodCategoryImg01 from "../assets/images/hamburger.png";
-import foodCategoryImg02 from "../assets/images/pizza.png";
-import foodCategoryImg03 from "../assets/images/bread.png";
+// import foodCategoryImg01 from "../assets/images/hamburger.png";
+// import foodCategoryImg02 from "../assets/images/pizza.png";
+// import foodCategoryImg03 from "../assets/images/bread.png";
 
 import ProductCard from "../components/UI/product-card/ProductCard.jsx";
 
@@ -29,6 +31,10 @@ import whyImg from "../assets/images/location.png";
 import networkImg from "../assets/images/network.png";
 
 import TestimonialSlider from "../components/UI/slider/TestimonialSlider.jsx";
+import Header from "../components/Header/Header.jsx";
+import Footer from "../components/Footer/Footer.jsx";
+import Carts from "../components/UI/cart/Carts.jsx";
+import { useSelector } from "react-redux";
 
 const featureData = [
   {
@@ -105,9 +111,11 @@ const Home = () => {
       setAllProducts(filteredProducts);
     }
   }, [category]);
-
+  const showCart = useSelector((state) => state.cartUi.cartIsVisible);
   return (
     <Helmet title="Home">
+      <Header />
+      {showCart && <Carts />}
       <section>
         <Container>
           <Row>
@@ -126,7 +134,7 @@ const Home = () => {
 
                 <div className="hero__btns d-flex align-items-center gap-5 mt-4">
                   <button className="order__btn d-flex align-items-center justify-content-between">
-                    Order now <i class="ri-arrow-right-s-line"></i>
+                    Order now <i className="ri-arrow-right-s-line"></i>
                   </button>
 
                   <button className="all__foods-btn">
@@ -137,21 +145,20 @@ const Home = () => {
                 <div className=" hero__service  d-flex align-items-center gap-5 mt-5 ">
                   <p className=" d-flex align-items-center gap-2 ">
                     <span className="shipping__icon">
-                      <i class="ri-car-line"></i>
+                      <i className="ri-car-line"></i>
                     </span>{" "}
                     No shipping charge
                   </p>
 
                   <p className=" d-flex align-items-center gap-2 ">
                     <span className="shipping__icon">
-                      <i class="ri-shield-check-line"></i>
+                      <i className="ri-shield-check-line"></i>
                     </span>{" "}
                     100% secure checkout
                   </p>
                 </div>
               </div>
             </Col>
-
             <Col lg="6" md="6">
               <div className="hero__img">
                 <img src={heroImg} alt="hero-img" className="w-100" />
@@ -208,7 +215,7 @@ const Home = () => {
               <h2>Popular Foods</h2>
             </Col>
 
-            <Col lg="12">
+            {/* <Col lg="12">
               <div className="food__category d-flex align-items-center justify-content-center gap-4">
                 <button
                   className={`all__btn  ${
@@ -248,7 +255,7 @@ const Home = () => {
                   Bread
                 </button>
               </div>
-            </Col>
+            </Col> */}
 
             {allProducts.map((item) => (
               <Col lg="3" md="4" sm="6" xs="6" key={item.id} className="mt-5">
@@ -281,7 +288,7 @@ const Home = () => {
                 <ListGroup className="mt-4">
                   <ListGroupItem className="border-0 ps-0">
                     <p className=" choose__us-title d-flex align-items-center gap-2 ">
-                      <i class="ri-checkbox-circle-line"></i> Fresh and tasty
+                      <i className="ri-checkbox-circle-line"></i> Fresh and tasty
                       foods
                     </p>
                     <p className="choose__us-desc">
@@ -292,7 +299,7 @@ const Home = () => {
 
                   <ListGroupItem className="border-0 ps-0">
                     <p className="choose__us-title d-flex align-items-center gap-2 ">
-                      <i class="ri-checkbox-circle-line"></i> Quality support
+                      <i className="ri-checkbox-circle-line"></i> Quality support
                     </p>
                     <p className="choose__us-desc">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -320,9 +327,8 @@ const Home = () => {
         <Container>
           <Row>
             <Col lg="12" className="text-center mb-5 ">
-              <h2>Hot Pizza</h2>
+              <h2>Hot Deals</h2>
             </Col>
-
             {allProducts.map((item) => (
               <Col lg="3" md="4" sm="6" xs="6" key={item.id}>
                 <ProductCard item={item} />
@@ -357,6 +363,7 @@ const Home = () => {
           </Row>
         </Container>
       </section>
+      <Footer />
     </Helmet>
   );
 };
