@@ -40,11 +40,15 @@ function Navbar() {
                         <Dropdown.Item href="#/action-1">Profile detail</Dropdown.Item>
                         <Dropdown.Item href="#/action-2">Log out</Dropdown.Item>
                     </DropdownButton> */}
-                    <span><i class="ri-notification-2-line"></i></span>
+                    <span style={{
+                        cursor:'pointer'
+                    }}><i class="ri-notification-2-line"></i></span>
                     <div class="dropdown">
                         <button class="dropbtn">
                             <span><i class="ri-user-6-line"></i></span>
-                            <span>TuanDM</span>
+                            <span style={{
+                                marginLeft:5,
+                            }}>TuanDM</span>
                         </button>
                         <div class="dropdown-content">
                             <a href="#">Profile infor</a>

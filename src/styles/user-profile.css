@@ -1,0 +1,39 @@
+.userProfile__container{
+    width: 100%;
+    height: 100%;
+    padding-top: 20px;
+    padding-bottom: 50px;
+}
+.inputGroup{
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: row;
+}
+.userProfile__container{
+    display: flex;
+    flex-direction: row;
+}
+.userProfile_Item i{
+    font-size: 25px;
+}
+.userProfile_Item p{
+    font-size: 15px;
+    margin-top: 10px;
+    margin-left:10px;
+}
+.userProfile_Item {
+    display: flex;
+}
+.userProfile{
+    /* background-color: black; */ 
+    margin-top: 20px;
+    margin-left: -10px;
+    display: block;
+    justify-content: center;
+    align-items: center;
+}
+.userProfile_btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

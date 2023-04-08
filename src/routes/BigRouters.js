@@ -18,6 +18,7 @@ import AdminRouters from "./AdminRouters";
 import UserManagement from "../pages/admin/UserManagement";
 import AdminHome from "../pages/admin/AdminHome";
 import ProductManagement from "../pages/admin/ProductManagement";
+import UserProfile from "../pages/UserProfile";
 
 const BigRouters = () => {
   return (
@@ -36,6 +37,7 @@ const BigRouters = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/productManagement" element={<ProductManagement />} />
+      <Route path="/profile" element={<UserProfile />} />
 
     </Routes>
 

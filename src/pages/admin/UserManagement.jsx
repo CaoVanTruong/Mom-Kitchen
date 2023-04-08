@@ -3,73 +3,79 @@ import Navbar from '../../components/Sidebar/Navbar'
 import '../../styles/userManagement.css'
 import DataTable from 'react-data-table-component'
 import { padding } from '@mui/system'
-import { blue } from '@mui/material/colors'
+import { blue, yellow } from '@mui/material/colors'
 import zIndex from '@mui/material/styles/zIndex'
 import { Link } from 'react-router-dom'
 const UserManagement = () => {
   const columns = [
     {
       name:
-        <span>ID</span>,
+        <h6>ID</h6>,
       selector: row =>
-        <span>{row.id}</span>,
-      style: {
-        '&:hover': {
-          cursor: 'pointer',
-          backgroundColor: '#B2F8FF',
-
-        },
-      },
+        row.id,
     },
     {
-      name: <span>Name</span>,
+      name: <h6>Name</h6>,
       selector: row => row.name,
-      style: {
-
-        '&:hover': {
-          cursor: 'pointer',
-          backgroundColor: '#B2F8FF',
-
-        },
-      },
     },
     {
-      name: <span>Email</span>,
+      name: <h6>Email</h6>,
       selector: row => row.email,
-      style: {
-        '&:hover': {
-          cursor: 'pointer',
-          backgroundColor: '#B2F8FF',
-
-        },
-      },
     },
     {
-      name: <span>Role</span>,
+      name: <h6>Role</h6>,
       selector:
         row =>
-          <span>{row.role}</span>,
+          row.role,
       style: {
-        color: 'white',
-        '&:hover': {
-          cursor: 'pointer',
-          backgroundColor: '#B2F8FF',
-
-        },
+        width: '50',
       },
     },
     {
-      name: <span>Action</span>,
       selector: row =>
-        <span className='action__icons'>
+        <div className='action__icons' style={{
+          display: 'flex',
+          justifyContent: 'center',
+          width: 100,
+          alignItems: 'center',
+        }}>
           <Link to='#'>
-            < i class="ri-edit-line"></i >
+            <span>
+              < i class="ri-edit-line" style={{
+                fontSize: 20,
+                width: 30,
+                height: 30,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                border: '1px solid purple',
+                marginBottom: 20,
+                borderRadius: 20,
+                color: 'purple',
+              }}></i >
+            </span>
           </Link>
           <Link to='#'>
-            <i class="ri-delete-bin-6-line">
-            </i>
+            <span>
+              <i class="ri-delete-bin-6-line" style={{
+                fontSize: 20,
+                width: 30,
+                height: 30,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                border: '1px solid purple',
+                marginBottom: 20,
+                borderRadius: 20,
+                color: 'purple',
+                marginLeft:20,
+              }}>  </i>
+            </span>
+
           </Link>
-        </span>
+        </div >
       // <span></span>
     },
 
@@ -145,6 +151,14 @@ const UserManagement = () => {
                   backgroundColor: '#FFA500'
                 }
               },
+              rows: {
+                style: {
+                  cursor: 'pointer',
+                  ":hover": {
+                    backgroundColor: '#F6F8FA'
+                  }
+                },
+              }
             }}
             withBorder
             borderRadius='sm'

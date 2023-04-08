@@ -9,67 +9,76 @@ import { Link } from 'react-router-dom'
 const UserManagement = () => {
   const columns = [
     {
+      name:
+        <h6>ID</h6>,
       selector: row =>
-        <span>{row.id}</span>,
-      style: {
-        '&:hover': {
-          cursor: 'pointer',
-          backgroundColor: '#B2F8FF',
-
-        },
-      },
+        row.id,
+        width:'80px'
     },
     {
-      name: <span>Image</span>,
-      selector: row => <img style={{
-        width: 70,
-        height: 50
-      }} src={row.image}></img>,
-      style: {
-        '&:hover': {
-          cursor: 'pointer',
-          backgroundColor: '#B2F8FF',
-
-        },
-      },
+      name: <h6 style={{
+        marginLeft:50
+      }}>Image</h6>,
+      selector: row => <img src={row.image} className='w-50'></img>,
     },
     {
-      name: <span>Chef</span>,
-      selector: row => row.chef,
-      style: {
-        '&:hover': {
-          cursor: 'pointer',
-          backgroundColor: '#B2F8FF',
-
-        },
-      },
+      name: <h6>Email</h6>,
+      selector: row => row.name,
     },
     {
-      name: <span>Price</span>,
+      name: <h6>Price</h6>,
       selector:
         row =>
-          <span>{row.price}</span>,
+          row.price,
       style: {
-        color: 'white',
-        '&:hover': {
-          cursor: 'pointer',
-          backgroundColor: '#B2F8FF',
-
-        },
+        width: '50',
       },
     },
     {
-      name: <span>Action</span>,
       selector: row =>
-        <span className='action__icons'>
+        <div className='action__icons' style={{
+          display: 'flex',
+          justifyContent: 'center',
+          width: 100,
+          alignItems: 'center',
+        }}>
           <Link to='#'>
-            < i class="ri-edit-line"></i >
+            <span>
+              < i class="ri-edit-line" style={{
+                fontSize: 20,
+                width: 30,
+                height: 30,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                border: '1px solid purple',
+                marginBottom: 20,
+                borderRadius: 20,
+                color: 'purple',
+              }}></i >
+            </span>
           </Link>
           <Link to='#'>
-            <i class="ri-delete-bin-6-line">
-            </i>
+            <span>
+              <i class="ri-delete-bin-6-line" style={{
+                fontSize: 20,
+                width: 30,
+                height: 30,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                border: '1px solid purple',
+                marginBottom: 20,
+                borderRadius: 20,
+                color: 'purple',
+                marginLeft: 20,
+              }}>  </i>
+            </span>
+
           </Link>
-        </span>
+        </div >
       // <span></span>
     },
 
@@ -146,6 +155,14 @@ const UserManagement = () => {
                   backgroundColor: '#FFA500'
                 }
               },
+              // rows: {
+              //   style: {
+              //     cursor: 'pointer',
+              //     ":hover": {
+              //       backgroundColor: '#F6F8FA'
+              //     }
+              //   },
+              // }
             }}
             withBorder
             borderRadius='sm'
@@ -153,6 +170,7 @@ const UserManagement = () => {
             data={records}
             fixedHeader
             pagination
+            highlightOnHover
           >
           </DataTable>
         </div>

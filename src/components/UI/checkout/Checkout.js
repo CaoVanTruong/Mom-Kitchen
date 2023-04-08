@@ -9,23 +9,24 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
+// import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddressForm from './AddressForm';
 import PaymentForm from './PaymentForm';
 import Review from './Review';
-
+import {Link} from 'react-router-dom'
 function Copyright() {
   return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
+    // <Typography variant="body2" color="text.secondary" align="center">
+    //   {'Copyright © '}
+    //   <Link color="inherit" href="https://mui.com/">
+    //     Your Website
+    //   </Link>{' '}
+    //   {new Date().getFullYear()}
+    //   {'.'}
+    // </Typography>
+    <div>Nothing</div>
   );
 }
 
@@ -97,6 +98,15 @@ export default function Checkout() {
                 confirmation, and will send you an update when your order has
                 shipped.
               </Typography>
+              <div className='align-items-center justify-content-center' style={{
+                display: 'flex',
+              }}>
+                <Button sx={{ mt: 3 }}
+                  variant='contained'
+                >
+                  <Link to='/home'>Confirm</Link>
+                </Button>
+              </div>
             </React.Fragment>
           ) : (
             <React.Fragment>
