@@ -16,8 +16,8 @@ const payments = [
 export default function Review() {
   const cartProducts = useSelector((state) => state.cart.cartItems);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
-  // const addresses = useSelector((state) => state.addressForm.addresses)
-  console.log("ben review"+addresses)
+  // const addresses = useSelector((state) => state.address)
+  // console.log("du me show len cho tao" + addresses) 
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
@@ -43,8 +43,8 @@ export default function Review() {
           <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
             Shipping
           </Typography>
-          <Typography gutterBottom>John Smith</Typography>
-          <Typography gutterBottom>{addresses.join(', ')}</Typography>
+          <Typography gutterBottom>{addresses.name}</Typography>
+          <Typography gutterBottom>{addresses.join(',')}</Typography>
         </Grid>
         <Grid item container direction="column" xs={12} sm={6}>
           <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>

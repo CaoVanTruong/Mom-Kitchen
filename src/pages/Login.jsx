@@ -113,7 +113,7 @@ const Login = () => {
                   />
                 </div>
                 <button className="addTOCart__btn">
-                  Login
+                  <Link to='/home'> Login</Link>
                 </button>
               </form>
               <Link to="/register">

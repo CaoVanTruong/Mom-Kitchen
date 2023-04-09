@@ -3,7 +3,10 @@ import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/common-section/CommonSection";
 import { Container, Row, Col } from "reactstrap";
 import { Link } from "react-router-dom";
-
+import Header from "../components/Header/Header.jsx";
+import Footer from "../components/Footer/Footer.jsx";
+import Carts from "../components/UI/cart/Carts.jsx";
+import { useSelector } from "react-redux";
 const Register = () => {
   const signupNameRef = useRef();
   const signupPasswordRef = useRef();
@@ -12,9 +15,12 @@ const Register = () => {
   const submitHandler = (e) => {
     e.preventDefault();
   };
+  const showCart = useSelector((state) => state.cartUi.cartIsVisible);
 
   return (
     <Helmet title="Signup">
+      <Header />
+      {showCart && <Carts />}
       <CommonSection title="Signup" />
       <section>
         <Container>
@@ -54,6 +60,7 @@ const Register = () => {
           </Row>
         </Container>
       </section>
+      <Footer />
     </Helmet>
   );
 };

@@ -9,6 +9,10 @@
   margin-bottom: 20px;
   transition: 0.4s;
 }
+.product__img img{
+  width: 200px;
+  height: 200px;
+}
 
 .product__img:hover {
   transform: scale(1.2);

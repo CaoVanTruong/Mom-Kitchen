@@ -1,36 +1,38 @@
 // import { create } from "@mui/material/styles/createTransitions";
 import { createSlice } from "@reduxjs/toolkit";
-const details =
-    localStorage.getItem("addressDetail") !== null
-        ? JSON.parse(localStorage.getItem("addressDetail"))
+const items =
+    localStorage.getItem("addressDetails") !== null
+        ? JSON.parse(localStorage.getItem("addressDetails"))
         : [];
-        console.log("Nay la in detail?" + details.map((item) => item.name))
-// const setItemFunc = (item) => {
-//     localStorage.setItem("cartItems", JSON.stringify(item));
-// };
-const initialState =
-{
-    addresses: details
-}
 
+console.log(items.map((item) => item))
+const setItemFunc = (item) => {
+    localStorage.setItem("addressDetails", JSON.stringify(item));
+};
 const addressSlice = createSlice({
-    name: "addressForm",
-    initialState,
+    name: "address",
+    initialState: [
+        {
+            name:"",
+            phone:1,
+            address:"",
+            address2:"",
+            city:""
+        }
+    ],
     reducers: {
         addAddress(state, action) {
-            console.log("co vao duoc ham them dia chi khong")
-            const newAddress = action.payload
-            console.log("gia tri lay tu action.payload"+newAddress)
-            state.addresses.push({
+            const newAddress = [action.payload]
+            state.push({
+                // newAddress
                 name: newAddress.name,
-                phone: newAddress.phone,
-                address: newAddress.address,
+                phone:newAddress.phone,
+                address: newAddress.addAddress,
                 address2: newAddress.address2,
                 city: newAddress.city
             })
-            console.log("cai nay la load mang xem co gi khong " + state.addresses)
-            localStorage.setItem("addressDetail", JSON.stringify(state.addresses.map((address) => address))
-            )
+            setItemFunc(state)
+            // console.log("con cac j loi quai"+state.addresses)
         },
     }
 })

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
@@ -25,28 +25,40 @@ export default function AddressForm() {
     const dispatch = useDispatch()
     dispatch(
         addressAction.addAddress({
-            name: name,
-            phone: phone,
-            address: address,
-            address2: address2,
-            city: city
+            name,
+            phone,
+            address,
+            address2,
+            city
         })
     )
+
     const handleNameChange = (e) => {
         setName(e.target.value)
     }
     const handlePhoneChange = (e) => {
         setPhone(e.target.value)
-    } 
+    }
     const handleAddressChange = (e) => {
         setAddress(e.target.value)
-    } 
+    }
     const handleAddress2Change = (e) => {
         setAddress2(e.target.value)
-    } 
+    }
     const handleCityChange = (e) => {
         setCity(e.target.value)
     }
+    // useEffect(() => {
+    //     dispatch(
+    //         addressAction.addAddress({
+    //             name,
+    //             phone,
+    //             address,
+    //             address2,
+    //             city
+    //         })
+    //     )
+    // },[])
     return (
         <React.Fragment>
             <Typography variant="h6" gutterBottom>
