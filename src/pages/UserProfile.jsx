@@ -30,7 +30,6 @@ const UserProfile = () => {
                                 zIndex: 1,
                                 marginRight: 50,
                                 borderRadius: 100
-
                             }}
                             src='https://images2.thanhnien.vn/Uploaded/nguyenvan/2022_09_09/thanh-loc-doanhnhansaigon1-1508430693-750x0-8136.jpg'></img>
 

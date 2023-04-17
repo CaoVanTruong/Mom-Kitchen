@@ -1,5 +1,5 @@
 
-/* .navbar{
+.navbar{
     padding: 0px;
     margin: 0px;
     text-decoration: none;
@@ -16,13 +16,35 @@
 .nav__items{
     flex-direction: column;
 } */
-.navbar__admin{
-    /* background-color: #323232; */
-    background-color:     #FFFFFF;
+/* .navbarHeader__admin{
+    background-color:     #E7A516;
     height: 80px;
     top:0;
     width: 100%;
-    z-index: 100;
+    position: relative;
+    margin-right: 100px;
+    z-index:999;
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.logo_Admin img{
+    width: 50px;
+    height: 50px;
+}
+.horizonNavbar__admin{
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: blanchedalmond;
+}
+.logo_Admin {
+display: flex;
+justify-content: center;
+align-items: center;
+width: 30%;
 }
 .navbar__admin span{
     color:#FEB049;
@@ -62,11 +84,8 @@
     height: 100vh;
     display: flex;
     justify-content: center;
-    position: fixed;
     top: 0;
-    /* left: -100%; */
     transition: 850ms;
-    z-index: 100;
 }
 
 .nav-menu.active{

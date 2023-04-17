@@ -16,8 +16,7 @@ const Footer = () => {
               <img src={logo} alt="logo" />
               <h5>Mom-Kitchen</h5>
               <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt pariatur accusamus
+                MomKitchen-Platform connect between customers with family-liked meals chef.
               </p>
             </div>
           </Col>
@@ -43,7 +42,7 @@ const Footer = () => {
             <h5 className="footer__title">Contact</h5>
             <ListGroup className="deliver__time-list">
               <ListGroupItem className="delivery__time-item border-0 ps-0">
-                <p>Location: ZindaBazar, Sylhet-3100, Bangladesh</p>
+                <p>Location: Room 134, VinHome Park, D2 Road, Distric 9, HCM City</p>
               </ListGroupItem>
               <ListGroupItem className="delivery__time-item border-0 ps-0">
                 <span>Phone: 01712345678</span>

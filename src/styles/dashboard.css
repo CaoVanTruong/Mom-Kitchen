@@ -1,0 +1,29 @@
+.SideMenuAndPageContentDashboard{
+    display: flex;
+    flex: 1;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: rgba(0,0,0,0.15);
+    height: 100vh;
+}
+.PageContent{
+    background-color:#F1F2F7 ;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.titlePage{
+    margin-left: 60px;
+}
+.HorizontalItem {
+    display: flex;
+    flex-direction: row;
+    margin-left: 60px;
+}
+.HorizontalTable{
+    display: flex;
+    justify-content: center;
+    align-items: center;   
+    max-width: 100vw;
+}

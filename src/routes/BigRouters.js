@@ -19,25 +19,29 @@ import UserManagement from "../pages/admin/UserManagement";
 import AdminHome from "../pages/admin/AdminHome";
 import ProductManagement from "../pages/admin/ProductManagement";
 import UserProfile from "../pages/UserProfile";
+import Dashboard from "../pages/admin/Dashboard";
+import AdminProfile from "../pages/admin/AdminProfile";
+import OrderForm from "../components/UI/order/OrderForm";
 
 const BigRouters = () => {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/home" />} />
       <Route path="/user" element={<Home />} />
-      <Route path="/admin" element={<AdminHome />} />
+      {/* <Route path="/admin" element={<Dashboard />} /> */}
       <Route path="/userManagement" element={<UserManagement />} />
       <Route path="/home" element={<Home />} />
-      {/* <Route path="/adminHome" element={<AdminHome />} /> */}
       <Route path="/foods" element={<AllFoods />} />
       <Route path="/foods/:id" element={<FoodDetails />} />
       <Route path="/cart" element={<Cart />} />
-      {/* <Route path="/checkout" element={<Checkout />} /> */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/productManagement" element={<ProductManagement />} />
       <Route path="/profile" element={<UserProfile />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/adminProfile" element={<AdminProfile />} />
+      <Route path="/order" element={<OrderForm />} />
 
     </Routes>
 

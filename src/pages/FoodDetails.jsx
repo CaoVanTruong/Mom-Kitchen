@@ -22,6 +22,7 @@ const FoodDetails = () => {
   const [enteredName, setEnteredName] = useState("");
   const [enteredEmail, setEnteredEmail] = useState("");
   const [reviewMsg, setReviewMsg] = useState("");
+  // const [previewImg, setPreviewImg] = useState(product.image01);
   const { id } = useParams();
   const dispatch = useDispatch();
   const options = [
@@ -47,8 +48,9 @@ const FoodDetails = () => {
   }, [])
   console.log(id)
   const product = allProducts.find((product) => product.id === id);
-  // const [previewImg, setPreviewImg] = useState(allProducts.image01);
   const { title, price, image01, category, desc } = product || {};
+  const [previewImg, setPreviewImg] = useState(allProducts.image01);
+
   const relatedProduct = products.filter((item) => category === item.category);
   const addItem = () => {
     dispatch(
@@ -82,12 +84,33 @@ const FoodDetails = () => {
       <section>
         <Container>
           <Row>
+            <Col lg="2" md="2">
+              <div className="product__images ">
+                <div
+                  className="img__item mb-3"
+                  onClick={() => setPreviewImg(image01)}
+                >
+                  <img src={image01} alt="" className="w-50" />
+                </div>
+                <div
+                  className="img__item mb-3"
+                  onClick={() => setPreviewImg(image01)}
+                >
+                  <img src={image01} alt="" className="w-50" />
+                </div>
+
+                <div
+                  className="img__item"
+                  onClick={() => setPreviewImg(image01)}
+                >
+                  <img src={image01} alt="" className="w-50" />
+                </div>
+              </div>
+            </Col>
             <Col lg="4" md="4">
               <div className="product__main-img">
                 <img
-                  style={{
-                    height: 350,
-                  }} src={image01} alt="" className="w-100" />
+                  src={image01} alt="" className="w-100" />
               </div>
             </Col>
 
@@ -187,7 +210,9 @@ const FoodDetails = () => {
               )}
             </Col>
 
-            <Col lg="12" className="mb-5 mt-4">
+            <Col lg="12" className="mb-5 mt-4" style={{
+              borderTop: "1px solid #fde4e4"
+            }}>
               <h2 className="related__Product-title">You might also like</h2>
             </Col>
 

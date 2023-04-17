@@ -30,9 +30,6 @@ const AllFoods = () => {
     getAllFood();
   }, [])
   const searchedProduct = allProducts.filter((item) => {
-    if (searchTerm.value === "") {
-      return item;
-    }
     if (item.title.toLowerCase().includes(searchTerm.toLowerCase())) {
       return item;
     } else {
