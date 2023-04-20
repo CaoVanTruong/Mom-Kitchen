@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import '../../styles/productManagement.css'
-import { Grid, Paper, TextField, makeStyles, Box } from '@mui/material'
+import { Grid, Paper, TextField, Box } from '@mui/material'
 import BootstrapNavbar from '../../components/Sidebar/BootstrapNavbar'
 import SideMenu from '../../components/Sidebar/SideMenu'
 import { useEffect } from 'react'
 import { getAllProducts } from '../../API/recentOrder'
-import { Space, Typography, Table, Avatar, Rate, Button, Input, Modal, Image } from 'antd'
+import { Space, Typography, Table, Avatar, Rate, Modal, Image } from 'antd'
 import {
-  PlusCircleOutlined, EditOutlined, DeleteOutlined, CloseOutlined, CheckCircleOutlined
+ DeleteOutlined, CloseOutlined, CheckCircleOutlined
 } from '@ant-design/icons'
 const ProductManagement = () => {
   const userTemplate = [
@@ -65,6 +65,7 @@ const ProductManagement = () => {
       setLoading(false)
     })
   }, [])
+  
   return (
     <div>
       <BootstrapNavbar />

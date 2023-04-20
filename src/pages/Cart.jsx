@@ -34,7 +34,6 @@ const Cart = () => {
                       <th>Product Title</th>
                       <th>Price</th>
                       <th>Quantity</th>
-                      <th>Person count</th>
                       <th>Delete</th>
                     </tr>
                   </thead>
@@ -57,7 +56,7 @@ const Cart = () => {
                     <Link to="/foods">Continue Shopping</Link>
                   </button>
                   <button className="addTOCart__btn">
-                    <Link to="/checkout">Proceed to checkout</Link>
+                    <Link to="/orderForm">Proceed to checkout</Link>
                   </button>
                 </div>
               </div>
@@ -71,7 +70,7 @@ const Cart = () => {
 };  
 
 const Tr = (props) => {
-  const { id, image01, title, price, quantity, personCount } = props.item;
+  const { id, image01, title, price, quantity} = props.item;
   const dispatch = useDispatch();
 
   const deleteItem = () => {
@@ -84,8 +83,7 @@ const Tr = (props) => {
       </td>
       <td className="text-center">{title}</td>
       <td className="text-center">{price} VND</td>
-      <td className="text-center">{quantity}px</td>
-      <td className="text-center">2</td>
+      <td className="text-center">{quantity}x</td>
       <td className="text-center cart__item-del">
         <i className="ri-delete-bin-line" onClick={deleteItem}></i>
       </td>

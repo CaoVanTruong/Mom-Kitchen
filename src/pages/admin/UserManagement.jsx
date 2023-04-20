@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import '../../styles/userManagement.css'
-import { Grid, Paper, TextField, makeStyles, Box } from '@mui/material'
+import { Grid, Paper, TextField, Box } from '@mui/material'
 import BootstrapNavbar from '../../components/Sidebar/BootstrapNavbar'
 import SideMenu from '../../components/Sidebar/SideMenu'
 import { useEffect } from 'react'
-import { getAllProducts } from '../../API/recentOrder'
+import { getAllUsers } from '../../API/recentOrder'
 import { Space, Typography, Table, Avatar, Rate, Button, Input, Modal, Image } from 'antd'
 import {
-  PlusCircleOutlined, EditOutlined, DeleteOutlined, CloseOutlined, CheckCircleOutlined
+  PlusCircleOutlined, EditOutlined, DeleteOutlined, CloseOutlined,
 } from '@ant-design/icons'
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -22,18 +22,18 @@ const UserManagement = () => {
     {
       name: "",
       email: "",
+      password: "",
       phone: "",
       address: ""
     }
   ]
-  const [users, setUsers] = useState([userTemplate])
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
-  const [isAddingProduct, setIsAddingProduct] = useState(null)
-  const [editingProduct, setEditingProduct] = useState(null)
+  const [isAddingUser, setIsAddingUser] = useState(null)
+  const [editingUser, setEditingUser] = useState(null)
   const [loading, setLoading] = useState(false)
   const [dataSource, setDataSource] = useState([])
-  const [productArray, setProductArray] = useState([])
+  const [userArray, setUserArray] = useState([])
   const onDeleteRecord = (record) => {
     Modal.confirm({
       title: 'Are you sure, you want to delete this record?',
@@ -49,30 +49,44 @@ const UserManagement = () => {
   }
   const onEditRecord = (record) => {
     setIsEditing(true)
-    setEditingProduct({ ...record })
+    setEditingUser({ ...record })
   }
   function handleFilter(event) {
-    const newData = productArray.filter(row => {
-      return row.title.toLowerCase().includes(event.target.value.toLowerCase())
+    const newData = userArray.filter(row => {
+      return row.firstName.toLowerCase().includes(event.target.value.toLowerCase())
     })
     setDataSource(newData)
   }
   const resetEditing = () => {
     setIsEditing(false)
-    setEditingProduct(null)
+    setEditingUser(null)
   }
   const resetAdding = () => {
     setIsAdding(false)
-    setIsAddingProduct(null)
+    setIsAddingUser(null)
   }
   useEffect(() => {
     setLoading(true)
-    getAllProducts().then(res => {
-      setProductArray(res.products)
-      setDataSource(res.products)
+    getAllUsers().then(res => {
+      setUserArray(res.users)
+      setDataSource(res.users)
       setLoading(false)
     })
   }, [])
+
+  const onAddNewUser = () => {
+    const randomNumber = parseInt(Math.random() * 100)
+    const newStudent = {
+      id: randomNumber,
+      firstName: "Name" + randomNumber,
+      phone: randomNumber,
+      email: "password" + randomNumber,
+    }
+    setDataSource((pre) => {
+      return [...pre, newStudent]
+    })
+    setIsAdding(false)
+  };
   return (
     <div>
       <BootstrapNavbar />
@@ -91,8 +105,10 @@ const UserManagement = () => {
                 backgroundColor: 'pink',
                 marginLeft: 60
               }}
-              onClick={() => setIsAdding(true)}
-
+              onClick={
+                // onAddNewUser
+                ()=>setIsAdding(true)
+              }
             >
               <PlusCircleOutlined style={{
                 fontSize: '24px',
@@ -132,19 +148,22 @@ const UserManagement = () => {
                 },
 
                 {
-                  title: 'Username',
-                  dataIndex: "title"
+                  title: 'Avatar',
+                  dataIndex: "image",
+                  render: (link) => {
+                    return <Avatar src={link} />
+                  }
                 }, {
                   title: 'Name',
-                  dataIndex: "price"
+                  dataIndex: "firstName"
                 }
                 , {
                   title: 'Email',
-                  dataIndex: "stock"
+                  dataIndex: "email"
                 },
                 {
                   title: 'Phone',
-                  dataIndex: "stock"
+                  dataIndex: "phone"
                 },
                 {
                   title: "Actions",
@@ -173,7 +192,8 @@ const UserManagement = () => {
             >
             </Table>
           </Space>
-          <div>
+          {/* edit product */}
+          {/* <div>
             <Modal
               title="Edit Product"
               open={isEditing}
@@ -186,11 +206,11 @@ const UserManagement = () => {
               cancelText={<div>Cancel</div>}
               onOk={() => {
                 setDataSource(pre => {
-                  return pre.map(product => {
-                    if (product.id === editingProduct.id) {
-                      return editingProduct
+                  return pre.map(user => {
+                    if (user.id === editingUser.id) {
+                      return editingUser
                     } else {
-                      return product
+                      return user
                     }
                   })
                 })
@@ -201,24 +221,24 @@ const UserManagement = () => {
                 marginLeft: -30
               }}><CloseOutlined /></div>}
             >
-              <Image src={editingProduct?.thumbnail}></Image>
-              <Input value={editingProduct?.title} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, title: e.target.value }
+              <Image src={editingUser?.image}></Image>
+              <Input value={editingUser?.firstName} onChange={(e) => {
+                setEditingUser(pre => {
+                  return { ...pre, firstName: e.target.value }
                 })
               }} />
-              <Input value={editingProduct?.price} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, price: e.target.value }
+              <Input value={editingUser?.email} onChange={(e) => {
+                setEditingUser(pre => {
+                  return { ...pre, email: e.target.value }
                 })
               }} />
             </Modal>
-          </div>
+          </div> */}
         </Space>
         <div>
           {/* modal edit */}
           <Modal
-            title="Edit Product"
+            title="Edit user"
             open={isEditing}
             okText={<div>Save</div>}
             onCancel={() => {
@@ -229,11 +249,11 @@ const UserManagement = () => {
             cancelText={<div>Cancel</div>}
             onOk={() => {
               setDataSource(pre => {
-                return pre.map(product => {
-                  if (product.id === editingProduct.id) {
-                    return editingProduct
+                return pre.map(user => {
+                  if (user.id === editingUser.id) {
+                    return editingUser
                   } else {
-                    return product
+                    return user
                   }
                 })
               })
@@ -244,7 +264,8 @@ const UserManagement = () => {
               marginLeft: -30
             }}><CloseOutlined /></div>}
           >
-            <Image src={editingProduct?.thumbnail}></Image>
+            <Image src={editingUser?.image}
+            ></Image>
             {/* <Input value={editingProduct?.title} onChange={(e) => {
                 setEditingProduct(pre => {
                   return { ...pre, title: e.target.value }
@@ -269,14 +290,14 @@ const UserManagement = () => {
                     >
                       <Grid item lg={6}>
                         <TextField
-                          label="Title"
-                          placeholder='Title...'
+                          label="Name"
+                          placeholder='Enter user name...'
                           variant='outlined'
                           fullWidth
-                          value={editingProduct?.title}
+                          value={editingUser?.firstName}
                           onChange={(e) => {
-                            setEditingProduct(pre => {
-                              return { ...pre, title: e.target.value }
+                            setEditingUser(pre => {
+                              return { ...pre, firstName: e.target.value }
                             })
                           }}
                         >
@@ -284,14 +305,14 @@ const UserManagement = () => {
                       </Grid>
                       <Grid item lg={6}>
                         <TextField
-                          label="Price"
-                          placeholder='Price'
+                          label="Email"
+                          placeholder='Enter user e-mail'
                           variant='outlined'
                           fullWidth
-                          value={editingProduct?.price}
+                          value={editingUser?.email}
                           onChange={(e) => {
-                            setEditingProduct(pre => {
-                              return { ...pre, price: e.target.value }
+                            setEditingUser(pre => {
+                              return { ...pre, email: e.target.value }
                             })
                           }}
                         >
@@ -299,14 +320,14 @@ const UserManagement = () => {
                       </Grid>
                       <Grid item lg={6}>
                         <TextField
-                          label="Brand"
-                          placeholder='Brand...'
+                          label="Phone"
+                          placeholder='Enter user phone number...'
                           variant='outlined'
                           fullWidth
-                          value={editingProduct?.brand}
+                          value={editingUser?.phone}
                           onChange={(e) => {
-                            setEditingProduct(pre => {
-                              return { ...pre, brand: e.target.value }
+                            setEditingUser(pre => {
+                              return { ...pre, phone: e.target.value }
                             })
                           }}
                         >
@@ -314,14 +335,29 @@ const UserManagement = () => {
                       </Grid>
                       <Grid item lg={6}>
                         <TextField
-                          label="Category"
-                          placeholder='Category...'
+                          label="Username"
+                          placeholder='Enter user name...'
                           variant='outlined'
                           fullWidth
-                          value={editingProduct?.category}
+                          value={editingUser?.username}
                           onChange={(e) => {
-                            setEditingProduct(pre => {
-                              return { ...pre, category: e.target.value }
+                            setEditingUser(pre => {
+                              return { ...pre, username: e.target.value }
+                            })
+                          }}
+                        >
+                        </TextField>
+                      </Grid>
+                      <Grid item lg={6}>
+                        <TextField
+                          label="Password"
+                          placeholder='Enter user password...'
+                          variant='outlined'
+                          fullWidth
+                          value={editingUser?.password}
+                          onChange={(e) => {
+                            setEditingUser(pre => {
+                              return { ...pre, password: e.target.value }
                             })
                           }}
                         >
@@ -333,7 +369,7 @@ const UserManagement = () => {
               </Paper>
             </div>
           </Modal>
-          {/* Modal add product */}
+          {/* Modal add user */}
           <Modal
             title="Add User"
             open={isAdding}
@@ -344,27 +380,18 @@ const UserManagement = () => {
             }
             }
             cancelText={<div>Cancel</div>}
-            // onOk={
-            // () => {
-            // setDataSource(
-            //   pre => {
-            //   return pre.map(product => {
-            //     if (product.id === editingProduct.id) {
-            //       return editingProduct
-            //     } else {
-            //       return product
-            //     }
-            //   })
-            // })
-            // resetAdding()
-            // }
-            // }
+            onOk={
+              () => onAddNewUser()
+              // () => {
+              //   resetAdding()
+              // }
+            }
             closeIcon={
               <div style={{
                 marginLeft: -30
               }}><CloseOutlined /></div>}
           >
-            <Image src={editingProduct?.thumbnail}></Image>
+            <Image src={editingUser?.image}></Image>
             {/* <Input value={editingProduct?.title} onChange={(e) => {
                 setEditingProduct(pre => {
                   return { ...pre, title: e.target.value }
@@ -394,10 +421,10 @@ const UserManagement = () => {
                           placeholder='Enter user name...'
                           variant='outlined'
                           fullWidth
-                          value={editingProduct?.title}
+                          value={editingUser?.firstName}
                           onChange={(e) => {
-                            setEditingProduct(pre => {
-                              return { ...pre, title: e.target.value }
+                            setEditingUser(pre => {
+                              return { ...pre, firstName: e.target.value }
                             })
                           }}
                         >
@@ -409,10 +436,10 @@ const UserManagement = () => {
                           placeholder='Enter phone number...'
                           variant='outlined'
                           fullWidth
-                          value={editingProduct?.price}
+                          value={editingUser?.phone}
                           onChange={(e) => {
-                            setEditingProduct(pre => {
-                              return { ...pre, price: e.target.value }
+                            setEditingUser(pre => {
+                              return { ...pre, phone: e.target.value }
                             })
                           }}
                         >
@@ -424,10 +451,10 @@ const UserManagement = () => {
                           placeholder='Enter user email...'
                           variant='outlined'
                           fullWidth
-                          value={editingProduct?.brand}
+                          value={editingUser?.email}
                           onChange={(e) => {
-                            setEditingProduct(pre => {
-                              return { ...pre, brand: e.target.value }
+                            setEditingUser(pre => {
+                              return { ...pre, email: e.target.value }
                             })
                           }}
                         >
@@ -439,10 +466,10 @@ const UserManagement = () => {
                           placeholder='Enter user password...'
                           variant='outlined'
                           fullWidth
-                          value={editingProduct?.category}
+                          value={editingUser?.password}
                           onChange={(e) => {
-                            setEditingProduct(pre => {
-                              return { ...pre, category: e.target.value }
+                            setEditingUser(pre => {
+                              return { ...pre, password: e.target.value }
                             })
                           }}
                         >
@@ -454,10 +481,10 @@ const UserManagement = () => {
                           placeholder='Enter address...'
                           variant='outlined'
                           fullWidth
-                          value={editingProduct?.brand}
+                          value={editingUser?.address}
                           onChange={(e) => {
-                            setEditingProduct(pre => {
-                              return { ...pre, brand: e.target.value }
+                            setEditingUser(pre => {
+                              return { ...pre, address: e.target.value }
                             })
                           }}
                         >

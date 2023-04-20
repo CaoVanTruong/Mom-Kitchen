@@ -124,10 +124,6 @@ const FoodDetails = () => {
                 <p className="category mb-5">
                   Category: <span>{category}</span>
                 </p>
-                <p>People/PackageFood</p>
-                <Select
-                  className="mb-5"
-                  options={options} />
                 <button onClick={addItem} className="addTOCart__btn">
                   Add to Cart
                 </button>

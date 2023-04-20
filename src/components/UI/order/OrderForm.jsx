@@ -8,22 +8,20 @@ import { cartActions } from "../../../store/shopping-cart/cartSlice";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-// import { cartActions } from "../store/shopping-cart/cartSlice";
-// import 
-
-import { Link } from "react-router-dom";
+import FormControl from '@mui/material/FormControl'; 
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 import Header from "../../Header/Header.jsx";
 import Footer from "../../Footer/Footer.jsx"
 import Carts from "../../UI/cart/Carts.jsx";
 import { Paper, TextField, Typography } from "@mui/material";
 import { Button, Space } from "antd";
-import { red } from "@mui/material/colors";
 const OrderForm = () => {
-  const cartItems = useSelector((state) => state.cart.cartItems);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
   const showCart = useSelector((state) => state.cartUi.cartIsVisible);
+  const cartProducts = useSelector((state) => state.cart.cartItems);
+  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
 
   return (
     <Helmet title="Cart">
@@ -33,7 +31,7 @@ const OrderForm = () => {
         <CommonSection title="Checkout" />
         <Container>
           <Paper style={{
-            marginTop: 20
+            marginTop: 20,
           }}>
             <Typography style={{
               display: 'flex',
@@ -77,8 +75,8 @@ const OrderForm = () => {
             </div>
           </Paper>
           <Paper style={{
-            height: 500,
-            marginTop: 20
+            height:"100%",
+            marginTop: 20,
           }}>
             <Typography style={{
               display: 'flex',
@@ -88,51 +86,54 @@ const OrderForm = () => {
               paddingTop: 10,
               paddingLeft: 20,
               fontSize: 20,
-              color: 'green'
-            }}>Food</Typography>
-            <div className="CusFood" style={{
-              padding: 20
-            }}>
-              {cartItems.length === 0 ? (
-                <h5 className="text-center">Your cart is empty</h5>
-              ) : (
-                <table className="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Image</th>
-                      <th>Product Title</th>
-                      <th>Price</th>
-                      <th>Quantity</th>
-                      <th>Delete</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cartItems.map((item) => (
-                      <Tr item={item} key={item.id} />
-                    ))}
-                  </tbody>
-                </table>
-              )}
-              <div className="mt-4" style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-              }}>
-                <span className="cart__subtotal" style={{
-                  color: 'black'
-                }}>
-                  Subtotal:
-                </span>
-                <span className="cart__subtotal" >{totalAmount} VND</span>
-              </div>
-            </div>
+            }}>Order summary</Typography>
             <div>
+              <List disablePadding style={{
+                paddingRight: 50,
+                paddingLeft: 50
+              }}>
+                {cartProducts.map((product) => (
+                  <ListItem key={product.name} sx={{ py: 1, px: 0 }}>
+                    <div style={{
+                      border:"2px solid green",
+                      borderRadius:5,
+                      padding:5,
+                      display:'flex',
+                      justifyContent:'center',
+                      alignItems:'center',
+                      marginRight:10,
+                      color:'red',
+                      width:30,
+                      height:30                 
+                    }}>{product.quantity}x</div>
+                    <ListItemText primary={product.title} secondary={product.desc} />
+                    <Typography variant="body2">{product.price} VND</Typography>
+                  </ListItem>
+                ))}
+
+                <ListItem sx={{ py: 1, px: 0 }}>
+                  <ListItemText primary="Total" style={{
+                    color: 'red'
+                  }} />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }} style={{
+                    color: 'red'
+                  }}>
+                    {totalAmount} VND
+                  </Typography>
+                </ListItem>
+              </List>
+            </div>
+            <div style={{
+              marginBottom:10
+            }}>
               <h6 style={{
-                paddingLeft: 20
+                paddingLeft: 20,
               }}>Payment</h6>
               <FormControl style={{
                 paddingLeft: 20,
                 display: 'flex',
                 flexDirection: 'column',
+
               }} >
                 <RadioGroup
                   aria-labelledby="demo-radio-buttons-group-label"
@@ -148,10 +149,19 @@ const OrderForm = () => {
             </div>
             <div style={{
               display:'flex',
-              justifyContent:'center',
-              marginTop:80,
+            }}  ></div>
+            <div style={{
+              position: 'relative',
+              bottom: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}>
-              <Button>Submit</Button>
+              <Button style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'flex-end'
+              }}>Submit</Button>
             </div>
           </Paper>
         </Container>

@@ -16,8 +16,6 @@ const payments = [
 export default function Review() {
   const cartProducts = useSelector((state) => state.cart.cartItems);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
-  // const addresses = useSelector((state) => state.address)
-  // console.log("du me show len cho tao" + addresses) 
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>

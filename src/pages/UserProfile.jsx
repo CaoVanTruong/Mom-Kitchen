@@ -37,15 +37,15 @@ const UserProfile = () => {
                     <div className='userProfile'>
                         <div className='userProfile_Item'>
                             <i class="ri-account-circle-line"></i>
-                            <Link to='/#'><p>Your account</p></Link>
+                            <Link to='/profile'><p>Your information</p></Link>
                         </div>
                         <div className='userProfile_Item'>
                             <i class="ri-article-line"></i>
-                            <Link to='/#'><p>Order history</p></Link>
+                            <Link to='/history'><p>Order history</p></Link>
 
                         </div>
                     </div>
-                </div>
+                </div>  
                 <div>
                     <Paper component={Box} p={4} mx="auto">
                         <h4>My profile</h4>
@@ -58,6 +58,22 @@ const UserProfile = () => {
                                     key={index}
                                     className='inputGroup'
                                 >
+                                    <Grid item lg={6}>
+                                        <TextField
+                                            label="Account"
+                                            placeholder='Your account'
+                                            variant='outlined'
+                                            fullWidth>
+                                        </TextField>
+                                    </Grid> 
+                                     <Grid item lg={6}>
+                                        <TextField
+                                            label="Password"
+                                            placeholder='Your password'
+                                            variant='outlined'
+                                            fullWidth>
+                                        </TextField>
+                                    </Grid>
                                     <Grid item lg={6}>
                                         <TextField
                                             label="Name"

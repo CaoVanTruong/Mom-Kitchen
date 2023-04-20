@@ -41,7 +41,7 @@ const Carts = () => {
             Subtotal : <span>${totalAmount}</span>
           </h6>
           <button>
-            <Link to="/checkout" onClick={toggleCart}>
+            <Link to="/orderForm" onClick={toggleCart}>
               Checkout
             </Link>
           </button>

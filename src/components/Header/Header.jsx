@@ -5,9 +5,8 @@ import logo from "../../assets/images/res-logo.png";
 import { NavLink, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { cartUiActions } from "../../store/shopping-cart/cartUiSlice";
-
 import "../../styles/header.css";
-import AdminRouters from "../../routes/AdminRouters";
+import { Button } from "@mui/material";
 
 const nav__links = [
   {
@@ -89,12 +88,12 @@ const Header = () => {
             </span>
 
             <span className="user">
-              <Link to="/login">
-                <i className="ri-user-line"></i>
-              </Link>
-              {/* <Link to='/admin'>
+              {/* <Link to="/login">
                 <i className="ri-user-line"></i>
               </Link> */}
+              <Button>
+                <Link to="/register">Sign in</Link>
+              </Button>
             </span>
             <span className="mobile__menu" onClick={toggleMenu}>
               <i className="ri-menu-line"></i>
