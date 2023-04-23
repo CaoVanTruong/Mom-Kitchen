@@ -97,7 +97,10 @@ const HistoryTab = () => {
                                 {
                                     order.map((order) => (
                                         <div>
-                                            <Button onClick={() => setIsShowDetail(true)}>
+                                            <Button onClick={() => setIsShowDetail(true)} style={{
+                                                width:"100%",
+                                                marginBottom:20
+                                            }}>
                                                 <OrderTag props={order} />
                                             </Button>
                                         </div>
