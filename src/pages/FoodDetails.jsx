@@ -50,7 +50,6 @@ const FoodDetails = () => {
   const product = allProducts.find((product) => product.id === id);
   const { title, price, image01, category, desc } = product || {};
   const [previewImg, setPreviewImg] = useState(allProducts.image01);
-
   const relatedProduct = products.filter((item) => category === item.category);
   const addItem = () => {
     dispatch(
@@ -84,19 +83,29 @@ const FoodDetails = () => {
       <section>
         <Container>
           <Row>
+            {/* 3 food item images */}
             <Col lg="2" md="2">
               <div className="product__images ">
                 <div
                   className="img__item mb-3"
                   onClick={() => setPreviewImg(image01)}
                 >
+
                   <img src={image01} alt="" className="w-50" />
+                  <div style={{
+                    display: 'flex',
+                   marginTop:5
+                  }}>Món chính</div>
                 </div>
                 <div
                   className="img__item mb-3"
                   onClick={() => setPreviewImg(image01)}
                 >
+                 
                   <img src={image01} alt="" className="w-50" />
+                  <div style={{
+                    marginTop:5
+                  }}>Ăn kèm</div>
                 </div>
 
                 <div
@@ -104,6 +113,10 @@ const FoodDetails = () => {
                   onClick={() => setPreviewImg(image01)}
                 >
                   <img src={image01} alt="" className="w-50" />
+                  <div style={{
+                    display: 'flex',
+                    marginTop: 5
+                  }}>Canh</div>
                 </div>
               </div>
             </Col>
@@ -119,10 +132,10 @@ const FoodDetails = () => {
                 <h2 className="product__title mb-3">{title}</h2>
                 <p className="product__price">
                   {" "}
-                  Price: <span>${price}</span>
+                  Price: <span>{price} VNĐ</span>
                 </p>
                 <p className="category mb-5">
-                  Category: <span>{category}</span>
+                  Food style: <span>{category}</span>
                 </p>
                 <button onClick={addItem} className="addTOCart__btn">
                   Add to Cart
