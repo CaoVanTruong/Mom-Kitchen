@@ -94,20 +94,35 @@ const UserManagement = () => {
         <SideMenu />
         <Space size={20} direction='vertical' width='100%' className='pageContent'>
           <div>
-            <Typography.Title level={4} className='titlePage mt-5'>Customer Management</Typography.Title>
+            <Typography.Title level={4} className='titlePage mt-5' style={{
+              marginLeft: 10
+            }}>Customer Management</Typography.Title>
           </div>
           <div className='AddSeachBar'>
+            <div className='SearchWithIcon'>
+              <TextField
+                id="filled-search"
+                label="Search"
+                type="search"
+                variant="filled"
+                onChange={handleFilter}
+                style={{
+                  width: 300,
+                  marginLeft:-20
+                }}
+              />
+            </div>
             <Button className='AddButton' type="primary"
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 flexDirection: 'row',
                 backgroundColor: 'pink',
-                marginLeft: 60
+                height:55
               }}
               onClick={
                 // onAddNewUser
-                ()=>setIsAdding(true)
+                () => setIsAdding(true)
               }
             >
               <PlusCircleOutlined style={{
@@ -117,23 +132,6 @@ const UserManagement = () => {
               />
               Add User
             </Button>
-            <div className='SearchWithIcon'>
-              <input type='text-end' onChange={handleFilter} placeholder='Search...' style={{
-                borderWidth: 1,
-                padding: 5,
-                borderRadius: 5,
-                paddingLeft: 5,
-                width: 300
-              }}>
-              </input>
-              <i class="ri-search-line" style={{
-                position: 'relative',
-                marginLeft: -20,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}></i>
-            </div>
           </div>
           <Space className='HorizontalTable' direction='horizontal'>
             <Table

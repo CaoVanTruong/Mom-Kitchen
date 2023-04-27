@@ -11,10 +11,12 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import OrderTag from '../../components/UI/order/OrderTag'
+import { Space } from 'antd'
 import { Modal, Image } from 'antd'
 import {
     DeleteOutlined, CloseOutlined, CheckCircleOutlined
 } from '@ant-design/icons'
+import { Label } from 'reactstrap'
 const HistoryTab = () => {
     const order = [
         {
@@ -98,8 +100,9 @@ const HistoryTab = () => {
                                     order.map((order) => (
                                         <div>
                                             <Button onClick={() => setIsShowDetail(true)} style={{
-                                                width:"100%",
-                                                marginBottom:20
+                                                width: "100%",
+                                                marginBottom: 20,
+                                                backgroundColor: 'white'
                                             }}>
                                                 <OrderTag props={order} />
                                             </Button>
@@ -136,8 +139,8 @@ const HistoryTab = () => {
                         }
                         cancelText={<div>Cancel</div>}
                         closeIcon={<div style={{
-                            display:'flex',
-                            justifyContent:'center'
+                            display: 'flex',
+                            justifyContent: 'center'
                         }} onClick={() => setIsShowDetail(false)}><CloseOutlined /></div>}
                     >
                         <div>
@@ -153,83 +156,114 @@ const HistoryTab = () => {
                                             className='inputGroup'
                                         >
                                             <Grid item lg={6}>
-                                                <TextField
+                                                {/* <TextField
                                                     label="Name"
                                                     placeholder='Name...'
                                                     variant='outlined'
                                                     fullWidth
                                                     disabled
                                                 >
-                                                </TextField>
+                                                </TextField> */}
+                                                <Label for="orderer">
+                                                    Orderer:
+                                                </Label>
                                             </Grid>
                                             <Grid item lg={6}>
-                                                <TextField
+                                                {/* <TextField
                                                     label="Status"
                                                     placeholder='Status...'
                                                     variant='outlined'
                                                     fullWidth
                                                     disabled
                                                 >
-                                                </TextField>
+                                                </TextField> */}
+                                                <Label for="status">
+                                                    Status:
+                                                </Label>
                                             </Grid>
                                             <Grid item lg={12}>
-                                                <TextField
+                                                {/* <TextField
+                                                    label="Building"
+                                                    placeholder='Building...'
+                                                    variant='outlined'
+                                                    fullWidth
+                                                    disabled
+                                                >
+                                                </TextField> */}
+                                                <Label for="building">
+                                                    Building:
+                                                </Label>
+                                            </Grid>
+                                            <Grid item lg={12}>
+                                                {/* <TextField
                                                     label="Order Date"
                                                     placeholder='Order date...'
                                                     variant='outlined'
                                                     fullWidth
                                                     disabled
                                                 >
-                                                </TextField>
+                                                </TextField> */}
+                                                <Label for="orderDate">
+                                                    Order Date:
+                                                </Label>
                                             </Grid>
                                             <Grid item lg={12}>
-                                                <TextField
+                                                {/* <TextField
                                                     label="Food"
                                                     placeholder='Food...'
                                                     variant='outlined'
                                                     fullWidth
                                                     disabled
                                                 >
-                                                </TextField>
+                                                </TextField> */}
+                                                <Label for="food">
+                                                    Ordered Food:
+                                                </Label>
+                                            </Grid>
+                                            <Grid item lg={6}>
+                                                <Space style={{
+                                                    display: "flex",
+                                                    alignItems: 'center'
+                                                }}>
+                                                    <div style={{
+                                                        border: "1px solid red",
+                                                        borderRadius: 5,
+                                                        width: 30,
+                                                        height: 30,
+                                                        display: "flex",
+                                                        justifyContent: 'center',
+                                                        marginTop: -5
+                                                    }}>
+                                                        <Label for="quantity">
+                                                            1x
+                                                        </Label>
+                                                    </div>
+                                                    <div>
+                                                        <Label for="food" >
+                                                            Food
+                                                        </Label>
+                                                    </div>
+                                                </Space>
                                             </Grid>
                                             <Grid item lg={12}>
-                                                <TextField
-                                                    label="Total Price"
-                                                    placeholder='Price'
-                                                    variant='outlined'
-                                                    fullWidth
-                                                    disabled
-                                                >
-                                                </TextField>
+                                                <Label for="subTotal">
+                                                    Subtotal:VNĐ
+                                                </Label>
                                             </Grid>
                                             <Grid item lg={12}>
-                                                <TextField
-                                                    label="Chef"
-                                                    placeholder='Chef...'
-                                                    variant='outlined'
-                                                    fullWidth
-                                                    disabled
-                                                >
-                                                </TextField>
+                                                <Label for="chef" >
+                                                    Chef:
+                                                </Label>
                                             </Grid>
                                             <Grid item lg={12}>
-                                                <TextField
-                                                    label="Shipper"
-                                                    placeholder='Shipper...'
-                                                    variant='outlined'
-                                                    fullWidth
-                                                    disabled
-                                                >
-                                                </TextField>
+                                                <Label for="batch" >
+                                                    Batch:
+                                                </Label>
                                             </Grid>
                                             <Grid item lg={12}>
-                                                <TextField
-                                                    label="Payment method"
-                                                    variant='outlined'
-                                                    fullWidth
-                                                    disabled
-                                                >
-                                                </TextField>
+                                                <Label for="paymentMethod" >
+                                                    Payment method: 
+                                                </Label>
                                             </Grid>
                                         </Grid>
                                     ))

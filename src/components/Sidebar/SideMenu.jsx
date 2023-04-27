@@ -3,7 +3,7 @@ import { NavLink, Link, useNavigate } from 'react-router-dom'
 import '../../styles/sideMenu.css'
 import logo from "../../assets/images/res-logo.png";
 import { Menu } from 'antd'
-import { AppstoreOutlined, UserOutlined, ShoppingCartOutlined  , SolutionOutlined , LogoutOutlined} from '@ant-design/icons'
+import { AppstoreOutlined, UserOutlined, ShoppingCartOutlined, SolutionOutlined, LogoutOutlined } from '@ant-design/icons'
 import { Navigate } from 'react-router-dom';
 function SideMenu() {
     const navigate = useNavigate()
@@ -15,7 +15,7 @@ function SideMenu() {
         },
         {
             key: '/productManagement',
-            label: "Product",
+            label: "Market",
             icon: <ShoppingCartOutlined />
         },
         {

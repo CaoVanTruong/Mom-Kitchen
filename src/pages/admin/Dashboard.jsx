@@ -16,10 +16,14 @@ function Dashboard() {
                 {/* <Space className='PageContent'> */}
                 <Space size={20} direction='vertical' className='PageContent'>
                     <div>
-                        <Typography.Title level={4} className='titlePage mt-5'>Dashboard</Typography.Title>
+                        <Typography.Title level={4} className='titlePage mt-5' style={{
+                            marginLeft: 10
+                        }}>Dashboard</Typography.Title>
                     </div>
                     <div>
-                        <Space direction='horizontal' className='HorizontalItem'>
+                        <Space direction='horizontal' className='HorizontalItem' style={{
+                            marginLeft: 10
+                        }}>
                             <DashboardCard
                                 icon={<ShoppingCartOutlined
                                     style={{
@@ -61,13 +65,13 @@ function Dashboard() {
                         </Space>
                     </div>
 
-                    <Space className='HorizontalTable'>
+                    <Space>
                         <RecentOrders />
                     </Space>
                 </Space>
                 {/* </Space> */}
             </div>
-        </div >
+        </div>
     )
 }
 function DashboardCard({ icon, title, value }) {
@@ -96,22 +100,27 @@ function RecentOrders() {
         })
     }, [])
     return (
-        <>
+        <div>
             <div>
                 <Typography.Title level={4} className='titleTalbe' style={{
-                    marginLeft: 20
+                    marginLeft: 10
                 }}>Orders</Typography.Title>
             </div>
-            <Space className='HorizontalTable' direction='horizontal'>
+            <div direction='horizontal' style={{
+                marginLeft:10
+            }}>
                 <Table
+
                     columns={[
+                        
                         {
                             title: 'Title',
-                            dataIndex: 'title'
+                            dataIndex: 'title',
                         },
                         {
                             title: 'Quantity',
-                            dataIndex: 'quantity'
+                            dataIndex: 'quantity',
+
                         },
                         {
                             title: 'Price',
@@ -122,50 +131,23 @@ function RecentOrders() {
                             render: (record) => {
                                 return (
                                     <div className='userProfile_btn' style={{
-                                        justifyContent:'flex-start'
+                                        justifyContent: 'flex-start'
                                     }}>
                                         <Button variant='contained'>View</Button>
                                     </div>
                                 )
-                            }
+                            },
                         }
-                    ]}
+                    ]
+                    }
                     loading={loading}
                     dataSource={dataSource}
                     pagination={false}
                 >
                 </Table>
-            </Space>
-        </>
+            </div>
+        </div >
     )
 }
-// function DashboardChart() {
-//     const options = {
-//         responsive: true,
-//         plugins: {
-//             legend: {
-//                 positon: 'bottom',
-//             },
-//             title: {
-//                 display: true,
-//                 text: "Order Revenue"
-//             }
-//         }
-//     }
-//     const data = {
-//         labels,
-//         datasets: [
-//             {
-//                 label: 'Dataset 1',
-//                 data: labels.map(() => Math.random() * 1000),
-//                 backgroundColor: 'rgba(255,99,132,0.5)'
-//             }, {
-//                 label: 'Dataset 1',
-//                 data: labels.map(() => Math.random() * 1000),
-//                 backgroundColor: 'rgba(255,50,132,0.5)'
-//             }
-//         ]
-//     }
-//     return <Bar options={options} data={data}></Bar>
-// }
+
 export default Dashboard

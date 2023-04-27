@@ -8,19 +8,22 @@ function BootstrapNavbar() {
     const [commentsOpen, setCommentsOpen] = useState(false)
     const [notificationOpen, setNotificationOpen] = useState(false)
     return (
-        <div className='admin_navbar'>
+        <div className='admin_navbar'
+        >
             <img
                 width={40}
                 src={logo} alt='logo'
                 style={{
-                    marginLeft:20
+                    marginLeft: 20
                 }}></img>
             <Space>
-                <BellOutlined style={{
-                    fontSize: 24,
-                    marginRight: 30
-
-                }}
+                <BellOutlined
+                    className="bellIcon"
+                    // style={{
+                    //     fontSize: 24,
+                    //     marginRight: 30,
+                    // }
+                    // }
                     onClick={() => setNotificationOpen(true)}
                 />
                 <Image src={logo} width={30}></Image>

@@ -7,8 +7,9 @@ import { useEffect } from 'react'
 import { getAllProducts } from '../../API/recentOrder'
 import { Space, Typography, Table, Avatar, Rate, Modal, Image } from 'antd'
 import {
- DeleteOutlined, CloseOutlined, CheckCircleOutlined
+  DeleteOutlined, CloseOutlined, CheckCircleOutlined
 } from '@ant-design/icons'
+import { NonceProvider } from 'react-select'
 const ProductManagement = () => {
   const userTemplate = [
     {
@@ -65,44 +66,33 @@ const ProductManagement = () => {
       setLoading(false)
     })
   }, [])
-  
+
   return (
     <div>
       <BootstrapNavbar />
       <div className='SideMenuAndPageContentProduct'>
         <SideMenu />
         <Space size={20} direction='vertical' width='100%' className='pageContent'>
-          <div>
-            <Typography.Title level={4} className='titlePage mt-5'>Food Package Management</Typography.Title>
+          <div className='MarketTitle'>
+            <Typography.Title level={4} className='titlePage mt-5 '>Market Management</Typography.Title>
           </div>
           <div className='AddSeachBar'>
-            {/* <Button className='AddButton' type="primary"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                flexDirection: 'row',
-                backgroundColor: 'pink',
-                marginLeft: 60
-              }}
-              onClick={()=>setIsAdding(true)}
-              >
-              <PlusCircleOutlined style={{
-                fontSize: '24px',
-                marginLeft: 0
-              }} />
-              Add product
-            </Button> */}
             <div className='SearchWithIcon' style={{
-              marginLeft:60
+              marginLeft: 60
             }}>
-              <input type='text-end' onChange={handleFilter} placeholder='Search...' style={{
-                borderWidth: 1,
-                padding: 5,
-                borderRadius: 5,
-                paddingLeft: 5,
-                width: 300
-              }}>
-              </input>
+              {/* <input type='text-end' onChange={handleFilter} placeholder='Search...' >
+              </input> */}
+              <TextField
+                id="filled-search"
+                label="Search"
+                type="search"
+                variant="filled"
+                onChange={handleFilter}
+                style={{
+                  width: 300,
+                  marginLeft: -30
+                }}
+              />
               <i class="ri-search-line" style={{
                 position: 'relative',
                 marginLeft: -20,
@@ -187,6 +177,7 @@ const ProductManagement = () => {
               }
             >
             </Table>
+
           </Space>
           <div>
             {/* modal edit */}
@@ -230,7 +221,7 @@ const ProductManagement = () => {
               }} /> */}
               <div>
                 <Paper style={{
-                  marginTop:20
+                  marginTop: 20
                 }} component={Box} p={4} mx="auto">
                   {
                     userTemplate.map((user, index) => (
@@ -306,37 +297,37 @@ const ProductManagement = () => {
                 </Paper>
               </div>
             </Modal>
-          {/* Modal add product */}
+            {/* Modal add product */}
             <Modal
               title="Add Product"
               open={isAdding}
               okText={<div>Save</div>}
               onCancel={() => {
-                
+
                 resetAdding()
                 // setIsEditing(false)
               }
               }
               cancelText={<div>Cancel</div>}
               // onOk={
-                // () => {
-                // setDataSource(
-                //   pre => {
-                //   return pre.map(product => {
-                //     if (product.id === editingProduct.id) {
-                //       return editingProduct
-                //     } else {
-                //       return product
-                //     }
-                //   })
-                // })
-                // resetAdding()
+              // () => {
+              // setDataSource(
+              //   pre => {
+              //   return pre.map(product => {
+              //     if (product.id === editingProduct.id) {
+              //       return editingProduct
+              //     } else {
+              //       return product
+              //     }
+              //   })
+              // })
+              // resetAdding()
               // }
               // }
               closeIcon={
-              <div style={{
-                marginLeft: -30
-              }}><CloseOutlined /></div>}
+                <div style={{
+                  marginLeft: -30
+                }}><CloseOutlined /></div>}
             >
               <Image src={editingProduct?.thumbnail}></Image>
               {/* <Input value={editingProduct?.title} onChange={(e) => {
@@ -352,7 +343,7 @@ const ProductManagement = () => {
               <input type='file' title='Choose image....'></input>
               <div>
                 <Paper style={{
-                  marginTop:20
+                  marginTop: 20
                 }} component={Box} p={4} mx="auto">
                   {
                     userTemplate.map((user, index) => (

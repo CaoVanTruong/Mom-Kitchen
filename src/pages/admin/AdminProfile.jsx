@@ -7,9 +7,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Space, Typography, Table, Avatar, Rate, Input, Modal, Image, } from 'antd'
-import {
-    PlusCircleOutlined, EditOutlined, DeleteOutlined, CloseOutlined, CheckCircleOutlined
-} from '@ant-design/icons'
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -32,11 +29,13 @@ const AdminProfile = () => {
                 <SideMenu />
                 <Space size={20} direction='vertical' width='100%' className='pageContent'>
                     <div>
-                        <Typography.Title level={4} className='titlePage mt-5'>Information</Typography.Title>
+                        <Typography.Title level={4} className='titlePage mt-5' style={{
+                            marginLeft:10
+                        }}>Information</Typography.Title>
                     </div>
                     <Space className='HorizontalTable' direction='horizontal'>
                         <div className='sideMenuInfor' style={{
-                            marginTop: -210
+                            marginTop: -220
                         }}>
                             <Paper className='profilePaper' style={{
                                 marginLeft: 10
@@ -164,7 +163,7 @@ const AdminProfile = () => {
                     <div>
                     </div>
                 </Space>
-            </div >
+            </div>
         </div >
     )
 }

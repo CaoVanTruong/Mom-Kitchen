@@ -27,12 +27,10 @@
 .SearchWithIcon{
     display: flex;
     width: 300px;
+    margin-left:50px;
 }
 .AddSeachBar{
     display: flex;
-    justify-content: space-between;
-    width: 84vw;
-    margin-left: -20px;
 }
 .AddSeachBar button:hover{
     background-color: greenyellow !important;

@@ -4,6 +4,15 @@
     justify-content: space-between;
     align-items: center;
     padding: 4px 20px 4px 12px;
-    border-bottom: 1px solid rgba(0,0,0,0.5);
     height: 50px;
+    box-shadow: 1px 2px 9px #F4AAB9;
+    margin-bottom: 0.5em;
+}
+.bellIcon{
+    color: black;
+    font-size: 25px;
+    margin-right: 25px;
+}
+.bellIcon :hover{
+    color: greenyellow;
 }

@@ -1,39 +1,50 @@
-
-.SideMenuAndPageContentProduct{
+.SideMenuAndPageContentProduct {
     display: flex;
     flex: 1;
     justify-content: flex-start;
     align-items: flex-start;
-    background-color: rgba(0,0,0,0.15);
     height: 100vh;
+    margin-bottom: 20px;
 }
-.HorizontalTable{
+.HorizontalTable {
     display: flex;
     justify-content: center;
-    align-items: center;   
-    max-width: 100vw;
+    align-items: center;
+    width: 100%;
 }
-.HorizontalTable Table{
-    width:80vw;
+
+.pageContent {
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 8px green;
+    width: 82%;
 }
-.pageContent{
-    background-color:#F1F2F7 ;
-    width: 100vw;
-    height: 100vh;
-}
-.titlePage{
+.titlePage {
     margin-left: 60px;
 }
-.SearchWithIcon{
+.SearchWithIcon {
     display: flex;
     width: 300px;
 }
-.AddSeachBar{
-    display: flex;
-    justify-content: space-between;
-    width: 84vw;
+.AddSeachBar {
     margin-left: -20px;
 }
-.AddSeachBar button:hover{
+.AddSeachBar button:hover {
     background-color: greenyellow !important;
+}
+.MarketTitle {
+    margin-left: -50px;
+}
+.AddSeachBar TextField{
+        /* padding: 5,
+        borderRadius: 5,
+        paddingLeft: 5,
+        width: 300,
+        marginLeft:-30, */
+        padding: 5px;
+        border-radius: 5px;
+        width: 300px;
+        margin-left: -30px;
+        text-decoration: none;
+        outline: none;
 }
