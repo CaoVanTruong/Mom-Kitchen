@@ -8,7 +8,7 @@ import { cartActions } from "../../../store/shopping-cart/cartSlice";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl'; 
+import FormControl from '@mui/material/FormControl';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -66,16 +66,16 @@ const OrderForm = () => {
 
                 </div>
               </Space>
-              <TextField label="Address"
+              <TextField label="Building"
                 style={{
                   margin: 20,
                 }}>
-                Room 248 , Building 3 ,D2 , Vinhome Park ,Distric 9
+
               </TextField>
             </div>
           </Paper>
           <Paper style={{
-            height:"100%",
+            height: "100%",
             marginTop: 20,
           }}>
             <Typography style={{
@@ -95,16 +95,16 @@ const OrderForm = () => {
                 {cartProducts.map((product) => (
                   <ListItem key={product.name} sx={{ py: 1, px: 0 }}>
                     <div style={{
-                      border:"2px solid green",
-                      borderRadius:5,
-                      padding:5,
-                      display:'flex',
-                      justifyContent:'center',
-                      alignItems:'center',
-                      marginRight:10,
-                      color:'red',
-                      width:30,
-                      height:30                 
+                      border: "2px solid green",
+                      borderRadius: 5, 
+                      padding: 5,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginRight: 10,
+                      color: 'red',
+                      width: 30,
+                      height: 30
                     }}>{product.quantity}x</div>
                     <ListItemText primary={product.title} secondary={product.desc} />
                     <Typography variant="body2">{product.price} VND</Typography>
@@ -124,7 +124,7 @@ const OrderForm = () => {
               </List>
             </div>
             <div style={{
-              marginBottom:10
+              marginBottom: 10
             }}>
               <h6 style={{
                 paddingLeft: 20,
@@ -148,7 +148,7 @@ const OrderForm = () => {
               </FormControl>
             </div>
             <div style={{
-              display:'flex',
+              display: 'flex',
             }}  ></div>
             <div style={{
               position: 'relative',
