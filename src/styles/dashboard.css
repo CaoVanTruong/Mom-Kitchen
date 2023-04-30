@@ -3,21 +3,14 @@
     flex: 1;
     justify-content: flex-start;
     align-items: flex-start;
-    height: 100vh;
-    margin-bottom: 20px;
 }
-.PageContent {
-    /* background-color: #f1f2f7;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column; */
-    margin: 10px;
+.PageContentDashboard {
+    margin-top: 5px;
     border-radius: 10px;
     box-shadow: 1px 2px 8px green;
-    width: 82%;
-    height: 100vh;
-    background-color: #F1F2F7;
+    margin-left:230px;
+    width: 84%;
+    margin-bottom: 10px;
 }
 .titlePage {
     margin-left: 60px;

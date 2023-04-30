@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import '../../styles/productManagement.css'
+import '../../styles/marketManagement.css'
 import { Grid, Paper, TextField, Box } from '@mui/material'
 import BootstrapNavbar from '../../components/Sidebar/BootstrapNavbar'
 import SideMenu from '../../components/Sidebar/SideMenu'
@@ -10,7 +10,7 @@ import {
   DeleteOutlined, CloseOutlined, CheckCircleOutlined
 } from '@ant-design/icons'
 import { NonceProvider } from 'react-select'
-const ProductManagement = () => {
+const MarketManagement = () => {
   const userTemplate = [
     {
       name: "",
@@ -19,6 +19,16 @@ const ProductManagement = () => {
       address: ""
     }
   ]
+  const filterItem = [
+    {
+      title: "Chef"
+    },
+    {
+      title: "Price"
+    },
+
+  ]
+  const [filter, setFilter] = useState("Select filter")
   const [users, setUsers] = useState([userTemplate])
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
@@ -70,15 +80,16 @@ const ProductManagement = () => {
   return (
     <div>
       <BootstrapNavbar />
-      <div className='SideMenuAndPageContentProduct'>
-        <SideMenu />
-        <Space size={20} direction='vertical' width='100%' className='pageContent'>
+      <SideMenu />
+      <div className='SideMenuAndPageContentMarket'>
+        <div size={20} direction='vertical' className='PageContentMarket'>
           <div className='MarketTitle'>
-            <Typography.Title level={4} className='titlePage mt-5 '>Market Management</Typography.Title>
+            <Typography.Title level={4} className='titlePage mt-2'>Market Management</Typography.Title>
           </div>
           <div className='AddSeachBar'>
             <div className='SearchWithIcon' style={{
-              marginLeft: 60
+              marginLeft: 50,
+              marginRight: 20
             }}>
               {/* <input type='text-end' onChange={handleFilter} placeholder='Search...' >
               </input> */}
@@ -90,94 +101,110 @@ const ProductManagement = () => {
                 onChange={handleFilter}
                 style={{
                   width: 300,
-                  marginLeft: -30
                 }}
               />
-              <i class="ri-search-line" style={{
-                position: 'relative',
-                marginLeft: -20,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}></i>
             </div>
           </div>
-          <Space className='HorizontalTable' direction='horizontal'>
-            <Table
-              className='tableData'
-              style={{
-                borderRadius: 50,
-              }}
-              columns={[
-                {
-                  title: "#",
-                  dataIndex: "id"
-                },
-                {
-                  title: "Thumbnail",
-                  dataIndex: "thumbnail",
-                  render: (link) => {
-                    return <Avatar src={link} />
-                  }
-                },
-                {
-                  title: 'Title',
-                  dataIndex: "title"
-                }, {
-                  title: 'Price',
-                  dataIndex: "price"
-                }, {
-                  title: 'Rating',
-                  dataIndex: "rating",
-                  render: (rating) => {
-                    return <Rate value={rating} allowHalf></Rate>
-                  }
+          <Space>
+            <div>
+              <div direction='horizontal' style={{
+                marginLeft: 10,
+                width: "80vw"
+              }}>
+                <Table
+                  className='tableData'
+                  style={{
+                    borderRadius: 50,
+                  }}
+                  columns={[
+                    {
+                      title: "#",
+                      dataIndex: "id"
+                    },
+                    {
+                      title: "Image",
+                      dataIndex: "thumbnail",
+                      render: (link) => {
+                        return <Avatar src={link} style={{
+                          width:100,
+                          height:100
+                        }}/>
+                      }
+                    },
+                    {
+                      title: 'Title',
+                      dataIndex: "title"
+                    },
+                    {
+                      title: 'Chef',
+                      dataIndex: "title"
+                    },
+                    {
+                      title: 'Price',
+                      dataIndex: "price",
+                      defaultSortOrder:'descend',
+                      sorter:(a,b) => a.price - b.price
+                    }, {
+                      title: 'Session',
+                      dataIndex: "rating",
+                      filters:[
+                        {
+                          text:'Session 1',
+                          value:'Session 2'
+                        },
+                        {
+                          text:'Session 2',
+                          value:'Session 2'
+                        },
+                      ],
+                      // onFilter:(value,record) => record.rating.indexOf(value)===0
+                    }
+                    ,
+                    {
+                      title: 'Remain Quantity',
+                      dataIndex: "stock",
+                      width: 50,
+                      defaultSortOrder:'ascend',
+                      sorter:(a,b) => a.stock - b.stock
+                    },
+                    {
+                      title: 'Create date',
+                      dataIndex: "brand"
+                    },
+                    {
+                      title: "Actions",
+                      render: (record) => {
+                        return (
+                          <div>
+                            {/* <EditOutlined
+                onClick={() => onEditRecord(record)
                 }
-                , {
-                  title: 'Stock',
-                  dataIndex: "stock"
-                },
-                {
-                  title: 'Brand',
-                  dataIndex: "brand"
-                },
-                {
-                  title: 'Category',
-                  dataIndex: "category"
-                },
-                {
-                  title: "Actions",
-                  render: (record) => {
-                    return (
-                      <div>
-                        {/* <EditOutlined
-                          onClick={() => onEditRecord(record)
-                          }
-                          style={{ marginLeft: 0 }} /> */}
-                        <DeleteOutlined
-                          onClick={() => onDeleteRecord(record)}
-                          style={{ color: "red", marginLeft: 12 }} />
-                        <CheckCircleOutlined
-                          onClick={() => { }}
-                          style={{
-                            color: 'green',
-                            marginLeft: 12
-                          }} />
-                      </div>
-                    )
+                style={{ marginLeft: 0 }} /> */}
+                            <DeleteOutlined
+                              onClick={() => onDeleteRecord(record)}
+                              style={{ color: "red", marginLeft: 12 }} />
+                            <CheckCircleOutlined
+                              onClick={() => { }}
+                              style={{
+                                color: 'green',
+                                marginLeft: 12
+                              }} />
+                          </div>
+                        )
+                      }
+                    }
+                  ]}
+                  loading={loading}
+                  dataSource={dataSource}
+                  pagination={
+                    {
+                      pageSize: 7
+                    }
                   }
-                }
-              ]}
-              loading={loading}
-              dataSource={dataSource}
-              pagination={
-                {
-                  pageSize: 5
-                }
-              }
-            >
-            </Table>
-
+                >
+                </Table>
+              </div>
+            </div>
           </Space>
           <div>
             {/* modal edit */}
@@ -420,11 +447,11 @@ const ProductManagement = () => {
               </div>
             </Modal>
           </div>
-        </Space>
+        </div>
       </div >
     </div >
   )
 }
 
-export default ProductManagement
+export default MarketManagement
 

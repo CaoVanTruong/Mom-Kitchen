@@ -29,7 +29,7 @@ const AdminProfile = () => {
                 <SideMenu />
                 <Space size={20} direction='vertical' width='100%' className='pageContent'>
                     <div>
-                        <Typography.Title level={4} className='titlePage mt-5' style={{
+                        <Typography.Title level={4} className='titlePage mt-2' style={{
                             marginLeft:10
                         }}>Information</Typography.Title>
                     </div>

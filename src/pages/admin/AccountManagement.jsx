@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import '../../styles/userManagement.css'
+import '../../styles/accountManagement.css'
 import { Grid, Paper, TextField, Box } from '@mui/material'
 import BootstrapNavbar from '../../components/Sidebar/BootstrapNavbar'
 import SideMenu from '../../components/Sidebar/SideMenu'
@@ -17,7 +17,8 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-const UserManagement = () => {
+import { render } from '@testing-library/react'
+const AccountManagement = () => {
   const userTemplate = [
     {
       name: "",
@@ -27,6 +28,8 @@ const UserManagement = () => {
       address: ""
     }
   ]
+
+  const [toggle, setToggle] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [isAddingUser, setIsAddingUser] = useState(null)
@@ -104,14 +107,14 @@ const UserManagement = () => {
     <div>
       <BootstrapNavbar />
       <SideMenu />
-      <div className='SideMenuAndPageContentUserManagement'>
-        <Space size={20} direction='vertical' width='100%' className='pageContentUserManage'>
+      <div className='SideMenuAndPageContentAccount'>
+        <Space size={20} direction='vertical' className='PageContentAccountManage'>
           <div>
             <Typography.Title level={4} className='titlePage mt-2' style={{
               marginLeft: 10
-            }}>User Management</Typography.Title>
+            }}>Account Management</Typography.Title>
           </div>
-          <div className='AddSeachBar'>
+          <Space className='AddSeachBar'>
             <div className='SearchWithIcon'>
               <TextField
                 id="filled-search"
@@ -144,9 +147,10 @@ const UserManagement = () => {
                 marginLeft: 0
               }}
               />
-              Add User
+              Add account
             </Button>
-          </div>
+
+          </Space>
           <Space className='HorizontalTable' direction='horizontal'>
             <Table
               className='tableData'
@@ -155,43 +159,33 @@ const UserManagement = () => {
               }}
               columns={[
                 {
-                  title: "#",
-                  dataIndex: "id"
-                },
-
-                {
-                  title: 'Avatar',
-                  dataIndex: "image",
-                  render: (link) => {
-                    return <Avatar src={link} />
-                  }
-                }, {
-                  title: 'Name',
-                  dataIndex: "firstName"
-                }
-                , {
                   title: 'Email',
                   dataIndex: "email"
                 },
+                {
+                  title: 'Password',
+                  dataIndex: "email"
+                },
+
                 {
                   title: 'Phone',
                   dataIndex: "phone"
                 },
                 {
-                  title: 'Address',
-                  dataIndex: "address"
+                  title: 'Role',
+                  dataIndex: "phone"
                 },
                 {
-                  title: 'Batch',
-                  dataIndex: "batch"
-                },
-                {
-                  title: 'Building',
-                  dataIndex: "building"
-                },
-                {
-                  title: 'Default Building',
-                  dataIndex: "building"
+                  title: 'Status',
+                  dataIndex: "id",
+                  render: () => (
+                    <span style={{
+                      textDecorationLine: 'underline',
+                      cursor: 'pointer',
+                    }}
+                      onClick={() => setToggle(!toggle)}
+                    >{toggle ? 'Ban' : 'Unban'}</span>
+                  )
                 },
                 {
                   title: "Actions",
@@ -214,59 +208,17 @@ const UserManagement = () => {
               dataSource={dataSource}
               pagination={
                 {
-                  pageSize: 7
+                  pageSize: 9
                 }
               }
             >
             </Table>
           </Space>
-          {/* edit product */}
-          {/* <div>
-            <Modal
-              title="Edit Product"
-              open={isEditing}
-              okText={<div>Save</div>}
-              onCancel={() => {
-                resetEditing()
-                // setIsEditing(false)
-              }
-              }
-              cancelText={<div>Cancel</div>}
-              onOk={() => {
-                setDataSource(pre => {
-                  return pre.map(user => {
-                    if (user.id === editingUser.id) {
-                      return editingUser
-                    } else {
-                      return user
-                    }
-                  })
-                })
-                resetEditing()
-              }
-              }
-              closeIcon={<div style={{
-                marginLeft: -30
-              }}><CloseOutlined /></div>}
-            >
-              <Image src={editingUser?.image}></Image>
-              <Input value={editingUser?.firstName} onChange={(e) => {
-                setEditingUser(pre => {
-                  return { ...pre, firstName: e.target.value }
-                })
-              }} />
-              <Input value={editingUser?.email} onChange={(e) => {
-                setEditingUser(pre => {
-                  return { ...pre, email: e.target.value }
-                })
-              }} />
-            </Modal>
-          </div> */}
         </Space>
         <div>
           {/* modal edit */}
           <Modal
-            title="Edit user"
+            title="Edit account"
             open={isEditing}
             okText={<div>Save</div>}
             onCancel={() => {
@@ -292,18 +244,6 @@ const UserManagement = () => {
               marginLeft: -30
             }}><CloseOutlined /></div>}
           >
-            <Image src={editingUser?.image}
-            ></Image>
-            {/* <Input value={editingProduct?.title} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, title: e.target.value }
-                })
-              }} />
-              <Input value={editingProduct?.price} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, price: e.target.value }
-                })
-              }} /> */}
             <div>
               <Paper style={{
                 marginTop: 20
@@ -316,21 +256,6 @@ const UserManagement = () => {
                       key={index}
                       className='inputGroup'
                     >
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Name"
-                          placeholder='Enter user name...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.firstName}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, firstName: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
                       <Grid item lg={6}>
                         <TextField
                           label="Email"
@@ -363,14 +288,14 @@ const UserManagement = () => {
                       </Grid>
                       <Grid item lg={6}>
                         <TextField
-                          label="Username"
-                          placeholder='Enter user name...'
+                          label="Password"
+                          placeholder='Enter user password...'
                           variant='outlined'
                           fullWidth
-                          value={editingUser?.username}
+                          value={editingUser?.password}
                           onChange={(e) => {
                             setEditingUser(pre => {
-                              return { ...pre, username: e.target.value }
+                              return { ...pre, password: e.target.value }
                             })
                           }}
                         >
@@ -378,8 +303,8 @@ const UserManagement = () => {
                       </Grid>
                       <Grid item lg={6}>
                         <TextField
-                          label="Password"
-                          placeholder='Enter user password...'
+                          label="Role"
+                          placeholder='Role....'
                           variant='outlined'
                           fullWidth
                           value={editingUser?.password}
@@ -397,9 +322,9 @@ const UserManagement = () => {
               </Paper>
             </div>
           </Modal>
-          {/* Modal add user */}
+          {/* Modal add account */}
           <Modal
-            title="Add User"
+            title="Add account"
             open={isAdding}
             okText={<div>Save</div>}
             onCancel={() => {
@@ -419,18 +344,6 @@ const UserManagement = () => {
                 marginLeft: -30
               }}><CloseOutlined /></div>}
           >
-            <Image src={editingUser?.image}></Image>
-            {/* <Input value={editingProduct?.title} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, title: e.target.value }
-                })
-              }} />
-              <Input value={editingProduct?.price} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, price: e.target.value }
-                })
-              }} /> */}
-            <input type='file' title='Choose image....'></input>
             <div>
               <Paper style={{
                 marginTop: 20
@@ -443,36 +356,8 @@ const UserManagement = () => {
                       key={index}
                       className='inputGroup'
                     >
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Name"
-                          placeholder='Enter user name...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.firstName}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, firstName: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Phone Number"
-                          placeholder='Enter phone number...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.phone}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, phone: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
+
+
                       <Grid item lg={6}>
                         <TextField
                           label="E-mail"
@@ -505,46 +390,33 @@ const UserManagement = () => {
                       </Grid>
                       <Grid item lg={6}>
                         <TextField
-                          label="Address"
-                          placeholder='Enter address...'
+                          label="Phone Number"
+                          placeholder='Enter phone number...'
                           variant='outlined'
                           fullWidth
-                          value={editingUser?.address}
+                          value={editingUser?.phone}
                           onChange={(e) => {
                             setEditingUser(pre => {
-                              return { ...pre, address: e.target.value }
+                              return { ...pre, phone: e.target.value }
                             })
                           }}
                         >
                         </TextField>
                       </Grid>
                       <Grid item lg={6}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            label="Birthday"
-                            fullWidth
-                          />
-                        </LocalizationProvider>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <FormControl >
-                          <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
-                          <RadioGroup
-                            aria-labelledby="demo-radio-buttons-group-label"
-                            defaultValue="female"
-                            name="radio-buttons-group"
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'row',
-                            }}
-                          >
-                            <Space>
-                              <FormControlLabel value="female" control={<Radio />} label="Female" />
-                              <FormControlLabel value="male" control={<Radio />} label="Male" />
-                              <FormControlLabel value="other" control={<Radio />} label="Other" />
-                            </Space>
-                          </RadioGroup>
-                        </FormControl>
+                        <TextField
+                          label="Role"
+                          placeholder='Enter role...'
+                          variant='outlined'
+                          fullWidth
+                          value={editingUser?.phone}
+                          onChange={(e) => {
+                            setEditingUser(pre => {
+                              return { ...pre, phone: e.target.value }
+                            })
+                          }}
+                        >
+                        </TextField>
                       </Grid>
                     </Grid>
                   ))
@@ -558,5 +430,5 @@ const UserManagement = () => {
   )
 }
 
-export default UserManagement
+export default AccountManagement
 

@@ -1,0 +1,46 @@
+.SideMenuAndPageContentMarket {
+    display: flex;
+    flex: 1;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+.PageContentMarket{
+    margin-top: 5px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 8px green;
+    margin-left:230px;
+    width: 84%;
+    margin-bottom: 10px;
+}
+.HorizontalTable {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 84%;
+}
+
+.titlePage {
+    margin-left: 60px;
+}
+.SearchWithIcon {
+    display: flex;
+    width: 300px;
+}
+.AddSeachBar {
+    margin-left: -20px;
+    margin-bottom: 10px;
+}
+.AddSeachBar button:hover {
+    background-color: greenyellow !important;
+}
+.MarketTitle {
+    margin-left: -50px;
+}
+.AddSeachBar TextField {
+    padding: 5px;
+    border-radius: 5px;
+    width: 300px;
+    margin-left: -30px;
+    text-decoration: none;
+    outline: none;
+}

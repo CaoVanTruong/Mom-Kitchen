@@ -7,14 +7,19 @@
     padding-top: 10px;
     padding-left: 10px;
     background-color: #f1f2f7;
-    margin-bottom: 10px;
     border-radius: 10px;
+
 }
 .SideMenu {
-    margin-top: 10px;
     box-shadow: 1px 2px 8px green;
-    height: 100%;
     border-radius: 10px;
-    margin-left: 20px;
-    padding: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
+    padding: 5px;
+    position: fixed;
+    background-color: darkgrey;
+    top:10;
+    margin-bottom: 10px;
+    height: 88vh;
+
 }
