@@ -85,7 +85,7 @@ function Dashboard() {
 
                     </div>
                     <Space style={{
-                        marginTop:10
+                        marginTop: 10
                     }}>
                         <RecentOrders />
                     </Space>
@@ -166,7 +166,7 @@ function RecentOrders() {
                             width: 50
                         },
                         {
-                            title: 'Price',
+                            title: 'Total',
                             dataIndex: 'price',
                             width: 50
                         },

@@ -1,7 +1,7 @@
 
 import logo from "../../assets/images/res-logo.png";
 import { Image, Typography, Space, Badge, Drawer } from 'antd';
-import { MailOutlined, BellFilled, BellOutlined } from "@ant-design/icons"
+import { BellOutlined , UserOutlined} from "@ant-design/icons"
 import '../../styles/bootstrapNavbar.css'
 import { useState } from 'react';
 function BootstrapNavbar() {
@@ -19,20 +19,23 @@ function BootstrapNavbar() {
             <Space>
                 <BellOutlined
                     className="bellIcon"
-                    // style={{
-                    //     fontSize: 24,
-                    //     marginRight: 30,
-                    // }
-                    // }
                     onClick={() => setNotificationOpen(true)}
                 />
-                <Image src={logo} width={30}></Image>
                 <div style={{
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center'
                 }}>
-                    TuanDM
+                    <Space>
+                        <UserOutlined style={{
+                            fontSize:25,
+                            color:'yellowgreen'
+                        }}/>
+                        <span style={{
+                            color:'red'
+                        }}>admin@gmail.com  (Admin)</span>
+                       
+                    </Space>
                 </div>
             </Space>
             <Drawer title="Notifications" open={notificationOpen} onClose={() => setNotificationOpen(false)}

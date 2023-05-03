@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from "react";
-
 import { Container } from "reactstrap";
 import logo from "../../assets/images/res-logo.png";
 import { NavLink, Link } from "react-router-dom";
@@ -7,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { cartUiActions } from "../../store/shopping-cart/cartUiSlice";
 import "../../styles/header.css";
 import { Button } from "@mui/material";
-
+import { useState } from "react";
 const nav__links = [
   {
     display: "Home",
@@ -24,13 +23,12 @@ const nav__links = [
 ];
 
 const Header = () => {
+  const [hovering, setHovering] = useState(false)
   const menuRef = useRef(null);
   const headerRef = useRef(null);
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
   const dispatch = useDispatch();
-
   const toggleMenu = () => menuRef.current.classList.toggle("show__menu");
-
   const toggleCart = () => {
     dispatch(cartUiActions.toggle());
   };
@@ -91,9 +89,9 @@ const Header = () => {
               {/* <Link to="/login">
                 <i className="ri-user-line"></i>
               </Link> */}
-              <Button>
-                <Link to="/register">Sign in</Link>
-              </Button>
+              {
+                localStorage.getItem('user-infor') === null ? <Button><Link to="/login">Sign In</Link></Button> : <Link to={'/profile'}>{localStorage.getItem('user-infor')} </Link>
+              }
             </span>
             <span className="mobile__menu" onClick={toggleMenu}>
               <i className="ri-menu-line"></i>

@@ -9,15 +9,7 @@ import { Space, Typography, Table, Avatar, Rate, Button, Input, Modal, Image } f
 import {
   PlusCircleOutlined, EditOutlined, DeleteOutlined, CloseOutlined,
 } from '@ant-design/icons'
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import { render } from '@testing-library/react'
+import { getAllAccount } from '../../API/admin/getAllAccounts'
 const AccountManagement = () => {
   const userTemplate = [
     {
@@ -28,7 +20,6 @@ const AccountManagement = () => {
       address: ""
     }
   ]
-
   const [toggle, setToggle] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
@@ -37,6 +28,7 @@ const AccountManagement = () => {
   const [loading, setLoading] = useState(false)
   const [dataSource, setDataSource] = useState([])
   const [userArray, setUserArray] = useState([])
+  const [account, setAccount] = useState([])
   const onDeleteRecord = (record) => {
     Modal.confirm({
       title: 'Are you sure, you want to delete this record?',
@@ -44,8 +36,21 @@ const AccountManagement = () => {
       okType: 'danger',
       cancelText: <div>Cancel</div>,
       onOk: () => {
-        setDataSource(pre => {
-          return pre.filter(product => product.id !== record.id)
+        fetch('https://momkitchen.azurewebsites.net/api/Account/' + record.id,
+          {
+            method: 'DELETE'
+          }
+        ).then((res) => {
+          if (res.ok) {
+            alert("Delete successfully.")
+            getAllAccount().then((res) => {
+              setDataSource(res)
+            })
+          } else {
+            console.log("something went wrong!")
+          }
+        }).catch((error) => {
+          console.log(error.message)
         })
       }
     })
@@ -53,6 +58,7 @@ const AccountManagement = () => {
   const onEditRecord = (record) => {
     setIsEditing(true)
     setEditingUser({ ...record })
+
   }
   function handleFilter(event) {
     const newData = userArray.filter(row => {
@@ -68,15 +74,6 @@ const AccountManagement = () => {
     setIsAdding(false)
     setIsAddingUser(null)
   }
-  useEffect(() => {
-    setLoading(true)
-    getAllUsers().then(res => {
-      setUserArray(res.users)
-      setDataSource(res.users)
-      setLoading(false)
-    })
-  }, [])
-
   const onAddNewUser = () => {
     const randomNumber = parseInt(Math.random() * 100)
     const newStudent = {
@@ -90,19 +87,14 @@ const AccountManagement = () => {
     })
     setIsAdding(false)
   };
-
-  // const fetchUserData = () => {
-  //   fetch("https://momkitchen.azurewebsites.net/api/User/getalluser")
-  //     .then(response => {
-  //       return response.json()
-  //     })
-  //     .then(data => {
-  //       setDataSource(data)
-  //     })
-  // }
-  // useEffect(() => {
-  //   fetchUserData()
-  // }, [])
+  useEffect(() => {
+    setLoading(true)
+    getAllAccount().then((res) => {
+      setDataSource(res)
+      setLoading(false)
+    }
+    )
+  }, [])
   return (
     <div>
       <BootstrapNavbar />
@@ -164,16 +156,11 @@ const AccountManagement = () => {
                 },
                 {
                   title: 'Password',
-                  dataIndex: "email"
-                },
-
-                {
-                  title: 'Phone',
-                  dataIndex: "phone"
+                  dataIndex: "password"
                 },
                 {
                   title: 'Role',
-                  dataIndex: "phone"
+                  dataIndex: "roleId"
                 },
                 {
                   title: 'Status',

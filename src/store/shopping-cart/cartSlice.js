@@ -13,6 +13,7 @@ const totalQuantity =
     : 0;
 const setItemFunc = (item, totalAmount, totalQuantity) => {
   localStorage.setItem("cartItems", JSON.stringify(item));
+  // state.cartItems.map((item) => item),
   localStorage.setItem("totalAmount", JSON.stringify(totalAmount));
   localStorage.setItem("totalQuantity", JSON.stringify(totalQuantity));
 };
@@ -26,7 +27,6 @@ const initialState = {
 const cartSlice = createSlice({
   name: "cart",
   initialState,
-
   reducers: {
     // =========== add item ============
     addItem(state, action) {

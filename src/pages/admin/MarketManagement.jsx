@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import { getAllProducts } from '../../API/recentOrder'
 import { Space, Typography, Table, Avatar, Rate, Modal, Image } from 'antd'
 import {
-  DeleteOutlined, CloseOutlined, CheckCircleOutlined
+  DeleteOutlined, CloseOutlined, CheckCircleOutlined, EyeOutlined
 } from '@ant-design/icons'
 import { NonceProvider } from 'react-select'
 const MarketManagement = () => {
@@ -116,84 +116,84 @@ const MarketManagement = () => {
                   style={{
                     borderRadius: 50,
                   }}
-                  columns={[
-                    {
-                      title: "#",
-                      dataIndex: "id"
-                    },
-                    {
-                      title: "Image",
-                      dataIndex: "thumbnail",
-                      render: (link) => {
-                        return <Avatar src={link} style={{
-                          width:100,
-                          height:100
-                        }}/>
-                      }
-                    },
-                    {
-                      title: 'Title',
-                      dataIndex: "title"
-                    },
-                    {
-                      title: 'Chef',
-                      dataIndex: "title"
-                    },
-                    {
-                      title: 'Price',
-                      dataIndex: "price",
-                      defaultSortOrder:'descend',
-                      sorter:(a,b) => a.price - b.price
-                    }, {
-                      title: 'Session',
-                      dataIndex: "rating",
-                      filters:[
-                        {
-                          text:'Session 1',
-                          value:'Session 2'
+                  columns={
+                    [
+                      {
+                        title: "#",
+                        dataIndex: "id"
+                      },
+                      {
+                        title: "Image",
+                        dataIndex: "thumbnail",
+                        render: (link) => {
+                          return <Avatar src={link} style={{
+                            width: 100,
+                            height: 100
+                          }} />
                         },
-                        {
-                          text:'Session 2',
-                          value:'Session 2'
-                        },
-                      ],
-                      // onFilter:(value,record) => record.rating.indexOf(value)===0
-                    }
-                    ,
-                    {
-                      title: 'Remain Quantity',
-                      dataIndex: "stock",
-                      width: 50,
-                      defaultSortOrder:'ascend',
-                      sorter:(a,b) => a.stock - b.stock
-                    },
-                    {
-                      title: 'Create date',
-                      dataIndex: "brand"
-                    },
-                    {
-                      title: "Actions",
-                      render: (record) => {
-                        return (
-                          <div>
-                            {/* <EditOutlined
-                onClick={() => onEditRecord(record)
-                }
-                style={{ marginLeft: 0 }} /> */}
-                            <DeleteOutlined
-                              onClick={() => onDeleteRecord(record)}
-                              style={{ color: "red", marginLeft: 12 }} />
-                            <CheckCircleOutlined
-                              onClick={() => { }}
-                              style={{
-                                color: 'green',
-                                marginLeft: 12
-                              }} />
-                          </div>
-                        )
+                      },
+                      {
+                        title: 'Title',
+                        dataIndex: "title"
+                      },
+                      {
+                        title: 'Chef',
+                        dataIndex: "title"
+                      },
+                      {
+                        title: 'Price',
+                        dataIndex: "price",
+                        defaultSortOrder: 'descend',
+                        sorter: (a, b) => a.price - b.price
+                      }, {
+                        title: 'Session',
+                        dataIndex: "rating",
+                        filters: [
+                          {
+                            text: 'Session 1',
+                            value: 'Session 2'
+                          },
+                          {
+                            text: 'Session 2',
+                            value: 'Session 2'
+                          },
+                        ],
+                        // onFilter:(value,record) => record.rating.indexOf(value)===0
                       }
-                    }
-                  ]}
+                      ,
+                      {
+                        title: 'Remain Quantity',
+                        dataIndex: "stock",
+                        width: 50,
+                        defaultSortOrder: 'ascend',
+                        sorter: (a, b) => a.stock - b.stock
+                      },
+                      {
+                        title: 'Create date',
+                        dataIndex: "brand"
+                      },
+                      {
+                        title: "Actions",
+                        render: (record) => {
+                          return (
+                            <div>
+                              <EyeOutlined
+                                onClick={() => onEditRecord(record)}
+                              />
+                              <DeleteOutlined
+                                onClick={() => onDeleteRecord(record)}
+                                style={{ color: "red", marginLeft: 12 }} />
+                              <CheckCircleOutlined
+                                onClick={() => { }}
+                                style={{
+                                  color: 'green',
+                                  marginLeft: 12
+                                }} />
+                            </div>
+                          )
+                        }
+                      }
+                    ]}
                   loading={loading}
                   dataSource={dataSource}
                   pagination={
@@ -209,43 +209,32 @@ const MarketManagement = () => {
           <div>
             {/* modal edit */}
             <Modal
-              title="Edit Product"
+              width={1000}
+              title="View detail"
               open={isEditing}
-              okText={<div>Save</div>}
+              okButtonProps={{style:{
+                display:'none'
+              }}}
               onCancel={() => {
                 resetEditing()
-                // setIsEditing(false)
               }
               }
               cancelText={<div>Cancel</div>}
-              onOk={() => {
-                setDataSource(pre => {
-                  return pre.map(product => {
-                    if (product.id === editingProduct.id) {
-                      return editingProduct
-                    } else {
-                      return product
-                    }
-                  })
-                })
-                resetEditing()
-              }
-              }
+              onOk={false}
               closeIcon={<div style={{
                 marginLeft: -30
               }}><CloseOutlined /></div>}
             >
-              <Image src={editingProduct?.thumbnail}></Image>
-              {/* <Input value={editingProduct?.title} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, title: e.target.value }
-                })
-              }} />
-              <Input value={editingProduct?.price} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, price: e.target.value }
-                })
-              }} /> */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 20
+              }}>
+                <Image style={{
+                  borderRadius: 20
+                }} src={editingProduct?.thumbnail}></Image>
+              </div>
               <div>
                 <Paper style={{
                   marginTop: 20
@@ -265,11 +254,7 @@ const MarketManagement = () => {
                             variant='outlined'
                             fullWidth
                             value={editingProduct?.title}
-                            onChange={(e) => {
-                              setEditingProduct(pre => {
-                                return { ...pre, title: e.target.value }
-                              })
-                            }}
+                            disabled={true}
                           >
                           </TextField>
                         </Grid>
@@ -280,165 +265,98 @@ const MarketManagement = () => {
                             variant='outlined'
                             fullWidth
                             value={editingProduct?.price}
-                            onChange={(e) => {
-                              setEditingProduct(pre => {
-                                return { ...pre, price: e.target.value }
-                              })
-                            }}
+                            disabled={true}
                           >
                           </TextField>
                         </Grid>
                         <Grid item lg={6}>
                           <TextField
-                            label="Brand"
+                            label="Chef"
                             placeholder='Brand...'
                             variant='outlined'
                             fullWidth
                             value={editingProduct?.brand}
-                            onChange={(e) => {
-                              setEditingProduct(pre => {
-                                return { ...pre, brand: e.target.value }
-                              })
-                            }}
-                          >
-                          </TextField>
-                        </Grid>
-                        <Grid item lg={6}>
-                          <TextField
-                            label="Category"
-                            placeholder='Category...'
-                            variant='outlined'
-                            fullWidth
-                            value={editingProduct?.category}
-                            onChange={(e) => {
-                              setEditingProduct(pre => {
-                                return { ...pre, category: e.target.value }
-                              })
-                            }}
-                          >
-                          </TextField>
-                        </Grid>
-                      </Grid>
-                    ))
-                  }
-                </Paper>
-              </div>
-            </Modal>
-            {/* Modal add product */}
-            <Modal
-              title="Add Product"
-              open={isAdding}
-              okText={<div>Save</div>}
-              onCancel={() => {
+                            disabled={true}
 
-                resetAdding()
-                // setIsEditing(false)
-              }
-              }
-              cancelText={<div>Cancel</div>}
-              // onOk={
-              // () => {
-              // setDataSource(
-              //   pre => {
-              //   return pre.map(product => {
-              //     if (product.id === editingProduct.id) {
-              //       return editingProduct
-              //     } else {
-              //       return product
-              //     }
-              //   })
-              // })
-              // resetAdding()
-              // }
-              // }
-              closeIcon={
-                <div style={{
-                  marginLeft: -30
-                }}><CloseOutlined /></div>}
-            >
-              <Image src={editingProduct?.thumbnail}></Image>
-              {/* <Input value={editingProduct?.title} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, title: e.target.value }
-                })
-              }} />
-              <Input value={editingProduct?.price} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, price: e.target.value }
-                })
-              }} /> */}
-              <input type='file' title='Choose image....'></input>
-              <div>
-                <Paper style={{
-                  marginTop: 20
-                }} component={Box} p={4} mx="auto">
-                  {
-                    userTemplate.map((user, index) => (
-                      <Grid
-                        container
-                        spacing={3}
-                        key={index}
-                        className='inputGroup'
-                      >
-                        <Grid item lg={6}>
-                          <TextField
-                            label="Name of Food"
-                            placeholder='Package food name'
-                            variant='outlined'
-                            fullWidth
-                            value={editingProduct?.title}
-                            onChange={(e) => {
-                              setEditingProduct(pre => {
-                                return { ...pre, title: e.target.value }
-                              })
-                            }}
                           >
                           </TextField>
                         </Grid>
                         <Grid item lg={6}>
                           <TextField
-                            label="Price"
-                            placeholder='Price'
-                            variant='outlined'
-                            fullWidth
-                            value={editingProduct?.price}
-                            onChange={(e) => {
-                              setEditingProduct(pre => {
-                                return { ...pre, price: e.target.value }
-                              })
-                            }}
-                          >
-                          </TextField>
-                        </Grid>
-                        <Grid item lg={6}>
-                          <TextField
-                            label="Brand"
-                            placeholder='Brand...'
-                            variant='outlined'
-                            fullWidth
-                            value={editingProduct?.brand}
-                            onChange={(e) => {
-                              setEditingProduct(pre => {
-                                return { ...pre, brand: e.target.value }
-                              })
-                            }}
-                          >
-                          </TextField>
-                        </Grid>
-                        <Grid item lg={6}>
-                          <TextField
-                            label="Category"
+                            label="Food style"
                             placeholder='Category...'
                             variant='outlined'
                             fullWidth
                             value={editingProduct?.category}
-                            onChange={(e) => {
-                              setEditingProduct(pre => {
-                                return { ...pre, category: e.target.value }
-                              })
-                            }}
+                            disabled={true}
+
                           >
                           </TextField>
+                        </Grid>
+                        <Grid item lg={6}>
+                          <TextField
+                            label="Quantity"
+                            placeholder='Category...'
+                            variant='outlined'
+                            fullWidth
+                            value={editingProduct?.category}
+                            disabled={true}
+
+                          >
+                          </TextField>
+                        </Grid>
+                        <Grid item lg={12}>
+                          <TextField
+                            label="Description"
+                            placeholder='Category...'
+                            variant='outlined'
+                            fullWidth
+                            value={editingProduct?.category}
+                            disabled={true}
+
+                          >
+                          </TextField>
+                        </Grid>
+                        <Grid item lg={12}
+                          className='dishInPackage'
+                        >
+                          <div><h5>Dish in package</h5></div>
+                          <div style={{
+                            marginBottom: 10
+                          }}>
+                            <Space className='itemInDish'>
+                              <Image src={editingProduct?.thumbnail} style={{
+                                height: 50,
+                                width: 50
+                              }}></Image>
+                              <h5>Title</h5>
+                              <h5>Dish Type</h5>
+                            </Space>
+                          </div>
+                          <div style={{
+                            marginBottom: 10
+                          }}>
+                            <Space className='itemInDish'>
+                              <Image src={editingProduct?.thumbnail} style={{
+                                height: 50,
+                                width: 50
+                              }}></Image>
+                              <h5>Title</h5>
+                              <h5>Dish Type</h5>
+                            </Space>
+                          </div>
+                          <div style={{
+                            marginBottom: 10
+                          }}>
+                            <Space className='itemInDish'>
+                              <Image src={editingProduct?.thumbnail} style={{
+                                height: 50,
+                                width: 50
+                              }}></Image>
+                              <h5>Title</h5>
+                              <h5>Dish Type</h5>
+                            </Space>
+                          </div>
                         </Grid>
                       </Grid>
                     ))
