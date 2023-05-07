@@ -28,6 +28,7 @@ const Login = () => {
   const list = authenticatedAccount.map((acc) => acc.email)
   const submitHandler = (e) => {
     e.preventDefault();
+    console.log(email + password)
     fetch('https://momkitchen.azurewebsites.net/api/Login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -38,22 +39,23 @@ const Login = () => {
     })
       .then(res => {
         if (res.ok) {
-          res.json()
-        } else {
-          throw new Error('Something went wrong!')
+          return res.json()
         }
-      }
-      )
+        throw new Error('Something went wrong!')
+      })
       .then((res) => {
-        if (res.roleId === 2) {
+        console.log(res.role.id)
+        if (res.role.id === 2) {
           localStorage.setItem('user-infor', res.email)
           navigate('/user')
-        } else if (res.roleId === 1) {
+        } else if (res.role.id === 1) {
           localStorage.setItem('user-infor', res.email)
           navigate('/dashboard')
+        } else {
+          alert("Wrong email or password!")
         }
-      }).catch((error) => {
-        alert("Wrong email or password !")
+      }).catch((e) => {
+        alert("Wrong email or password!")
       })
   }
   const showCart = useSelector((state) => state.cartUi.cartIsVisible);

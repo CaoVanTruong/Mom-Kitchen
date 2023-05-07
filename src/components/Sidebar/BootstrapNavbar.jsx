@@ -33,7 +33,7 @@ function BootstrapNavbar() {
                         }}/>
                         <span style={{
                             color:'red'
-                        }}>admin@gmail.com  (Admin)</span>
+                        }}>{localStorage.getItem('user-infor')}(Admin)</span>
                        
                     </Space>
                 </div>

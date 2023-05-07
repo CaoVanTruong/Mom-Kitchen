@@ -5,7 +5,7 @@ import BootstrapNavbar from '../../components/Sidebar/BootstrapNavbar'
 import SideMenu from '../../components/Sidebar/SideMenu'
 import { useEffect } from 'react'
 import { getAllUsers } from '../../API/recentOrder'
-import { Space, Typography, Table, Avatar, Rate, Button, Input, Modal, Image } from 'antd'
+import { Space, Typography, Table, Avatar, Rate, Button, Input, Modal, Image, Badge, Tag } from 'antd'
 import {
   PlusCircleOutlined, EditOutlined, DeleteOutlined, CloseOutlined,
 } from '@ant-design/icons'
@@ -20,6 +20,7 @@ const AccountManagement = () => {
       address: ""
     }
   ]
+  const [active, setActive] = useState(true)
   const [toggle, setToggle] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
@@ -58,13 +59,37 @@ const AccountManagement = () => {
   const onEditRecord = (record) => {
     setIsEditing(true)
     setEditingUser({ ...record })
-
+  }
+  const updateAccount = () => {
+    fetch('https://momkitchen.azurewebsites.net/api/Account?id=' + editingUser.id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: editingUser.email,
+        password: editingUser.password,
+        roleId: editingUser.roleId,
+      })
+    })
+    // setLoading(true)
+    // getAllAccount().then((res) => {
+    //   setDataSource(res)
+    //   setLoading(false)
+    // }
+    // )
+    resetEditing()
   }
   function handleFilter(event) {
     const newData = userArray.filter(row => {
       return row.firstName.toLowerCase().includes(event.target.value.toLowerCase())
     })
     setDataSource(newData)
+  }
+  const status = () => {
+    if (dataSource.accountStatus === 1) {
+      setToggle(true)
+    } else {
+      setToggle(false)
+    }
   }
   const resetEditing = () => {
     setIsEditing(false)
@@ -88,13 +113,33 @@ const AccountManagement = () => {
     setIsAdding(false)
   };
   useEffect(() => {
-    setLoading(true)
     getAllAccount().then((res) => {
+      setLoading(true)
       setDataSource(res)
       setLoading(false)
     }
     )
-  }, [])
+  }, [dataSource])
+  const onBanAccount = (record) => {
+    // if (record.accountStatus === "True" || record.accountStatus === "true") {
+      
+    // } else if (record.accountStatus === "False" || record.accountStatus === "false") {
+    //   setActive(true)
+    // }
+    setToggle(!toggle)
+    console.log("record id là " + record.id)
+    console.log("accountstatus hiện tại là " + record.accountStatus)
+    console.log("toggle hiện tại là " + toggle)
+    fetch('https://momkitchen.azurewebsites.net/api/Account' + '?email=' + record.email + '&status=' + toggle,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+      })
+    getAllAccount().then((res) => {
+      setDataSource(res)
+    }
+    )
+  }
   return (
     <div>
       <BootstrapNavbar />
@@ -164,21 +209,30 @@ const AccountManagement = () => {
                 },
                 {
                   title: 'Status',
-                  dataIndex: "id",
-                  render: () => (
-                    <span style={{
-                      textDecorationLine: 'underline',
-                      cursor: 'pointer',
-                    }}
-                      onClick={() => setToggle(!toggle)}
-                    >{toggle ? 'Ban' : 'Unban'}</span>
+                  dataIndex: "accountStatus",
+                  render: (_, record) => (
+                    <>
+                      <Badge key={record.id}>
+                        {(record.accountStatus === "true") || (record.accountStatus === "True") ? <Tag color='geekblue'
+                          onClick={() => onBanAccount(record)}
+                          style={{
+                            cursor: 'pointer',
+                          }}>Inactive</Tag> : <Tag color='green' style={{cursor:'pointer'}} onClick={() => onBanAccount(record)}>Active</Tag>}
+                        {/* {record.accountStatus} */}  
+                      </Badge>
+                    </>
                   )
                 },
                 {
                   title: "Actions",
                   render: (record) => {
                     return (
-                      <div>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'row'
+                      }}>
                         <EditOutlined
                           onClick={() => onEditRecord(record)
                           }
@@ -214,19 +268,7 @@ const AccountManagement = () => {
             }
             }
             cancelText={<div>Cancel</div>}
-            onOk={() => {
-              setDataSource(pre => {
-                return pre.map(user => {
-                  if (user.id === editingUser.id) {
-                    return editingUser
-                  } else {
-                    return user
-                  }
-                })
-              })
-              resetEditing()
-            }
-            }
+            onOk={() => updateAccount()}
             closeIcon={<div style={{
               marginLeft: -30
             }}><CloseOutlined /></div>}
@@ -260,21 +302,6 @@ const AccountManagement = () => {
                       </Grid>
                       <Grid item lg={6}>
                         <TextField
-                          label="Phone"
-                          placeholder='Enter user phone number...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.phone}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, phone: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
                           label="Password"
                           placeholder='Enter user password...'
                           variant='outlined'
@@ -288,16 +315,16 @@ const AccountManagement = () => {
                         >
                         </TextField>
                       </Grid>
-                      <Grid item lg={6}>
+                      <Grid item lg={12}>
                         <TextField
                           label="Role"
-                          placeholder='Role....'
+                          placeholder='Enter new role...'
                           variant='outlined'
                           fullWidth
-                          value={editingUser?.password}
+                          value={editingUser?.roleId}
                           onChange={(e) => {
                             setEditingUser(pre => {
-                              return { ...pre, password: e.target.value }
+                              return { ...pre, roleId: e.target.value }
                             })
                           }}
                         >
