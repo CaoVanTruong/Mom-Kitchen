@@ -1,9 +1,10 @@
 
 import logo from "../../assets/images/res-logo.png";
 import { Image, Typography, Space, Badge, Drawer } from 'antd';
-import { BellOutlined , UserOutlined} from "@ant-design/icons"
+import { BellOutlined, UserOutlined } from "@ant-design/icons"
 import '../../styles/bootstrapNavbar.css'
 import { useState } from 'react';
+import { green } from "@mui/material/colors";
 function BootstrapNavbar() {
     const [commentsOpen, setCommentsOpen] = useState(false)
     const [notificationOpen, setNotificationOpen] = useState(false)
@@ -16,6 +17,10 @@ function BootstrapNavbar() {
                 style={{
                     marginLeft: 20
                 }}></img>
+            <h4 style={{
+                marginLeft: 50,
+                color:'yellowgreen'
+            }}>Mom-Kitchen's Dashboard</h4>
             <Space>
                 <BellOutlined
                     className="bellIcon"
@@ -28,13 +33,13 @@ function BootstrapNavbar() {
                 }}>
                     <Space>
                         <UserOutlined style={{
-                            fontSize:25,
-                            color:'yellowgreen'
-                        }}/>
+                            fontSize: 25,
+                            color: 'yellowgreen'
+                        }} />
                         <span style={{
-                            color:'red'
+                            color: 'red'
                         }}>{localStorage.getItem('user-infor')}(Admin)</span>
-                       
+
                     </Space>
                 </div>
             </Space>

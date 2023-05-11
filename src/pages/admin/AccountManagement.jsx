@@ -10,6 +10,7 @@ import {
   PlusCircleOutlined, EditOutlined, DeleteOutlined, CloseOutlined,
 } from '@ant-design/icons'
 import { getAllAccount } from '../../API/admin/getAllAccounts'
+import Dropdown from 'react-bootstrap/Dropdown';
 const AccountManagement = () => {
   const userTemplate = [
     {
@@ -20,8 +21,12 @@ const AccountManagement = () => {
       address: ""
     }
   ]
+  const [value, setValue] = useState()
+  const handleChange = (value) => {
+    setValue(value)
+  }
   const [active, setActive] = useState(true)
-  const [toggle, setToggle] = useState(true)
+  const [toggle, setToggle] = useState("")
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [isAddingUser, setIsAddingUser] = useState(null)
@@ -70,27 +75,19 @@ const AccountManagement = () => {
         roleId: editingUser.roleId,
       })
     })
-    // setLoading(true)
-    // getAllAccount().then((res) => {
-    //   setDataSource(res)
-    //   setLoading(false)
-    // }
-    // )
+    getAllAccount().then((res) => {
+      setDataSource(res)
+    }
+    )
     resetEditing()
   }
   function handleFilter(event) {
     const newData = userArray.filter(row => {
-      return row.firstName.toLowerCase().includes(event.target.value.toLowerCase())
+      return row.email.toLowerCase().includes(event.target.value.toLowerCase())
     })
     setDataSource(newData)
   }
-  const status = () => {
-    if (dataSource.accountStatus === 1) {
-      setToggle(true)
-    } else {
-      setToggle(false)
-    }
-  }
+
   const resetEditing = () => {
     setIsEditing(false)
     setEditingUser(null)
@@ -113,32 +110,40 @@ const AccountManagement = () => {
     setIsAdding(false)
   };
   useEffect(() => {
+    setLoading(true)
     getAllAccount().then((res) => {
-      setLoading(true)
+      setUserArray(res)
       setDataSource(res)
       setLoading(false)
     }
     )
-  }, [dataSource])
+  }, [])
   const onBanAccount = (record) => {
-    // if (record.accountStatus === "True" || record.accountStatus === "true") {
-      
-    // } else if (record.accountStatus === "False" || record.accountStatus === "false") {
-    //   setActive(true)
-    // }
-    setToggle(!toggle)
-    console.log("record id là " + record.id)
-    console.log("accountstatus hiện tại là " + record.accountStatus)
-    console.log("toggle hiện tại là " + toggle)
-    fetch('https://momkitchen.azurewebsites.net/api/Account' + '?email=' + record.email + '&status=' + toggle,
+    setLoading(true)
+    let status
+    if (record.accountStatus === "true" || record.accountStatus === "True") {
+      status = false
+    } else if (record.accountStatus === "false" || record.accountStatus === "False") {
+      status = true
+    }
+    fetch('https://momkitchen.azurewebsites.net/api/Account' + '?email=' + record.email + '&status=' + status,
       {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+      }).then(res => {
+        if (res.ok) {
+          setLoading(true)
+          getAllAccount().then((res) => {
+            setDataSource(res)
+          }
+          )
+          alert("Update successfully.")
+          setLoading(false)
+        } else {
+          alert("Update fail!")
+        }
       })
-    getAllAccount().then((res) => {
-      setDataSource(res)
-    }
-    )
+
   }
   return (
     <div>
@@ -205,7 +210,7 @@ const AccountManagement = () => {
                 },
                 {
                   title: 'Role',
-                  dataIndex: "roleId"
+                  dataIndex: "roleId",
                 },
                 {
                   title: 'Status',
@@ -217,8 +222,7 @@ const AccountManagement = () => {
                           onClick={() => onBanAccount(record)}
                           style={{
                             cursor: 'pointer',
-                          }}>Inactive</Tag> : <Tag color='green' style={{cursor:'pointer'}} onClick={() => onBanAccount(record)}>Active</Tag>}
-                        {/* {record.accountStatus} */}  
+                          }}>Inactive</Tag> : <Tag color='green' style={{ cursor: 'pointer' }} onClick={() => onBanAccount(record)}>Active</Tag>}
                       </Badge>
                     </>
                   )
@@ -316,19 +320,28 @@ const AccountManagement = () => {
                         </TextField>
                       </Grid>
                       <Grid item lg={12}>
-                        <TextField
-                          label="Role"
-                          placeholder='Enter new role...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.roleId}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, roleId: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
+                        {/* <TextField
+                        label="Role"
+                        placeholder='Enter new role...'
+                        variant='outlined'
+                        fullWidth
+                        value={editingUser?.roleId}
+                        onChange={(e) => {
+                          setEditingUser(pre => {
+                            return { ...pre, roleId: e.target.value }
+                          })
+                        }}
+                      >
+                      </TextField> */}
+                        <Dropdown>
+                          <Dropdown.Toggle id="dropdown-basic" variant={value} onChange={handleChange}>
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            <Dropdown.Item eventKey="1">Action</Dropdown.Item>
+                            <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
+                            <Dropdown.Item eventKey="3">Something else</Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
                       </Grid>
                     </Grid>
                   ))
