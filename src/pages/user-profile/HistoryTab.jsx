@@ -17,6 +17,7 @@ import {
     DeleteOutlined, CloseOutlined, CheckCircleOutlined
 } from '@ant-design/icons'
 import { Label } from 'reactstrap'
+import UserSideBar from '../../components/User/UserSideBar'
 const HistoryTab = () => {
     const order = [
         {
@@ -24,21 +25,35 @@ const HistoryTab = () => {
             userName: "First order",
             date: "3/3/2000",
             totalPrice: 25000,
-            status: "Completed"
+            status: "Completed",
+            title: "Mâm cơm tuổi thơ",
+            building: 3,
+            quantity: 2,
+            image: "https://www.google.com/imgres?imgurl=https%3A%2F%2Fgiadinh.mediacdn.vn%2F296230595582509056%2F2021%2F6%2F10%2Fphoto-2-16233134021221191674450.jpg&tbnid=7enGECasN4Y70M&vet=12ahUKEwi9rqbJ2tP-AhXBc3AKHZsUD4AQMygBegUIARC7AQ..i&imgrefurl=https%3A%2F%2Fgiadinh.suckhoedoisong.vn%2F8x-khoe-gan-20-mam-com-ngon-khien-ai-cung-muon-an-172210610152439077.htm&docid=E3Va0NwgCaWdIM&w=660&h=514&q=h%C3%ACnh%20m%C3%A2m%20c%C6%A1m&ved=2ahUKEwi9rqbJ2tP-AhXBc3AKHZsUD4AQMygBegUIARC7AQ"
         },
         {
             id: "2",
             userName: "First order",
             date: "3/3/2000",
             totalPrice: 25000,
-            status: "Completed"
+            status: "Completed",
+            title: "Mâm cơm tuổi thơ",
+            building: 1,
+            email: "chef@gmail.com",
+            phone: "0903850291",
+            quantity: 2,
+            image: "https://www.google.com/imgres?imgurl=https%3A%2F%2Fgiadinh.mediacdn.vn%2F296230595582509056%2F2021%2F6%2F10%2Fphoto-2-16233134021221191674450.jpg&tbnid=7enGECasN4Y70M&vet=12ahUKEwi9rqbJ2tP-AhXBc3AKHZsUD4AQMygBegUIARC7AQ..i&imgrefurl=https%3A%2F%2Fgiadinh.suckhoedoisong.vn%2F8x-khoe-gan-20-mam-com-ngon-khien-ai-cung-muon-an-172210610152439077.htm&docid=E3Va0NwgCaWdIM&w=660&h=514&q=h%C3%ACnh%20m%C3%A2m%20c%C6%A1m&ved=2ahUKEwi9rqbJ2tP-AhXBc3AKHZsUD4AQMygBegUIARC7AQ"
         },
         {
             id: "3",
             userName: "First order",
             date: "3/3/2000",
             totalPrice: 25000,
-            status: "Completed"
+            title: "Mâm cơm tuổi thơ",
+            status: "Completed",
+            building: 2,
+            quantity: 2,
+            image: "https://www.google.com/imgres?imgurl=https%3A%2F%2Fgiadinh.mediacdn.vn%2F296230595582509056%2F2021%2F6%2F10%2Fphoto-2-16233134021221191674450.jpg&tbnid=7enGECasN4Y70M&vet=12ahUKEwi9rqbJ2tP-AhXBc3AKHZsUD4AQMygBegUIARC7AQ..i&imgrefurl=https%3A%2F%2Fgiadinh.suckhoedoisong.vn%2F8x-khoe-gan-20-mam-com-ngon-khien-ai-cung-muon-an-172210610152439077.htm&docid=E3Va0NwgCaWdIM&w=660&h=514&q=h%C3%ACnh%20m%C3%A2m%20c%C6%A1m&ved=2ahUKEwi9rqbJ2tP-AhXBc3AKHZsUD4AQMygBegUIARC7AQ"
         }
     ]
     const [value, setValue] = useState('1');
@@ -53,33 +68,7 @@ const HistoryTab = () => {
         <div>
             <Header />
             <Container className='userProfile__container'>
-                <div>
-                    <div>
-                        <img
-                            className=''
-                            style={{
-                                position: 'relative',
-                                width: 120,
-                                height: 120,
-                                zIndex: 1,
-                                marginRight: 50,
-                                borderRadius: 100
-                            }}
-                            src='https://images2.thanhnien.vn/Uploaded/nguyenvan/2022_09_09/thanh-loc-doanhnhansaigon1-1508430693-750x0-8136.jpg'></img>
-
-                    </div>
-                    <div className='userProfile'>
-                        <div className='userProfile_Item'>
-                            <i class="ri-account-circle-line"></i>
-                            <Link to='/profile'><p>Your information</p></Link>
-                        </div>
-                        <div className='userProfile_Item'>
-                            <i class="ri-article-line"></i>
-                            <Link to='/history'><p>Order history</p></Link>
-
-                        </div>
-                    </div>
-                </div>
+                <UserSideBar />
                 <div style={{
                     width: "100%",
                     height: "100%",
@@ -99,13 +88,7 @@ const HistoryTab = () => {
                                 {
                                     order.map((order) => (
                                         <div>
-                                            <Button onClick={() => setIsShowDetail(true)} style={{
-                                                width: "100%",
-                                                marginBottom: 20,
-                                                backgroundColor: 'white'
-                                            }}>
-                                                <OrderTag props={order} />
-                                            </Button>
+                                            <OrderTag props={order} />
                                         </div>
                                     ))
                                 }
@@ -156,66 +139,27 @@ const HistoryTab = () => {
                                             className='inputGroup'
                                         >
                                             <Grid item lg={6}>
-                                                {/* <TextField
-                                                    label="Name"
-                                                    placeholder='Name...'
-                                                    variant='outlined'
-                                                    fullWidth
-                                                    disabled
-                                                >
-                                                </TextField> */}
                                                 <Label for="orderer">
                                                     Orderer:
                                                 </Label>
                                             </Grid>
                                             <Grid item lg={6}>
-                                                {/* <TextField
-                                                    label="Status"
-                                                    placeholder='Status...'
-                                                    variant='outlined'
-                                                    fullWidth
-                                                    disabled
-                                                >
-                                                </TextField> */}
                                                 <Label for="status">
                                                     Status:
                                                 </Label>
                                             </Grid>
                                             <Grid item lg={12}>
-                                                {/* <TextField
-                                                    label="Building"
-                                                    placeholder='Building...'
-                                                    variant='outlined'
-                                                    fullWidth
-                                                    disabled
-                                                >
-                                                </TextField> */}
+
                                                 <Label for="building">
                                                     Building:
                                                 </Label>
                                             </Grid>
                                             <Grid item lg={12}>
-                                                {/* <TextField
-                                                    label="Order Date"
-                                                    placeholder='Order date...'
-                                                    variant='outlined'
-                                                    fullWidth
-                                                    disabled
-                                                >
-                                                </TextField> */}
                                                 <Label for="orderDate">
                                                     Order Date:
                                                 </Label>
                                             </Grid>
                                             <Grid item lg={12}>
-                                                {/* <TextField
-                                                    label="Food"
-                                                    placeholder='Food...'
-                                                    variant='outlined'
-                                                    fullWidth
-                                                    disabled
-                                                >
-                                                </TextField> */}
                                                 <Label for="food">
                                                     Ordered Food:
                                                 </Label>
@@ -262,7 +206,7 @@ const HistoryTab = () => {
                                             </Grid>
                                             <Grid item lg={12}>
                                                 <Label for="paymentMethod" >
-                                                    Payment method: 
+                                                    Payment method:
                                                 </Label>
                                             </Grid>
                                         </Grid>

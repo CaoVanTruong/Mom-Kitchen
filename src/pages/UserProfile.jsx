@@ -5,6 +5,7 @@ import Header from '../components/Header/Header'
 import Footer from '../components/Footer/Footer'
 import '../styles/user-profile.css'
 import { Link } from 'react-router-dom'
+import UserSideBar from '../components/User/UserSideBar'
 const UserProfile = () => {
     const userTemplate = [
         {
@@ -15,39 +16,19 @@ const UserProfile = () => {
         }
     ]
     const [users, setUsers] = useState([userTemplate])
+    const user = localStorage.getItem('user-infor')
     return (
         <div>
             <Header />
-            <Container className='userProfile__container'>
-                <div>
-                    <div>
-                        <img
-                            className=''
-                            style={{
-                                position: 'relative',
-                                width: 120,
-                                height: 120,
-                                zIndex: 1,
-                                marginRight: 50,
-                                borderRadius: 100
-                            }}
-                            src='https://images2.thanhnien.vn/Uploaded/nguyenvan/2022_09_09/thanh-loc-doanhnhansaigon1-1508430693-750x0-8136.jpg'></img>
-
-                    </div>
-                    <div className='userProfile'>
-                        <div className='userProfile_Item'>
-                            <i class="ri-account-circle-line"></i>
-                            <Link to='/profile'><p>Your information</p></Link>
-                        </div>
-                        <div className='userProfile_Item'>
-                            <i class="ri-article-line"></i>
-                            <Link to='/history'><p>Order history</p></Link>
-
-                        </div>
-                    </div>
-                </div>  
+            <Container className='userProfile__container' style={{
+                display: 'flex'
+            }}>
+                <UserSideBar />
                 <div>
                     <Paper component={Box} p={4} mx="auto">
+                        <h4 style={{
+                            color: 'red'
+                        }}>Hi {user} Welcome to Mom-kitchen.</h4>
                         <h4>My profile</h4>
                         <p>Manage profile information for account security</p>
                         {
@@ -65,8 +46,8 @@ const UserProfile = () => {
                                             variant='outlined'
                                             fullWidth>
                                         </TextField>
-                                    </Grid> 
-                                     <Grid item lg={6}>
+                                    </Grid>
+                                    <Grid item lg={6}>
                                         <TextField
                                             label="Password"
                                             placeholder='Your password'
@@ -100,7 +81,7 @@ const UserProfile = () => {
                                     </Grid>
                                     <Grid item lg={6}>
                                         <TextField
-                                            label="Address"
+                                            label="Default Building"
                                             placeholder='Enter your address'
                                             variant='outlined'
                                             fullWidth>

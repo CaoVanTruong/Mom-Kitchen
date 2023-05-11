@@ -5,19 +5,12 @@ import BootstrapNavbar from '../../components/Sidebar/BootstrapNavbar'
 import SideMenu from '../../components/Sidebar/SideMenu'
 import { useEffect } from 'react'
 import { getAllUsers } from '../../API/recentOrder'
-import { Space, Typography, Table, Avatar, Rate, Button, Input, Modal, Image } from 'antd'
+import { Space, Typography, Table, Avatar, Rate, Button, Input, Modal, Image, Badge, Tag } from 'antd'
 import {
   PlusCircleOutlined, EditOutlined, DeleteOutlined, CloseOutlined,
 } from '@ant-design/icons'
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import { render } from '@testing-library/react'
+import { getAllAccount } from '../../API/admin/getAllAccounts'
+import Dropdown from 'react-bootstrap/Dropdown';
 const AccountManagement = () => {
   const userTemplate = [
     {
@@ -28,8 +21,12 @@ const AccountManagement = () => {
       address: ""
     }
   ]
-
-  const [toggle, setToggle] = useState(true)
+  const [value, setValue] = useState()
+  const handleChange = (value) => {
+    setValue(value)
+  }
+  const [active, setActive] = useState(true)
+  const [toggle, setToggle] = useState("")
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [isAddingUser, setIsAddingUser] = useState(null)
@@ -37,6 +34,7 @@ const AccountManagement = () => {
   const [loading, setLoading] = useState(false)
   const [dataSource, setDataSource] = useState([])
   const [userArray, setUserArray] = useState([])
+  const [account, setAccount] = useState([])
   const onDeleteRecord = (record) => {
     Modal.confirm({
       title: 'Are you sure, you want to delete this record?',
@@ -44,8 +42,21 @@ const AccountManagement = () => {
       okType: 'danger',
       cancelText: <div>Cancel</div>,
       onOk: () => {
-        setDataSource(pre => {
-          return pre.filter(product => product.id !== record.id)
+        fetch('https://momkitchen.azurewebsites.net/api/Account/' + record.id,
+          {
+            method: 'DELETE'
+          }
+        ).then((res) => {
+          if (res.ok) {
+            alert("Delete successfully.")
+            getAllAccount().then((res) => {
+              setDataSource(res)
+            })
+          } else {
+            console.log("something went wrong!")
+          }
+        }).catch((error) => {
+          console.log(error.message)
         })
       }
     })
@@ -54,12 +65,29 @@ const AccountManagement = () => {
     setIsEditing(true)
     setEditingUser({ ...record })
   }
+  const updateAccount = () => {
+    fetch('https://momkitchen.azurewebsites.net/api/Account?id=' + editingUser.id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: editingUser.email,
+        password: editingUser.password,
+        roleId: editingUser.roleId,
+      })
+    })
+    getAllAccount().then((res) => {
+      setDataSource(res)
+    }
+    )
+    resetEditing()
+  }
   function handleFilter(event) {
     const newData = userArray.filter(row => {
-      return row.firstName.toLowerCase().includes(event.target.value.toLowerCase())
+      return row.email.toLowerCase().includes(event.target.value.toLowerCase())
     })
     setDataSource(newData)
   }
+
   const resetEditing = () => {
     setIsEditing(false)
     setEditingUser(null)
@@ -68,15 +96,6 @@ const AccountManagement = () => {
     setIsAdding(false)
     setIsAddingUser(null)
   }
-  useEffect(() => {
-    setLoading(true)
-    getAllUsers().then(res => {
-      setUserArray(res.users)
-      setDataSource(res.users)
-      setLoading(false)
-    })
-  }, [])
-
   const onAddNewUser = () => {
     const randomNumber = parseInt(Math.random() * 100)
     const newStudent = {
@@ -90,19 +109,42 @@ const AccountManagement = () => {
     })
     setIsAdding(false)
   };
+  useEffect(() => {
+    setLoading(true)
+    getAllAccount().then((res) => {
+      setUserArray(res)
+      setDataSource(res)
+      setLoading(false)
+    }
+    )
+  }, [])
+  const onBanAccount = (record) => {
+    setLoading(true)
+    let status
+    if (record.accountStatus === "true" || record.accountStatus === "True") {
+      status = false
+    } else if (record.accountStatus === "false" || record.accountStatus === "False") {
+      status = true
+    }
+    fetch('https://momkitchen.azurewebsites.net/api/Account' + '?email=' + record.email + '&status=' + status,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+      }).then(res => {
+        if (res.ok) {
+          setLoading(true)
+          getAllAccount().then((res) => {
+            setDataSource(res)
+          }
+          )
+          alert("Update successfully.")
+          setLoading(false)
+        } else {
+          alert("Update fail!")
+        }
+      })
 
-  // const fetchUserData = () => {
-  //   fetch("https://momkitchen.azurewebsites.net/api/User/getalluser")
-  //     .then(response => {
-  //       return response.json()
-  //     })
-  //     .then(data => {
-  //       setDataSource(data)
-  //     })
-  // }
-  // useEffect(() => {
-  //   fetchUserData()
-  // }, [])
+  }
   return (
     <div>
       <BootstrapNavbar />
@@ -164,34 +206,37 @@ const AccountManagement = () => {
                 },
                 {
                   title: 'Password',
-                  dataIndex: "email"
-                },
-
-                {
-                  title: 'Phone',
-                  dataIndex: "phone"
+                  dataIndex: "password"
                 },
                 {
                   title: 'Role',
-                  dataIndex: "phone"
+                  dataIndex: "roleId",
                 },
                 {
                   title: 'Status',
-                  dataIndex: "id",
-                  render: () => (
-                    <span style={{
-                      textDecorationLine: 'underline',
-                      cursor: 'pointer',
-                    }}
-                      onClick={() => setToggle(!toggle)}
-                    >{toggle ? 'Ban' : 'Unban'}</span>
+                  dataIndex: "accountStatus",
+                  render: (_, record) => (
+                    <>
+                      <Badge key={record.id}>
+                        {(record.accountStatus === "true") || (record.accountStatus === "True") ? <Tag color='geekblue'
+                          onClick={() => onBanAccount(record)}
+                          style={{
+                            cursor: 'pointer',
+                          }}>Inactive</Tag> : <Tag color='green' style={{ cursor: 'pointer' }} onClick={() => onBanAccount(record)}>Active</Tag>}
+                      </Badge>
+                    </>
                   )
                 },
                 {
                   title: "Actions",
                   render: (record) => {
                     return (
-                      <div>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'row'
+                      }}>
                         <EditOutlined
                           onClick={() => onEditRecord(record)
                           }
@@ -227,19 +272,7 @@ const AccountManagement = () => {
             }
             }
             cancelText={<div>Cancel</div>}
-            onOk={() => {
-              setDataSource(pre => {
-                return pre.map(user => {
-                  if (user.id === editingUser.id) {
-                    return editingUser
-                  } else {
-                    return user
-                  }
-                })
-              })
-              resetEditing()
-            }
-            }
+            onOk={() => updateAccount()}
             closeIcon={<div style={{
               marginLeft: -30
             }}><CloseOutlined /></div>}
@@ -273,21 +306,6 @@ const AccountManagement = () => {
                       </Grid>
                       <Grid item lg={6}>
                         <TextField
-                          label="Phone"
-                          placeholder='Enter user phone number...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.phone}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, phone: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
                           label="Password"
                           placeholder='Enter user password...'
                           variant='outlined'
@@ -301,20 +319,29 @@ const AccountManagement = () => {
                         >
                         </TextField>
                       </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Role"
-                          placeholder='Role....'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.password}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, password: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
+                      <Grid item lg={12}>
+                        {/* <TextField
+                        label="Role"
+                        placeholder='Enter new role...'
+                        variant='outlined'
+                        fullWidth
+                        value={editingUser?.roleId}
+                        onChange={(e) => {
+                          setEditingUser(pre => {
+                            return { ...pre, roleId: e.target.value }
+                          })
+                        }}
+                      >
+                      </TextField> */}
+                        <Dropdown>
+                          <Dropdown.Toggle id="dropdown-basic" variant={value} onChange={handleChange}>
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            <Dropdown.Item eventKey="1">Action</Dropdown.Item>
+                            <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
+                            <Dropdown.Item eventKey="3">Something else</Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
                       </Grid>
                     </Grid>
                   ))

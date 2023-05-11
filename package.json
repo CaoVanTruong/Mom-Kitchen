@@ -37,6 +37,7 @@
     "react-sparklines": "^1.7.0",
     "reactstrap": "^9.0.1",
     "remixicon": "^2.5.0",
+    "sass": "^1.62.1",
     "simplebar-react": "^3.2.3",
     "slick-carousel": "^1.8.1",
     "web-vitals": "^1.1.2"

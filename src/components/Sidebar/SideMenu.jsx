@@ -3,10 +3,15 @@ import { NavLink, Link, useNavigate } from 'react-router-dom'
 import '../../styles/sideMenu.css'
 import logo from "../../assets/images/res-logo.png";
 import { Menu } from 'antd'
-import { AppstoreOutlined, UserOutlined, ShoppingCartOutlined, SolutionOutlined, LogoutOutlined, IdcardOutlined ,ApartmentOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, UserOutlined, ShoppingCartOutlined, SolutionOutlined, LogoutOutlined, IdcardOutlined, ApartmentOutlined } from '@ant-design/icons'
 import { Navigate } from 'react-router-dom';
 function SideMenu() {
+
     const navigate = useNavigate()
+    const logOut = () => {
+        localStorage.clear()
+        navigate('/home')
+    }
     const menuItem = [
         {
             key: '/dashboard',
@@ -40,8 +45,9 @@ function SideMenu() {
         // },
         {
             key: '/home',
-            label: "Log out",
-            icon: <LogoutOutlined />
+            label: 'Log out',
+            icon: <LogoutOutlined />,
+            danger: true
         },
     ]
     return (
@@ -51,6 +57,9 @@ function SideMenu() {
                 mode='vertical'
                 onClick={(item) => {
                     navigate(item.key)
+                    if (item.key === '/home') {
+                        localStorage.clear()
+                    }
                 }}
                 items={
                     menuItem

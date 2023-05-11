@@ -6,7 +6,6 @@ import FoodDetails from "../pages/FoodDetails";
 import Cart from "../pages/Cart";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import Checkout from "../components/UI/checkout/Checkout";
 import UserManagement from "../pages/admin/UserManagement";
 import MarketManagement from "../pages/admin/MarketManagement";
 import UserProfile from "../pages/UserProfile";
@@ -30,7 +29,6 @@ const BigRouters = () => {
       <Route path="/cart" element={<Cart />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/checkout" element={<Checkout />} />
       <Route path="/marketManagement" element={<MarketManagement />} />
       <Route path="/profile" element={<UserProfile />} />
       <Route path="/dashboard" element={<Dashboard />} />

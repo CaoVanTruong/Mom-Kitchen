@@ -220,48 +220,6 @@ const UserManagement = () => {
             >
             </Table>
           </Space>
-          {/* edit product */}
-          {/* <div>
-            <Modal
-              title="Edit Product"
-              open={isEditing}
-              okText={<div>Save</div>}
-              onCancel={() => {
-                resetEditing()
-                // setIsEditing(false)
-              }
-              }
-              cancelText={<div>Cancel</div>}
-              onOk={() => {
-                setDataSource(pre => {
-                  return pre.map(user => {
-                    if (user.id === editingUser.id) {
-                      return editingUser
-                    } else {
-                      return user
-                    }
-                  })
-                })
-                resetEditing()
-              }
-              }
-              closeIcon={<div style={{
-                marginLeft: -30
-              }}><CloseOutlined /></div>}
-            >
-              <Image src={editingUser?.image}></Image>
-              <Input value={editingUser?.firstName} onChange={(e) => {
-                setEditingUser(pre => {
-                  return { ...pre, firstName: e.target.value }
-                })
-              }} />
-              <Input value={editingUser?.email} onChange={(e) => {
-                setEditingUser(pre => {
-                  return { ...pre, email: e.target.value }
-                })
-              }} />
-            </Modal>
-          </div> */}
         </Space>
         <div>
           {/* modal edit */}
@@ -294,16 +252,6 @@ const UserManagement = () => {
           >
             <Image src={editingUser?.image}
             ></Image>
-            {/* <Input value={editingProduct?.title} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, title: e.target.value }
-                })
-              }} />
-              <Input value={editingProduct?.price} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, price: e.target.value }
-                })
-              }} /> */}
             <div>
               <Paper style={{
                 marginTop: 20
