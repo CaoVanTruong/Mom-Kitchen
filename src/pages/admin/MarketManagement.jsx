@@ -147,17 +147,9 @@ const MarketManagement = () => {
                         sorter: (a, b) => a.price - b.price
                       }, {
                         title: 'Session',
-                        dataIndex: "rating",
-                        filters: [
-                          {
-                            text: 'Session 1',
-                            value: 'Session 2'
-                          },
-                          {
-                            text: 'Session 2',
-                            value: 'Session 2'
-                          },
-                        ],
+                        dataIndex: "title",
+                        defaultSortOrder: 'descend',
+                        sorter: (a, b) => a.session - b.session
                         // onFilter:(value,record) => record.rating.indexOf(value)===0
                       }
                       ,
@@ -171,6 +163,10 @@ const MarketManagement = () => {
                       {
                         title: 'Create date',
                         dataIndex: "brand"
+                      },
+                      {
+                        title: 'Status',
+                        dataIndex:"stock"
                       },
                       {
                         title: "Actions",
@@ -198,7 +194,7 @@ const MarketManagement = () => {
                   dataSource={dataSource}
                   pagination={
                     {
-                      pageSize: 7
+                      pageSize: 10
                     }
                   }
                 >

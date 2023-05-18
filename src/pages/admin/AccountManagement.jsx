@@ -202,7 +202,9 @@ const AccountManagement = () => {
               columns={[
                 {
                   title: 'Email',
-                  dataIndex: "email"
+                  dataIndex: "email",
+                  defaultSortOrder: 'a-z',
+                  sorter: (a, b) => a.email.localeCompare(b.email)
                 },
                 {
                   title: 'Password',
@@ -211,6 +213,23 @@ const AccountManagement = () => {
                 {
                   title: 'Role',
                   dataIndex: "roleId",
+                  defaultSortOrder:'ascend',
+                  sorter:(a,b) => a.roleId  - b.roleId,
+                  render: (_, record) => (
+                    <>
+                      <Badge key={record.id}>
+                        {
+                          record.roleId == 1 ?
+                            <Tag color='pink' style={{ cursor: 'pointer' }}>Admin</Tag> :
+                            record.roleId == 2 ?
+                              <Tag color='yellow' style={{ cursor: 'pointer' }}>Customer</Tag> :
+                              record.roleId == 3 ?
+                                <Tag color='blue' style={{ cursor: 'pointer' }}>Chef</Tag> :
+                                <Tag color='orange' style={{ cursor: 'pointer' }}>Shipper</Tag>
+                        }
+                      </Badge>
+                    </>
+                  )
                 },
                 {
                   title: 'Status',

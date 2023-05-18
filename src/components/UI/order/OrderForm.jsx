@@ -1,28 +1,38 @@
-import React from "react";
-
+import React, { useState, useEffect } from "react";
+import { evaluate } from "mathjs";
 import CommonSection from "../common-section/CommonSection";
 import Helmet from "../../Helmet/Helmet";
 import { useSelector, useDispatch } from "react-redux";
-import { Container, Row, Col } from "reactstrap";
 import { cartActions } from "../../../store/shopping-cart/cartSlice";
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Header from "../../Header/Header.jsx";
 import Footer from "../../Footer/Footer.jsx"
 import Carts from "../../UI/cart/Carts.jsx";
-import { Paper, TextField, Typography } from "@mui/material";
+import { Paper, TextField, Typography, Divider } from "@mui/material";
 import { Button, Space } from "antd";
+import { Container, Row, Col } from "reactstrap"
+import PaypalCheckout from "../../Paypal/PaypalCheckout";
 const OrderForm = () => {
   const totalAmount = useSelector((state) => state.cart.totalAmount);
   const showCart = useSelector((state) => state.cartUi.cartIsVisible);
   const cartProducts = useSelector((state) => state.cart.cartItems);
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
-
+  const [totalPrice, setTotalPrice] = useState(totalAmount)
+  useEffect(() => {
+    if (totalAmount === 0) {
+      setTotalPrice(1)
+    } else {
+      const dollar = totalAmount / 23000
+      setTotalPrice(evaluate(dollar.toFixed(2)))
+      console.log("total price ne " + totalPrice)
+    }
+  }, [totalAmount])
+  const product = {
+    description: "Description mon an thu 1",
+    price: totalPrice
+  }
   return (
     <Helmet title="Cart">
       <Header />
@@ -42,36 +52,54 @@ const OrderForm = () => {
               paddingLeft: 20,
               fontSize: 20,
               color: 'green'
-            }}>Address</Typography>
+            }}>User's information</Typography>
             <div className="CusInfor" style={{
               display: 'flex',
               flexDirection: 'column'
             }}>
-              <Space>
-                <div className="NameAndPhone" style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  padding: 20
-                }}>
-                  <TextField
-                    label="Name"
-                    style={{
-                      marginRight: 10
-                    }}
-                  >
-                  </TextField>
-                  <TextField
-                    label="Phone">
-                  </TextField>
+              <Container>
+                <Row className="mb-2">
+                  <Col>
+                    <TextField
+                      label="Name"
+                      variant="filled"
+                      defaultValue="Customer name"
+                      disabled={false}
+                      style={{
+                        width: "100%"
+                      }}
+                    >
+                    </TextField>
+                  </Col>
+                </Row>
+                <Row className="mb-2">
+                  <Col>
+                    <TextField
+                      label="Building"
+                      variant="filled"
+                      defaultValue="Customer Building"
+                      style={{
+                        width: "100%"
+                      }}>
+                    </TextField>
+                  </Col>
+                </Row>
+                <Row className="mb-2">
+                  <Col>
+                    <TextField
+                      label="Phone"
+                      variant="filled"
+                      type="number"
+                      defaultValue="123456"
+                      style={{
+                        width: "100%"
+                      }}
+                    >
+                    </TextField>
+                  </Col>
+                </Row>
+              </Container>
 
-                </div>
-              </Space>
-              <TextField label="Building"
-                style={{
-                  margin: 20,
-                }}>
-
-              </TextField>
             </div>
           </Paper>
           <Paper style={{
@@ -93,30 +121,49 @@ const OrderForm = () => {
                 paddingLeft: 50
               }}>
                 {cartProducts.map((product) => (
-                  <ListItem key={product.name} sx={{ py: 1, px: 0 }}>
-                    <div style={{
-                      border: "2px solid green",
-                      borderRadius: 5, 
-                      padding: 5,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginRight: 10,
-                      color: 'red',
-                      width: 30,
-                      height: 30
-                    }}>{product.quantity}x</div>
-                    <ListItemText primary={product.title} secondary={product.desc} />
-                    <Typography variant="body2">{product.price} VND</Typography>
+                  <ListItem key={product.name} sx={{ py: 1, px: 0 }} style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    padding: 20
+                  }}>
+                    <Space>
+                      <div style={{
+                        border: "2px solid green",
+                        borderRadius: 5,
+                        padding: 5,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginRight: 10,
+                        color: 'red',
+                        width: 30,
+                        height: 30,
+                        fontSize: 20,
+                        position: 'relative'
+                      }}>{product.quantity}x</div>
+                      <div style={{
+                        fontSize: 24,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>{product.title}</div>
+                    </Space>
+                    {/* <ListItemText primary={product.title}/> */}
+                    <Typography variant="body2"><span style={{ fontSize: 24, fontWeight: 'bold' }}>{product.price} VND</span></Typography>
                   </ListItem>
                 ))}
 
                 <ListItem sx={{ py: 1, px: 0 }}>
-                  <ListItemText primary="Total" style={{
-                    color: 'red'
-                  }} />
+                  <ListItemText><span style={{
+                    fontSize: 24,
+                    fontWeight: 'bold',
+                    color: 'red',
+                    padding: 20
+                  }}>Total</span></ListItemText>
                   <Typography variant="subtitle1" sx={{ fontWeight: 700 }} style={{
-                    color: 'red'
+                    fontSize: 20,
+                    color: 'red',
+                    padding: 20
                   }}>
                     {totalAmount} VND
                   </Typography>
@@ -124,45 +171,22 @@ const OrderForm = () => {
               </List>
             </div>
             <div style={{
-              marginBottom: 10
+              marginBottom: 10,
             }}>
               <h6 style={{
                 paddingLeft: 20,
               }}>Payment</h6>
-              <FormControl style={{
-                paddingLeft: 20,
-                display: 'flex',
-                flexDirection: 'column',
-
-              }} >
-                <RadioGroup
-                  aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue="female"
-                  name="radio-buttons-group"
-                >
-                  <Space>
-                    <FormControlLabel value="female" control={<Radio />} label="Cash Only" />
-                    <FormControlLabel value="male" control={<Radio />} label="Payment by MoMo" />
-                  </Space>
-                </RadioGroup>
-              </FormControl>
+              <span style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: 100
+              }}>
+              </span>
             </div>
             <div style={{
               display: 'flex',
             }}  ></div>
-            <div style={{
-              position: 'relative',
-              bottom: '10px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <Button style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'flex-end'
-              }}>Submit</Button>
-            </div>
+            <PaypalCheckout price={totalPrice} />
           </Paper>
         </Container>
       </section>

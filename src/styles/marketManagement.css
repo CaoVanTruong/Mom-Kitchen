@@ -3,6 +3,7 @@
     flex: 1;
     justify-content: flex-start;
     align-items: flex-start;
+    margin-right: 10px;
 }
 .PageContentMarket {
     margin-top: 5px;

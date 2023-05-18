@@ -6,6 +6,7 @@ import "../../../styles/cart-item.css";
 import { useDispatch } from "react-redux";
 import { cartActions } from "../../../store/shopping-cart/cartSlice";
 import { Link } from "react-router-dom";
+import { Divider } from "@mui/material";
 const CartItem = ({ item }) => {
   const { id, title, price, image01, quantity, totalPrice } = item;
 
@@ -41,7 +42,7 @@ const CartItem = ({ item }) => {
             <h6 className="cart__product-title">{title}</h6>
             <p className=" d-flex align-items-center gap-5 cart__product-price">
               {quantity}x <span>{totalPrice} VNĐ</span>
-            </p>
+            </p >
             <div className=" d-flex align-items-center justify-content-between increase__decrease-btn">
               <span className="increase__btn" onClick={incrementItem}>
                 <i className="ri-add-line"></i>
@@ -52,12 +53,16 @@ const CartItem = ({ item }) => {
               </span>
             </div>
           </div>
-
           <span className="delete__btn" onClick={deleteItem}>
             <i className="ri-close-line"></i>
           </span>
         </div>
       </div>
+      <Divider style={{
+        backgroundColor:'black',
+        height:"1px",
+        marginTop:10
+      }} />
     </ListGroupItem>
   );
 };

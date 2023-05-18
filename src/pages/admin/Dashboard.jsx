@@ -7,10 +7,12 @@ import { getRecentOrders } from '../../API/recentOrder'
 import '../../styles/dashboard.css'
 import { Button } from '@mui/material'
 import { Container, Row, Col } from 'react-bootstrap'
-
 function Dashboard() {
     return (
-        <div>
+        <div style={{
+            backgroundColor: '#F8FAFC',
+            height: "100vh"
+        }}>
             <BootstrapNavbar />
             <SideMenu />
             <div className='SideMenuAndPageContentDashboard'>
@@ -20,7 +22,7 @@ function Dashboard() {
                             marginLeft: 10
                         }}>Dashboard</Typography.Title>
                     </div>
-                    <div>
+                    <div className='Widgets'>
                         <Container>
                             <Row>
                                 <Col>
@@ -32,13 +34,14 @@ function Dashboard() {
                                                 backgroundColor: "rgba(0,255,0,0.25)",
                                                 borderRadius: 20,
                                                 fontSize: 24,
-                                                padding: 8
+                                                padding: 8,
                                             }}
                                         />}
                                         title={<span style={{
                                             fontSize: 24
                                         }}>Orders</span>}
-                                        value={12345} />
+                                        value={12346}
+                                    />
                                 </Col>
                                 <Col>
                                     <DashboardCard
@@ -49,7 +52,10 @@ function Dashboard() {
                                                 backgroundColor: "rgba(0,0,255,0.25)",
                                                 borderRadius: 20,
                                                 fontSize: 24,
-                                                padding: 8
+                                                padding: 8,
+                                                WebkitBoxShadow: "2px 4px 10px 1px rgba(201,201,201,0.47)",
+                                                boxShadow: "2px 4px 10px 1px rgba(201,201,201,0.47)"
+
                                             }}
                                         />}
                                         title={<span style={{
@@ -81,8 +87,6 @@ function Dashboard() {
                                 </Col>
                             </Row>
                         </Container>
-
-
                     </div>
                     <Space style={{
                         marginTop: 10
@@ -97,15 +101,24 @@ function Dashboard() {
 }
 function DashboardCard({ icon, title, value }) {
     return (
-        <Card>
-            <Space direction='horizontal'>
-                {icon}
+        <Card style={{
+            borderWidth: "2px",
+            boxShadow: '1px 2px 9px #F4AAB9',
+        }}>
+            <Space direction='horizontal' style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                boxShadow: "#F8FAFC",
+            }}>
                 <Statistic style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }} title={title} value={value} />
+                    color: 'blue',
+                    marginLeft: 0,
+                }} title={title} value={value}>
+                </Statistic>
+                {icon}
+
             </Space>
         </Card>
     )

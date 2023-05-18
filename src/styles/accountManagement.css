@@ -4,6 +4,7 @@
     flex: 1;
     justify-content: flex-start;
     align-items: flex-start;
+    margin-right: 10px;
 }
 .PageContentAccountManage{
     margin-top: 5px;

@@ -39,6 +39,7 @@ const BigRouters = () => {
       <Route path="/accountManagement" element={<AccountManagement />} />
       <Route path="/sessionAndBatch" element={<SessionAndBatch />} />
 
+
     </Routes>
 
   );

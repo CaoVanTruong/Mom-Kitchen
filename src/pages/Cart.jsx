@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import CommonSection from "../components/UI/common-section/CommonSection";
 import Helmet from "../components/Helmet/Helmet";
@@ -10,11 +10,22 @@ import { Link } from "react-router-dom";
 import Header from "../components/Header/Header.jsx";
 import Footer from "../components/Footer/Footer.jsx";
 import Carts from "../components/UI/cart/Carts.jsx";
+import { useNavigate } from "react-router-dom";
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
   const showCart = useSelector((state) => state.cartUi.cartIsVisible);
-
+  const account = localStorage.getItem('user-infor')
+  const navigate = useNavigate()
+  const checkAccount = () => {
+    if (account === null) {
+      navigate("/login")
+      alert("You have to sign in first.")
+    } else {
+      navigate('/orderForm')
+      // setToggleCart1(toggleCart)
+    }
+  }
   return (
     <Helmet title="Cart">
       <Header />
@@ -27,14 +38,14 @@ const Cart = () => {
               {cartItems.length === 0 ? (
                 <h5 className="text-center">Your cart is empty</h5>
               ) : (
-                <table className="table table-bordered">
+                <table className="table table-bordered" >
                   <thead>
                     <tr>
-                      <th>Image</th>
-                      <th>Product Title</th>
-                      <th>Price</th>
-                      <th>Quantity</th>
-                      <th>Delete</th>
+                      <th className="text-center">Image</th>
+                      <th className="text-center">Product Title</th>
+                      <th className="text-center">Price</th>
+                      <th className="text-center">Quantity</th>
+                      <th className="text-center">Delete</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -47,7 +58,7 @@ const Cart = () => {
 
               <div className="mt-4">
                 <h6>
-                  Subtotal: 
+                  Subtotal:
                   <span className="cart__subtotal">{totalAmount} VND</span>
                 </h6>
                 <p>Taxes and shipping will calculate at checkout</p>
@@ -55,8 +66,10 @@ const Cart = () => {
                   <button className="addTOCart__btn me-4">
                     <Link to="/foods">Continue Shopping</Link>
                   </button>
-                  <button className="addTOCart__btn">
-                    <Link to="/orderForm">Proceed to checkout</Link>
+                  <button className="addTOCart__btn" onClick={() => checkAccount()}>
+                    {/* <Link to="/orderForm">Proceed to checkout</Link>
+                   */}
+                    Proceed to checkout
                   </button>
                 </div>
               </div>
@@ -64,13 +77,13 @@ const Cart = () => {
           </Row>
         </Container>
       </section>
-      <Footer/>
+      <Footer />
     </Helmet>
   );
-};  
+};
 
 const Tr = (props) => {
-  const { id, image01, title, price, quantity} = props.item;
+  const { id, image01, title, price, quantity } = props.item;
   const dispatch = useDispatch();
 
   const deleteItem = () => {

@@ -68,13 +68,14 @@ const SessionAndBatch = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [isAddingBatch, setIsAddingBatch] = useState(false)
-
-  const [isAddingUser, setIsAddingUser] = useState(null)
+  const [isAddingSession, setIsAddingSession] = useState(false)
+  const [addingSession, setAddingSession] = useState(null)
   const [editingUser, setEditingUser] = useState(null)
   const [loading, setLoading] = useState(false)
   const [dataSource, setDataSource] = useState([])
   const [sessionArray, setSessionArray] = useState([])
   const [toggle, setToggle] = useState(false)
+  const [sessionTitle, setSessionTitle] = useState()
   const onDeleteRecord = (record) => {
     Modal.confirm({
       title: 'Are you sure, you want to delete this record?',
@@ -88,22 +89,15 @@ const SessionAndBatch = () => {
       }
     })
   }
-  const toggleSession = (record) => {
+  const onChangeStatusSession = (record) => {
     setLoading(true)
-    let status
-    console.log("id la gi" + record.id)
-    console.log("status cua record hien tai la" +record.status)
-    if(record.status === true) {
-      status = false
-    } else if (record.status === false) {
-      status = true
-    }
-    console.log("Status la" + status)
-
-    fetch('https://momkitchen.azurewebsites.net/api/Session?id=' + record.id + '&status=' + status,
+    fetch('https://momkitchen.azurewebsites.net/api/Session/enablestarttime?id=' + record.id,
       {
-        method: 'PATCH',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+
+        })
       }).then(res => {
         if (res.ok) {
           setLoading(true)
@@ -130,7 +124,7 @@ const SessionAndBatch = () => {
   }
   const resetAdding = () => {
     setIsAdding(false)
-    setIsAddingUser(null)
+    setIsAddingSession(false)
   }
 
   const resetAddingBatch = () => {
@@ -145,10 +139,12 @@ const SessionAndBatch = () => {
     })
   }, [])
   const onCreateNewSession = () => {
+    console.log("Gia tri sessiontitle là" + sessionTitle)
     fetch('https://momkitchen.azurewebsites.net/api/Session', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        title:sessionTitle
       })
     }).then(res => {
       if (res.ok) {
@@ -182,6 +178,7 @@ const SessionAndBatch = () => {
             getAllSession().then(res => {
               setDataSource(res)
               setLoading(false)
+              setIsAddingSession(false)
               alert("Delete session successfully.")
             })
           } else {
@@ -190,6 +187,7 @@ const SessionAndBatch = () => {
         }
         )
       }
+
     })
   }
   return (
@@ -241,7 +239,7 @@ const SessionAndBatch = () => {
                 }}
                 onClick={
                   // onAddNewUser
-                  () => onCreateNewSession()
+                  () => setIsAddingSession(true)
                 }
               >
                 <PlusCircleOutlined style={{
@@ -267,8 +265,14 @@ const SessionAndBatch = () => {
                   dataIndex: "id"
                 },
                 {
+                  title: 'Title',
+                  dataIndex: "title"
+                },
+                {
                   title: 'Create Date',
-                  dataIndex: "createDate"
+                  dataIndex: "createDate",
+                  defaultSortOrder:'ascend',
+                  sorter:(a,b) => new Date(a.createDate) - new Date(b.createDate)
                 },
 
                 {
@@ -286,10 +290,10 @@ const SessionAndBatch = () => {
                     <>
                       <Badge key={record.id}>
                         {(record.status === true) ? <Tag color='geekblue'
-                          onClick={() => toggleSession(record)}
+                          onClick={() => onChangeStatusSession(record)}
                           style={{
                             cursor: 'pointer',
-                          }}>Off</Tag> : <Tag color='green' style={{ cursor: 'pointer' }} onClick={() => toggleSession(record)}>On</Tag>}
+                          }}>Off</Tag> : <Tag color='green' style={{ cursor: 'pointer' }} onClick={() => onChangeStatusSession(record)}>On</Tag>}
                       </Badge>
                     </>
                   )
@@ -452,7 +456,7 @@ const SessionAndBatch = () => {
           {/* Modal add session */}
           <Modal
             title="Add session"
-            open={isAdding}
+            open={isAddingSession}
             okText={<div>Save</div>}
             onCancel={() => {
               resetAdding()
@@ -460,15 +464,13 @@ const SessionAndBatch = () => {
             }
             }
             cancelText={<div>Cancel</div>}
-            // onOk={
-            //   // () => {
-            //   //   resetAdding()
-            //   // }
-            // }
+            onOk={() => {
+              onCreateNewSession()
+              setIsAddingSession(false)
+            }
+            }
             closeIcon={
-              <div style={{
-                marginLeft: -30
-              }}><CloseOutlined /></div>}
+              <div><CloseOutlined /></div>}
           >
             <div>
               <Paper style={{
@@ -482,63 +484,13 @@ const SessionAndBatch = () => {
                       key={index}
                       className='inputGroup'
                     >
-                      <Grid item lg={6}>
+                      <Grid item lg={12}>
                         <TextField
-                          label="E-mail"
-                          placeholder='Enter user email...'
+                          label="Title"
+                          placeholder='Enter session title...'
                           variant='outlined'
                           fullWidth
-                          value={editingUser?.email}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, email: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Password"
-                          placeholder='Enter user password...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.password}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, password: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Phone Number"
-                          placeholder='Enter phone number...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.phone}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, phone: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Role"
-                          placeholder='Enter role...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.phone}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, phone: e.target.value }
-                            })
-                          }}
+                          onChange={(e) => setSessionTitle(e.target.value)}
                         >
                         </TextField>
                       </Grid>

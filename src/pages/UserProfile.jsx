@@ -6,7 +6,9 @@ import Footer from '../components/Footer/Footer'
 import '../styles/user-profile.css'
 import { Link } from 'react-router-dom'
 import UserSideBar from '../components/User/UserSideBar'
+
 const UserProfile = () => {
+
     const userTemplate = [
         {
             name: "",
@@ -17,6 +19,7 @@ const UserProfile = () => {
     ]
     const [users, setUsers] = useState([userTemplate])
     const user = localStorage.getItem('user-infor')
+
     return (
         <div>
             <Header />

@@ -128,8 +128,7 @@ const Home = () => {
                 </h1>
 
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui
-                  magni delectus tenetur autem, sint veritatis!
+                MomKitchen-Platform connect between customers with family-liked meals chef.
                 </p>
 
                 <div className="hero__btns d-flex align-items-center gap-5 mt-4">
@@ -323,7 +322,7 @@ const Home = () => {
         </Container>
       </section>
 
-      <section className="pt-0">
+      {/* <section className="pt-0">
         <Container>
           <Row>
             <Col lg="12" className="text-center mb-5 ">
@@ -336,7 +335,7 @@ const Home = () => {
             ))}
           </Row>
         </Container>
-      </section>
+      </section> */}
 
       <section>
         <Container>

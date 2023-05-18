@@ -1,9 +1,10 @@
 
-.SideMenuAndPageContentUser{
+.SideMenuAndPageContentSessionAndBatch{
     display: flex;
     flex: 1;
     justify-content: flex-start;
     align-items: flex-start;
+    margin-right: 10px;
 }
 .PageContentSessionBatch{
     margin-top: 5px;

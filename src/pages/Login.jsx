@@ -86,7 +86,8 @@ const Login = () => {
                     type="email"
                     required
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)
+                    }
                   />
                 </div>
                 <div className="form__group">
@@ -113,8 +114,9 @@ const Login = () => {
                   <h6 style={{
                     justifyContent: 'center',
                     alignItems: 'center',
-                    paddingTop: 10
-                  }}>Sign In</h6>
+                    paddingTop: 10,
+                  }}
+                  >Sign In</h6>
                 </button>
 
                 <Divider style={{
