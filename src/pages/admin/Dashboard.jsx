@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { ShoppingCartOutlined, UserOutlined, DollarCircleOutlined } from "@ant-design/icons"
-import { Card, Space, Statistic, Typography, Table } from 'antd'
+import { ShoppingCartOutlined, UserOutlined, DollarCircleOutlined, EyeOutlined, CloseOutlined } from "@ant-design/icons"
+import { Card, Space, Statistic, Typography, Table, Modal, Image } from 'antd'
 import BootstrapNavbar from '../../components/Sidebar/BootstrapNavbar'
 import SideMenu from '../../components/Sidebar/SideMenu'
 import { getRecentOrders } from '../../API/recentOrder'
 import '../../styles/dashboard.css'
 import { Button } from '@mui/material'
 import { Container, Row, Col } from 'react-bootstrap'
+import { Grid, Paper, TextField, Box } from '@mui/material'
+import { getAllOrder } from '../../API/admin/dashboard'
 function Dashboard() {
     return (
         <div style={{
@@ -124,15 +126,54 @@ function DashboardCard({ icon, title, value }) {
     )
 }
 function RecentOrders() {
+    const orderTemplate = [
+        {
+            id: 0,
+            date: "",
+            customerId: 0,
+            batchId: 0,
+            deliveryStatus: "",
+            buildingId: 0,
+            quantity: 0,
+            sessionId: 0,
+            email: "",
+            customerPhone: "",
+            deliveryTime: "",
+            note: ""
+        }
+    ]
     const [dataSource, setDataSource] = useState([])
     const [loading, setLoading] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
+    const [editingProduct, setEditingProduct] = useState(null)
+    const [order, setOrder] = useState(orderTemplate)
+    const resetEditing = () => {
+        setIsEditing(false)
+        setEditingProduct(null)
+    }
+    const onEditRecord = (record) => {
+        setIsEditing(true)
+        setEditingProduct({ ...record })
+    }
     useEffect(() => {
         setLoading(true)
-        getRecentOrders().then(res => {
-            setDataSource(res.products.splice(0, 3));
+        getAllOrder().then(data => {
+            setDataSource(data);
             setLoading(false)
         })
     }, [])
+
+    const fetchPaymentByOrderId = (id) => {
+        fetch(`https://momkitchen.azurewebsites.net/api/Order/getpaymentbyorderid?orderid=${id}`)
+            .then((res) => res.json())
+            .then((data) => {
+                return <div>{data.amount}</div>
+            })
+            .catch((error) => {
+                console.log('Error:', error);
+            });
+    };
+
     return (
         <div>
             <div>
@@ -153,18 +194,14 @@ function RecentOrders() {
                         },
 
                         {
-                            title: 'Package food',
-                            dataIndex: 'title',
-                            width: 300
-                        },
-                        {
-                            title: 'Customer',
-                            dataIndex: 'title',
-                            width: 200
+                            title: 'Create date',
+                            dataIndex: 'date',
+                            width: 300,
+                            sorter: (a, b) => new Date(a.date) - new Date(b.date),
                         },
                         {
                             title: 'Customer phone',
-                            dataIndex: 'title',
+                            dataIndex: 'customerPhone',
                             width: 200
                         },
                         {
@@ -174,25 +211,50 @@ function RecentOrders() {
 
                         },
                         {
+                            title: "Total price",
+                            dataIndex: "totalPrice",
+                            key:'totalPrice'
+                        },
+                        {
                             title: 'Batch',
-                            dataIndex: 'discountedPrice',
+                            dataIndex: 'batchId',
                             width: 50
                         },
                         {
-                            title: 'Total',
-                            dataIndex: 'price',
-                            width: 50
-                        },
-                        {
-                            title: 'Order date',
-                            dataIndex: 'date',
+                            title: 'Status',
+                            dataIndex: 'status',
                             width: 200
                         },
                         {
                             title: 'Delivery status',
-                            dataIndex: 'date',
+                            dataIndex: 'deliveryStatus',
                             width: 50
                         },
+                        {
+                            title: 'Building',
+                            dataIndex: 'buildingId',
+                            key: 'buildingId',
+                            width: 50
+                        },
+                        {
+                            title: 'Session',
+                            dataIndex: 'sessionId',
+                            width: 50
+                        },
+                        {
+                            title: 'Action',
+                            render: (record) => {
+                                return (
+                                    <div style={{
+                                        display: 'flex'
+                                    }}>
+                                        <EyeOutlined
+                                            onClick={() => onEditRecord(record)}
+                                        />
+                                    </div>
+                                )
+                            }
+                        }
 
                     ]
                     }
@@ -202,6 +264,116 @@ function RecentOrders() {
                 >
                 </Table>
             </div>
+            <Modal
+                width={1000}
+                title="View detail"
+                open={isEditing}
+                okButtonProps={{
+                    style: {
+                        display: 'none'
+                    }
+                }}
+                onCancel={() => {
+                    resetEditing()
+                }
+                }
+                cancelText={<div>Cancel</div>}
+                onOk={false}
+                closeIcon={<div style={{
+                    marginLeft: -30
+                }}><CloseOutlined /></div>}
+            >
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 20
+                }}>
+                    <Image style={{
+                        borderRadius: 20
+                    }} src={editingProduct?.thumbnail}></Image>
+                </div>
+                <div>
+                    <Paper style={{
+                        marginTop: 20
+                    }} component={Box} p={4} mx="auto">
+                        {
+                            orderTemplate.map((order, index) => (
+                                <Grid
+                                    container
+                                    spacing={3}
+                                    key={index}
+                                    className='inputGroup'
+                                >
+                                    <Grid item lg={6}>
+                                        <TextField
+                                            label="Order ID"
+                                            variant='outlined'
+                                            fullWidth
+                                            value={editingProduct?.id}
+                                            disabled={true}
+                                        >
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item lg={6}>
+                                        <TextField
+                                            label="Batch"
+                                            variant='outlined'
+                                            fullWidth
+                                            value={editingProduct?.batchId}
+                                            disabled={true}
+                                        >
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item lg={6}>
+                                        <TextField
+                                            label="Delivery status"
+                                            variant='outlined'
+                                            fullWidth
+                                            value={editingProduct?.buildingId}
+                                            disabled={true}
+
+                                        >
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item lg={6}>
+                                        <TextField
+                                            label="Quantity"
+                                            variant='outlined'
+                                            fullWidth
+                                            value={editingProduct?.quantity}
+                                            disabled={true}
+
+                                        >
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item lg={6}>
+                                        <TextField
+                                            label="Session title"
+                                            variant='outlined'
+                                            fullWidth
+                                            value={editingProduct?.sessionId}
+                                            disabled={true}
+
+                                        >
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item lg={12}>
+                                        <TextField
+                                            label="Customer's Email"
+                                            variant='outlined'
+                                            fullWidth
+                                            value={editingProduct?.email}
+                                            disabled={true}
+                                        >
+                                        </TextField>
+                                    </Grid>
+                                </Grid>
+                            ))
+                        }
+                    </Paper>
+                </div>
+            </Modal>
         </div >
     )
 }

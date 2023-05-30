@@ -17,10 +17,6 @@ function BootstrapNavbar() {
                 style={{
                     marginLeft: 20
                 }}></img>
-            <h4 style={{
-                marginLeft: 50,
-                color:'yellowgreen'
-            }}>Mom-Kitchen's Dashboard</h4>
             <Space>
                 <BellOutlined
                     className="bellIcon"

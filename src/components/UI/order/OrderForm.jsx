@@ -11,6 +11,7 @@ import Header from "../../Header/Header.jsx";
 import Footer from "../../Footer/Footer.jsx"
 import Carts from "../../UI/cart/Carts.jsx";
 import { Paper, TextField, Typography, Divider } from "@mui/material";
+import Textarea from '@mui/joy/Textarea';
 import { Button, Space } from "antd";
 import { Container, Row, Col } from "reactstrap"
 import PaypalCheckout from "../../Paypal/PaypalCheckout";
@@ -18,8 +19,11 @@ const OrderForm = () => {
   const totalAmount = useSelector((state) => state.cart.totalAmount);
   const showCart = useSelector((state) => state.cartUi.cartIsVisible);
   const cartProducts = useSelector((state) => state.cart.cartItems);
-  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
   const [totalPrice, setTotalPrice] = useState(totalAmount)
+  const [note, setNote] = useState("")
+  const [inforUser, setInforUser] = useState({})
+  console.log("email hiện tại là " + localStorage.getItem('user-infor'))
+  console.log("sessionId hiện tại là" + JSON.stringify(cartProducts))
   useEffect(() => {
     if (totalAmount === 0) {
       setTotalPrice(1)
@@ -29,10 +33,22 @@ const OrderForm = () => {
       console.log("total price ne " + totalPrice)
     }
   }, [totalAmount])
-  const product = {
-    description: "Description mon an thu 1",
-    price: totalPrice
-  }
+  useEffect(() => {
+    fetch('https://momkitchen.azurewebsites.net/api/Account/getallcustomerbyemail?email=' + localStorage.getItem('user-infor'), {
+      method: 'GET'
+    }).then(response => {
+      return response.json()
+    }).then(data => {
+      setInforUser(data)
+      setBuildingOnChange(data.defaultBuilding)
+      setNameOnChange(data.name)
+      setPhoneOnChange(data.phone)
+    })
+  }, [])
+  // const { name, defaultBuilding, phone } = inforUser
+  const [buildingOnChange, setBuildingOnChange] = useState()
+  const [nameOnChange, setNameOnChange] = useState()
+  const [phoneOnChange, setPhoneOnChange] = useState()
   return (
     <Helmet title="Cart">
       <Header />
@@ -58,13 +74,14 @@ const OrderForm = () => {
               flexDirection: 'column'
             }}>
               <Container>
-                <Row className="mb-2">
+                <Row className="mb-2" lg="12">
                   <Col>
                     <TextField
                       label="Name"
                       variant="filled"
                       defaultValue="Customer name"
-                      disabled={false}
+                      value={nameOnChange}
+                      onChange={(e) => setNameOnChange(e.target.value)}
                       style={{
                         width: "100%"
                       }}
@@ -77,26 +94,34 @@ const OrderForm = () => {
                     <TextField
                       label="Building"
                       variant="filled"
-                      defaultValue="Customer Building"
+                      required
+                      type="number"
+                      defaultValue="1"
+                      value={buildingOnChange}
+                      InputProps={{ inputProps: { min: 1, max: 15 } }}
+                      onChange={(e) => setBuildingOnChange(e.target.value)}
                       style={{
                         width: "100%"
                       }}>
                     </TextField>
                   </Col>
-                </Row>
-                <Row className="mb-2">
                   <Col>
                     <TextField
                       label="Phone"
                       variant="filled"
-                      type="number"
-                      defaultValue="123456"
+                      type="phone"
+                      defaultValue="038 1111 2222"
+                      value={phoneOnChange}
+                      onChange={(e) => setPhoneOnChange(e.target.value)}
+                      required
                       style={{
                         width: "100%"
                       }}
                     >
                     </TextField>
                   </Col>
+                </Row>
+                <Row className="mb-2">
                 </Row>
               </Container>
 
@@ -168,6 +193,21 @@ const OrderForm = () => {
                     {totalAmount} VND
                   </Typography>
                 </ListItem>
+                <ListItem>
+                  <div style={{
+                    width: "100vw"
+                  }}>
+                    <Typography variant="h5" style={{
+                      marginBottom: 10
+                    }}>Note</Typography>
+                    <Textarea
+                      width={1000}
+                      placeholder="Note here for chef..."
+                      minRows={2}
+                      onChange={(e) => setNote(e.target.value)}
+                    />
+                  </div>
+                </ListItem>
               </List>
             </div>
             <div style={{
@@ -185,8 +225,11 @@ const OrderForm = () => {
             </div>
             <div style={{
               display: 'flex',
-            }}  ></div>
-            <PaypalCheckout price={totalPrice} />
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}  >
+              <PaypalCheckout price={totalPrice} email={localStorage.getItem('user-infor')} note={note} building={buildingOnChange} phone={phoneOnChange}/>
+            </div>
           </Paper>
         </Container>
       </section>
@@ -198,7 +241,7 @@ const OrderForm = () => {
 
 export default OrderForm;
 const Tr = (props) => {
-  const { id, image01, title, price, quantity } = props.item;
+  const { id, image, title, price, quantity } = props.item;
   const dispatch = useDispatch();
 
   const deleteItem = () => {
@@ -210,7 +253,7 @@ const Tr = (props) => {
       margin: 20
     }}>
       <td className="text-center cart__img-box">
-        <img src={image01} alt="" />
+        <img src={image} alt="" />
       </td>
       <td className="text-center">{title}</td>
       <td className="text-center">{price} VND</td>

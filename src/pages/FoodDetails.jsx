@@ -7,160 +7,195 @@ import CommonSection from "../components/UI/common-section/CommonSection";
 import { Container, Row, Col } from "reactstrap";
 import { useDispatch } from "react-redux";
 import { cartActions } from "../store/shopping-cart/cartSlice";
-
+import { Space, Tag, Typography } from "antd";
 import "../styles/product-details.css";
 
 import ProductCard from "../components/UI/product-card/ProductCard";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import Carts from "../components/UI/cart/Carts.jsx";
+import { getDishByFoodPackageId, getFoodPackageById } from "../API/user/userAPI";
+import { Paper, private_createTypography } from "@mui/material";
 
 const FoodDetails = () => {
+  const foodPackageTemplate =
+  {
+    name: "Là name",
+    image: "",
+    defaultPrice: 0,
+    description: "",
+    foodPackageStyleId: ""
+  }
+
+  const dispatch = useDispatch();
   const [tab, setTab] = useState("desc");
-  const [allProducts, setAllProducts] = useState([products]);
+  const [allProducts, setAllProducts] = useState([]);
   const [enteredName, setEnteredName] = useState("");
   const [enteredEmail, setEnteredEmail] = useState("");
   const [reviewMsg, setReviewMsg] = useState("");
-  // const [previewImg, setPreviewImg] = useState(product.image01);
+  const [food, setFood] = useState({})
+  const [allDishInFoodPackage, setAllDishInFoodPackage] = useState([])
+  // const [price, setPrice] = useState()
   const { id } = useParams();
-  const dispatch = useDispatch();
-  const options = [
-    { value: 2, label: '2 people' },
-    { value: 3, label: '3 people' },
-    { value: 4, label: '4 people' },
-    { value: 5, label: '5 people' }
-
-  ]
   useEffect(() => {
-    async function getAllFood() {
-      try {
-        const requestUrl = 'https://6425860f9e0a30d92b34796d.mockapi.io/packageFood'
-        const response = await fetch(requestUrl)
-        const responseJSON = await response.json()
-        const newFood = responseJSON
-        setAllProducts(newFood)
-      } catch (error) {
-        console.log("Failed", error.message)
-      }
+    const fetchPackageFood = () => {
+      fetch("https://momkitchen.azurewebsites.net/api/FoodPackage/getallsessionpackagebyfoodpacakgeid?foodpackageid=" + id).then(res => {
+        return res.json()
+      })
+        .then(data => {
+          setFood(data)
+          console.log(JSON.stringify(data))
+        }).catch((error) => {
+          alert("Can not find this food !")
+        })
     }
-    getAllFood();
+    fetchPackageFood()
+    fetchAllDishByPackageFood()
+    fetchAllSessionPackage()
   }, [])
-  console.log(id)
-  const product = allProducts.find((product) => product.id === id);
-  const { title, price, image01, category, desc } = product || {};
-  const [previewImg, setPreviewImg] = useState(allProducts.image01);
-  const relatedProduct = products.filter((item) => category === item.category);
+  const fetchAllSessionPackage = () => {
+    fetch('https://momkitchen.azurewebsites.net/api/Session/getallsessionpackage').then(res => (
+      res.json()
+    )).then(data => (
+      setAllProducts(data)
+    ))
+  }
+  const fetchAllDishByPackageFood = () => {
+    fetch('https://momkitchen.azurewebsites.net/api/FoodPackage/getalldishbyid?dishid=' + id, {
+      method: 'GET'
+    }).then(res => res.json()).then((response) => {
+      setAllDishInFoodPackage(response)
+    })
+  }
+  const { price, foodPackage, remainQuantity } = food || {}
+  const { name, image, description, foodPackageStyle } = foodPackage || {}
+  const { title, foodPackageStyleId } = foodPackageStyle || {}
+  const [previewImg, setPreviewImg] = useState(image);
+  console.log("foodpackagestyle là" + foodPackageStyle?.id)
+
+  console.log(price)
+  console.log(description)
   const addItem = () => {
+    // const { name, defaultPrice, image, description } = foodPackage
     dispatch(
       cartActions.addItem({
         id,
         title,
-        image01,
+        image,
         price,
-
       })
     );
   };
-
   const submitHandler = (e) => {
     e.preventDefault();
-
     console.log(enteredName, enteredEmail, reviewMsg);
   };
 
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, [product]);
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [product]);
+  }, [image]);
   const showCart = useSelector((state) => state.cartUi.cartIsVisible);
-
+  const relatedProduct = allProducts?.filter((i) => (
+    i.foodPackage.foodPackageStyleId === foodPackageStyle?.id
+  )).splice(0,4)
   return (
     <Helmet title="Product-details">
       <Header />
       {showCart && <Carts />}
+      <CommonSection title="Food details" />
+      <section style={{
+        backgroundColor: '#F5F5F5'
+      }}>
+        <Paper style={{
+          margin: 20
+        }}>
+          <Container style={{
+            padding: 20,
+          }}>
+            <Row>
+              <Col lg="2" md="2" style={{
+                marginRight: -50
+              }}>
+                {
+                  allDishInFoodPackage.map((item, index) => (
+                    <div key={index}
+                      className="img__item mb-3"
+                      onClick={() => setPreviewImg(item.dish.image)}
+                    >
+                      <img src={item.dish.image} alt="" className="w-50" />
+                      <div style={{
+                        display: 'flex',
+                        marginTop: 5
+                      }}>{item.dish.name}</div>
+                    </div>
+                  ))
 
-      <CommonSection title={title} />
-      <section>
-        <Container>
-          <Row>
-            {/* 3 food item images */}
-            <Col lg="2" md="2">
-              <div className="product__images ">
-                <div
-                  className="img__item mb-3"
-                  onClick={() => setPreviewImg(image01)}
-                >
+                }
+              </Col>
+              <Col lg="10" md="10">
+                <Space>
+                  <img src={image} style={{
+                    width: 400,
+                    height: 400,
+                    borderRadius: 10
+                  }}></img>
+                  <div className="single__product-content" style={{
+                    marginTop: -170
+                  }}>
+                    <h6 className="product__title mb-3" style={{
+                      fontSize: 24
+                    }}>{name}</h6>
+                    <Space>
+                      <p className="product__price">
+                        Price: {price} VND
+                      </p>
+                      <p className="product__price" style={{
+                        marginLeft: 20
+                      }}>Remain quantity : {remainQuantity} </p>
+                    </Space>
+                    <p className="category mb-5" style={{
+                      fontSize: 25
+                    }}>
+                      Food style: <Tag style={{
+                        padding: 10,
+                        fontSize: 20,
+                        color: 'green'
+                      }}>{title}</Tag>
+                    </p>
+                    <button onClick={addItem} className="addTOCart__btn">
+                      Add to Cart
+                    </button>
+                  </div>
+                </Space>
 
-                  <img src={image01} alt="" className="w-50" />
-                  <div style={{
-                    display: 'flex',
-                   marginTop:5
-                  }}>Món chính</div>
+              </Col>
+
+              <Col lg="12">
+                <div className="tabs d-flex align-items-center gap-5 py-3">
+                  <div>
+                    <h6
+                      className={` ${tab === "desc" ? "tab__active" : ""}`}
+                      onClick={() => setTab("desc")}
+                    >
+                      Description
+                    </h6>
+                    <p>
+                      <Typography>{description}</Typography>
+                    </p>
+                  </div>
+                  {/* <h6
+                    className={` ${tab === "rev" ? "tab__active" : ""}`}
+                    onClick={() => setTab("rev")}
+                  >
+                    Review
+                  </h6> */}
                 </div>
-                <div
-                  className="img__item mb-3"
-                  onClick={() => setPreviewImg(image01)}
-                >
-                 
-                  <img src={image01} alt="" className="w-50" />
-                  <div style={{
-                    marginTop:5
-                  }}>Ăn kèm</div>
-                </div>
-
-                <div
-                  className="img__item"
-                  onClick={() => setPreviewImg(image01)}
-                >
-                  <img src={image01} alt="" className="w-50" />
-                  <div style={{
-                    display: 'flex',
-                    marginTop: 5
-                  }}>Canh</div>
-                </div>
-              </div>
-            </Col>
-            <Col lg="4" md="4">
-              <div className="product__main-img">
-                <img
-                  src={image01} alt="" className="w-100" />
-              </div>
-            </Col>
-
-            <Col lg="6" md="6">
-              <div className="single__product-content">
-                <h2 className="product__title mb-3">{title}</h2>
-                <p className="product__price">
-                  {" "}
-                  Price: <span>{price} VNĐ</span>
-                </p>
-                <p className="category mb-5">
-                  Food style: <span>{category}</span>
-                </p>
-                <button onClick={addItem} className="addTOCart__btn">
-                  Add to Cart
-                </button>
-              </div>
-            </Col>
-
-            <Col lg="12">
-              <div className="tabs d-flex align-items-center gap-5 py-3">
-                <h6
-                  className={` ${tab === "desc" ? "tab__active" : ""}`}
-                  onClick={() => setTab("desc")}
-                >
-                  Description
-                </h6>
-                <h6
-                  className={` ${tab === "rev" ? "tab__active" : ""}`}
-                  onClick={() => setTab("rev")}
-                >
-                  Review
-                </h6>
-              </div>
-
-              {tab === "desc" ? (
+                {/* {tab === "desc" ? (
                 <div className="tab__content">
-                  <p>{desc}</p>
+                  <p>{description}</p>
                 </div>
               ) : (
                 <div className="tab__form mb-3">
@@ -209,32 +244,40 @@ const FoodDetails = () => {
                         required
                       />
                     </div>
-
                     <button type="submit" className="addTOCart__btn">
                       Submit
                     </button>
                   </form>
                 </div>
-              )}
-            </Col>
-
-            <Col lg="12" className="mb-5 mt-4" style={{
-              borderTop: "1px solid #fde4e4"
-            }}>
-              <h2 className="related__Product-title">You might also like</h2>
-            </Col>
-
-            {relatedProduct.map((item) => (
-              <Col lg="3" md="4" sm="6" xs="6" className="mb-4" key={item.id}>
-                <ProductCard item={item} />
+              )} */}
               </Col>
-            ))}
-          </Row>
-        </Container>
+              <Col lg="12" className="mb-5 mt-4" style={{
+                borderTop: "1px solid #fde4e4"
+              }}>
+                <h2 className="related__Product-title">You might also like</h2>
+              </Col>
+              {relatedProduct.map((item) => (
+                <Col lg="3" md="4" sm="6" xs="6" className="mb-4" key={item.id} >
+                  <ProductCard item={item} />
+                </Col>
+              ))}
+            </Row>
+          </Container>
+        </Paper>
       </section>
       <Footer />
-    </Helmet>
+    </Helmet >
   );
 };
 
 export default FoodDetails;
+
+
+        // {/*
+        //      <Col lg="4" md="4">
+        //       <div className="product__main-img">
+        //         {/* <img
+        //                   src={foodPackage2.image} alt="" className="w-100" /> */}
+        //                   <div>{defaultPrice}</div>
+        //                   </div>
+        //                 </Col> */}

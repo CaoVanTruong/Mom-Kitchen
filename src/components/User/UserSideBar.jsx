@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Paper } from '@mui/material'
-import { Button, Image } from 'antd'
+import { Button, Image, Typography } from 'antd'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { storage } from '../UploadImage/firebase'
@@ -12,6 +12,8 @@ import { useEffect } from 'react'
 const UserSideBar = () => {
     const [imageUpload, setImageUpload] = useState(null)
     const [Url, setUrl] = useState(null)
+    const [data, setData] = useState({})
+    const [defaultImage, setDefaultImage] = useState("")
     const uploadImage = async () => {
         if (imageUpload == null) return;
         setUrl('Getting Url Link...')
@@ -28,9 +30,21 @@ const UserSideBar = () => {
     //     const file = e.target.files[0]
     //     // file.preview = URL.createObjectURL(file)
     // }
-    useEffect(()=>{
+    useEffect(() => {
         uploadImage()
-    },[imageUpload])
+    }, [imageUpload])
+    useEffect(() => {
+        fetch('https://momkitchen.azurewebsites.net/api/Account/getallcustomerbyemail?email=' + localStorage.getItem('user-infor'), {
+            method: 'GET'
+        }).then(response => {
+            return response.json()
+        }).then(data => {
+            setData(data)
+        })
+
+    }, [])
+    const {image}  = data
+    console.log(image)
     return (
         <Paper style={{
             display: 'flex',
@@ -42,7 +56,6 @@ const UserSideBar = () => {
             height: 480
         }}>
             <div>
-
                 <form className='chooseImageForm' style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -53,7 +66,7 @@ const UserSideBar = () => {
                     width: 150,
                     cursor: 'pointer',
                     borderRadius: 5,
-                    marginTop: -100
+                    marginTop: -150
                 }}
                     onClick={() => document.querySelector(".input-field").click()}
                 >
@@ -63,8 +76,8 @@ const UserSideBar = () => {
                     }}
                         className='input-field'
                         hidden
+                        value={defaultImage}
                         onChange={(event) => {
-
                             {
                                 setImageUpload(event.target.files[0])
                                 // handlePreviewAvatar(event)
@@ -73,7 +86,7 @@ const UserSideBar = () => {
                         }
                     ></input>
                     {
-                        uploadImage ? <img src={Url} style={{
+                        uploadImage ? <img src={Url ? Url : image} style={{
                             width: 150,
                             height: 230
                         }}></img> : <PictureOutlined size={120} />

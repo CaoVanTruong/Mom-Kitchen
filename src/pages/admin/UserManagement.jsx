@@ -250,8 +250,13 @@ const UserManagement = () => {
               marginLeft: -30
             }}><CloseOutlined /></div>}
           >
-            <Image src={editingUser?.image}
-            ></Image>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center'
+            }}>
+              <Image src={editingUser?.image}
+              ></Image>
+            </div>
             <div>
               <Paper style={{
                 marginTop: 20
@@ -357,10 +362,10 @@ const UserManagement = () => {
             }
             cancelText={<div>Cancel</div>}
             onOk={
-              () => onAddNewUser()
-              // () => {
-              //   resetAdding()
-              // }
+              () => {
+                onAddNewUser()
+                resetAdding()
+              }
             }
             closeIcon={
               <div style={{

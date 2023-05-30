@@ -14,6 +14,7 @@ import { Authenticate } from "../API/login/loginController";
 import '../styles/loginPage.css'
 import { Typography, Button, Divider } from "antd";
 import logo from "../assets/images/mom-logo.png"
+import Alert from 'react-bootstrap/Alert'
 const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -26,9 +27,9 @@ const Login = () => {
   const [boolean, setBoolean] = useState(false)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const authenticatedAccount = useSelector((state) => state.account.accounts)
+  // const authenticatedAccount = useSelector((state) => state.account.accounts)
   // const cartItems = useSelector((state) => state.cart.cartItems);
-  const list = authenticatedAccount.map((acc) => acc.email)
+  // const list = authenticatedAccount.map((acc) => acc.email)
   const submitHandler = (e) => {
     e.preventDefault();
     console.log(email + password)
@@ -45,29 +46,32 @@ const Login = () => {
           return res.json()
         }
         throw new Error('Something went wrong!')
-      })
+      }) 
       .then((res) => {
-        console.log(res.role.id)
-        if (res.role.id === 2) {
-          if (res.accountStatus.toLowerCase() === "true") {
-            localStorage.setItem('user-infor', res.email)
+        if (res.user.role.id === 2) {
+          if (res.user.accountStatus.toLowerCase() === "true") {
+            localStorage.setItem('user-infor',res.user.email)
+            alert("Login completed.")
             navigate('/user')
           } else {
             alert("Your account is banned")
           }
-        } else if (res.role.id === 1) {
-          if (res.accountStatus.toLowerCase() === "true") {
-            localStorage.setItem('user-infor', res.email)
+        } else if (res.user.role.id === 1) {
+          if (res.user.accountStatus.toLowerCase() === "true") {
+            localStorage.setItem('user-infor', res.user.email)
             navigate('/dashboard')
           } else {
             alert("Your account is banned")
           }
         } else {
+          console.log(res.role.id)
+          alert(res.role.id)
           alert("Wrong email or password!")
         }
       }).catch((e) => {
         alert("Wrong email or password!")
       })
+
   }
   const showCart = useSelector((state) => state.cartUi.cartIsVisible);
   return (
