@@ -17,23 +17,46 @@ const UserProfile = () => {
     const user = localStorage.getItem('user-infor')
     const [inforUser, setInforUser] = useState({})
     const [password, setPassword] = useState('')
+    // useEffect(() => {
+    //     fetch('https://momkitchen.azurewebsites.net/api/Account/getallcustomerbyemail?email=' + (localStorage.getItem('user-infor') || ""), {
+    //         method: 'GET'
+    //     }).then(response => {
+    //         return response.json()
+    //     }).then(data => {
+    //         setInforUser(data)
+    //         setdefaultBuildingChange(data.defaultBuilding)
+    //     })
+    //     getAccountByEmail()
+    // }, [])
     useEffect(() => {
-        fetch('https://momkitchen.azurewebsites.net/api/Account/getallcustomerbyemail?email=' + localStorage.getItem('user-infor'), {
-            method: 'GET'
-        }).then(response => {
-            return response.json()
-        }).then(data => {
-            setInforUser(data)
-            setdefaultBuildingChange(data.defaultBuilding)
-        })
-        getAccountByEmail()
-    }, [])
+        const fetchData = async () => {
+            try {
+                const response = await fetch('https://momkitchen.azurewebsites.net/api/Account/getallcustomerbyemail?email=' + (localStorage.getItem('user-infor') || ""), {
+                    method: 'GET'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                setInforUser(data);
+                setdefaultBuildingChange(data.defaultBuilding);
+
+                // Call the getAccountByEmail function here
+                getAccountByEmail();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
     const getAccountByEmail = () => {
         fetch(`https://momkitchen.azurewebsites.net/api/Account/getaccountbyemail?email=${localStorage.getItem('user-infor')}`).then(response => {
             return response.json()
         }).then(data => {
-            console.log("data trả về là", JSON.stringify(data[0].password))
-            setPassword(data[0].password)
+            setPassword(data.password)
         })
     }
     const { name, phone, image, email, defaultBuilding } = inforUser
@@ -73,12 +96,11 @@ const UserProfile = () => {
                                 <TextField
                                     label="Password"
                                     type='password'
-                                    defaultValue="*******"
+                                    defaultValue="*****"
+                                    value={password?.slice(-10)}
                                     variant='outlined'
-                                    value={password.slice(-10)}
                                     fullWidth
                                 >
-
                                 </TextField>
                             </Grid>
                             <Grid item lg={6} md={6} xs={6}>

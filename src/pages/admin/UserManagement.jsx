@@ -53,7 +53,7 @@ const UserManagement = () => {
   }
   function handleFilter(event) {
     const newData = userArray.filter(row => {
-      return row.firstName.toLowerCase().includes(event.target.value.toLowerCase())
+      return row.name?.toLowerCase().includes(event.target.value.toLowerCase())
     })
     setDataSource(newData)
   }
@@ -67,11 +67,7 @@ const UserManagement = () => {
   }
   useEffect(() => {
     setLoading(true)
-    getAllUsers().then(res => {
-      setUserArray(res.users)
-      setDataSource(res.users)
-      setLoading(false)
-    })
+    fetchAllUser()
   }, [])
 
   const onAddNewUser = () => {
@@ -88,18 +84,17 @@ const UserManagement = () => {
     setIsAdding(false)
   };
 
-  // const fetchUserData = () => {
-  //   fetch("https://momkitchen.azurewebsites.net/api/User/getalluser")
-  //     .then(response => {
-  //       return response.json()
-  //     })
-  //     .then(data => {
-  //       setDataSource(data)
-  //     })
-  // }
-  // useEffect(() => {
-  //   fetchUserData()
-  // }, [])
+  const fetchAllUser = () => {
+    fetch("https://momkitchen.azurewebsites.net/api/Account/getalluserdetail")
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        setUserArray(data)
+        setDataSource(data)
+        setLoading(false)
+      })
+  }
   return (
     <div>
       <BootstrapNavbar />
@@ -126,26 +121,6 @@ const UserManagement = () => {
                 }}
               />
             </div>
-            <Button className='AddButton' type="primary"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                flexDirection: 'row',
-                backgroundColor: 'pink',
-                height: 55
-              }}
-              onClick={
-                // onAddNewUser
-                () => setIsAdding(true)
-              }
-            >
-              <PlusCircleOutlined style={{
-                fontSize: '24px',
-                marginLeft: 0
-              }}
-              />
-              Add User
-            </Button>
           </div>
           <Space className='HorizontalTable' direction='horizontal'>
             <Table
@@ -167,7 +142,7 @@ const UserManagement = () => {
                   }
                 }, {
                   title: 'Name',
-                  dataIndex: "firstName"
+                  dataIndex: "name"
                 }
                 , {
                   title: 'Email',
@@ -183,25 +158,21 @@ const UserManagement = () => {
                 },
                 {
                   title: 'Batch',
-                  dataIndex: "batch"
+                  dataIndex: "batchId"
                 },
                 {
                   title: 'Building',
-                  dataIndex: "building"
+                  dataIndex: "buildingId"
                 },
                 {
                   title: 'Default Building',
-                  dataIndex: "building"
+                  dataIndex: "defaultBuilding"
                 },
                 {
                   title: "Actions",
                   render: (record) => {
                     return (
                       <div>
-                        <EditOutlined
-                          onClick={() => onEditRecord(record)
-                          }
-                          style={{ marginLeft: 0 }} />
                         <DeleteOutlined
                           onClick={() => onDeleteRecord(record)}
                           style={{ color: "red", marginLeft: 12 }} />
@@ -221,291 +192,6 @@ const UserManagement = () => {
             </Table>
           </Space>
         </Space>
-        <div>
-          {/* modal edit */}
-          <Modal
-            title="Edit user"
-            open={isEditing}
-            okText={<div>Save</div>}
-            onCancel={() => {
-              resetEditing()
-              // setIsEditing(false)
-            }
-            }
-            cancelText={<div>Cancel</div>}
-            onOk={() => {
-              setDataSource(pre => {
-                return pre.map(user => {
-                  if (user.id === editingUser.id) {
-                    return editingUser
-                  } else {
-                    return user
-                  }
-                })
-              })
-              resetEditing()
-            }
-            }
-            closeIcon={<div style={{
-              marginLeft: -30
-            }}><CloseOutlined /></div>}
-          >
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center'
-            }}>
-              <Image src={editingUser?.image}
-              ></Image>
-            </div>
-            <div>
-              <Paper style={{
-                marginTop: 20
-              }} component={Box} p={4} mx="auto">
-                {
-                  userTemplate.map((user, index) => (
-                    <Grid
-                      container
-                      spacing={3}
-                      key={index}
-                      className='inputGroup'
-                    >
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Name"
-                          placeholder='Enter user name...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.firstName}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, firstName: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Email"
-                          placeholder='Enter user e-mail'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.email}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, email: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Phone"
-                          placeholder='Enter user phone number...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.phone}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, phone: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Username"
-                          placeholder='Enter user name...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.username}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, username: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Password"
-                          placeholder='Enter user password...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.password}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, password: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                    </Grid>
-                  ))
-                }
-              </Paper>
-            </div>
-          </Modal>
-          {/* Modal add user */}
-          <Modal
-            title="Add User"
-            open={isAdding}
-            okText={<div>Save</div>}
-            onCancel={() => {
-              resetAdding()
-              // setIsEditing(false)
-            }
-            }
-            cancelText={<div>Cancel</div>}
-            onOk={
-              () => {
-                onAddNewUser()
-                resetAdding()
-              }
-            }
-            closeIcon={
-              <div style={{
-                marginLeft: -30
-              }}><CloseOutlined /></div>}
-          >
-            <Image src={editingUser?.image}></Image>
-            {/* <Input value={editingProduct?.title} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, title: e.target.value }
-                })
-              }} />
-              <Input value={editingProduct?.price} onChange={(e) => {
-                setEditingProduct(pre => {
-                  return { ...pre, price: e.target.value }
-                })
-              }} /> */}
-            <input type='file' title='Choose image....'></input>
-            <div>
-              <Paper style={{
-                marginTop: 20
-              }} component={Box} p={4} mx="auto">
-                {
-                  userTemplate.map((user, index) => (
-                    <Grid
-                      container
-                      spacing={3}
-                      key={index}
-                      className='inputGroup'
-                    >
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Name"
-                          placeholder='Enter user name...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.firstName}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, firstName: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Phone Number"
-                          placeholder='Enter phone number...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.phone}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, phone: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="E-mail"
-                          placeholder='Enter user email...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.email}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, email: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Password"
-                          placeholder='Enter user password...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.password}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, password: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Address"
-                          placeholder='Enter address...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.address}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, address: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            label="Birthday"
-                            fullWidth
-                          />
-                        </LocalizationProvider>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <FormControl >
-                          <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
-                          <RadioGroup
-                            aria-labelledby="demo-radio-buttons-group-label"
-                            defaultValue="female"
-                            name="radio-buttons-group"
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'row',
-                            }}
-                          >
-                            <Space>
-                              <FormControlLabel value="female" control={<Radio />} label="Female" />
-                              <FormControlLabel value="male" control={<Radio />} label="Male" />
-                              <FormControlLabel value="other" control={<Radio />} label="Other" />
-                            </Space>
-                          </RadioGroup>
-                        </FormControl>
-                      </Grid>
-                    </Grid>
-                  ))
-                }
-              </Paper>
-            </div>
-          </Modal>
-        </div>
       </div >
     </div >
   )

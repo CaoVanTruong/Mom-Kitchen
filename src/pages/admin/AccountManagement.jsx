@@ -42,6 +42,18 @@ const AccountManagement = () => {
       name: "Shipper"
     }
   ]
+
+  const twoRoleList = [
+    {
+      id: 3,
+      name: "Chef",
+    },
+    {
+      id: 4,
+      name: "Shipper"
+    }
+  ]
+
   const [role, setRole] = useState(roleList)
   const [value, setValue] = useState()
   const handleChange = (value) => {
@@ -54,14 +66,14 @@ const AccountManagement = () => {
   const [loading, setLoading] = useState(false)
   const [dataSource, setDataSource] = useState([])
   const [userArray, setUserArray] = useState([])
-  const onDeleteRecord = ({record}) => {
+  const onDeleteRecord = ({ record }) => {
     Modal.confirm({
       title: 'Are you sure, you want to delete this record?',
       okText: <div>Yes</div>,
       okType: 'danger',
       cancelText: <div>Cancel</div>,
       onOk: () => {
-        fetch('https://momkitchen.azurewebsites.net/api/Account/'+record.id,
+        fetch('https://momkitchen.azurewebsites.net/api/Account/' + record.id,
           {
             method: 'DELETE'
           }
@@ -93,7 +105,7 @@ const AccountManagement = () => {
       })
     }).then(response => {
       if (response.ok) {
-        getAllAccount.then(res => {
+        getAllAccount().then(res => {
           setDataSource(res)
         }
         )
@@ -105,23 +117,24 @@ const AccountManagement = () => {
     resetEditing()
   }
   const onAddNewUser = () => {
+    console.log(addingUser?.email, addingUser?.password, addingUser?.roleId)
     fetch('https://momkitchen.azurewebsites.net/api/Registration/registerchefandshipper', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: addingUser.email,
-        password: addingUser.password,
-        roleId: addingUser.roleId
+        email: addingUser?.email,
+        password: addingUser?.password,
+        roleId: addingUser?.roleId
       })
-    }).then((response) => {
+    }).then(response => {
       if (response.ok) {
         fetchAccount()
         alert("Create new account successfully.")
       } else {
-        throw new Error('fail to create account')
+        alert("Can not add new account!")
       }
-    }).then((data) => {
-      console.log("data" + data)
+    }).catch(error => {
+      console.log(error)
     })
   };
   const fetchAccount = () => {
@@ -147,6 +160,7 @@ const AccountManagement = () => {
   const resetAdding = () => {
     setIsAdding(false)
     setAddingUser(null)
+
   }
 
   // alert(isAddingUser?.email)
@@ -240,10 +254,6 @@ const AccountManagement = () => {
                   sorter: (a, b) => a.email.localeCompare(b.email)
                 },
                 {
-                  title: 'Password',
-                  dataIndex: "password"
-                },
-                {
                   title: 'Role',
                   dataIndex: "roleId",
                   filters: [
@@ -302,8 +312,6 @@ const AccountManagement = () => {
                     return (
                       <div style={{
                         display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
                         flexDirection: 'row'
                       }}>
                         <EditOutlined
@@ -311,7 +319,7 @@ const AccountManagement = () => {
                           }
                           style={{ marginLeft: 0 }} />
                         <DeleteOutlined
-                          onClick={()=>onDeleteRecord(record)}
+                          onClick={() => onDeleteRecord(record)}
                           style={{ color: "red", marginLeft: 12 }} />
                       </div>
                     )
@@ -430,80 +438,69 @@ const AccountManagement = () => {
             cancelText={<div>Cancel</div>}
             onOk={() => {
               onAddNewUser()
-              resetAdding()
+              // resetAdding()
             }
             }
             closeIcon={
-              <div style={{
-                marginLeft: -30
-              }}><CloseOutlined /></div>}
+              <div><CloseOutlined /></div>}
           >
             <div>
               <Paper style={{
                 marginTop: 20
               }} component={Box} p={4} mx="auto">
-                {
-                  userTemplate.map((user, index) => (
-                    <Grid
-                      container
-                      spacing={3}
-                      key={index}
-                      className='inputGroup'
+
+                <Grid
+                  container
+                  spacing={3}
+                  className='inputGroup'
+                >
+                  <Grid item lg={6}>
+                    <TextField
+                      label="E-mail"
+                      placeholder='Enter user email...'
+                      variant='outlined'
+                      fullWidth
+                      onChange={(e) => {
+                        setAddingUser(pre => {
+                          return { ...pre, email: e.target.value }
+                        })
+                      }}
                     >
-                      <Grid item lg={6}>
-                        <TextField
-                          label="E-mail"
-                          placeholder='Enter user email...'
-                          variant='outlined'
-                          fullWidth
-                          onChange={(e) => {
-                            setAddingUser(pre => {
-                              return { ...pre, email: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Password"
-                          placeholder='Enter user password...'
-                          variant='outlined'
-                          fullWidth
-                          onChange={(e) => {
-                            setAddingUser(pre => {
-                              return { ...pre, password: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={12}>
-                        <FormControl fullWidth>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={role}
-                            onChange={(e) => {
-                              setAddingUser(
-                                pre => {
-                                  return { ...pre, roleId: e.target.value }
-                                }
-                              )
-                            }}
-                            EditOutlined='none'
-                          >
-                            {
-                              roleList.map((role) => (
-                                <MenuItem value={role.id}>{role.name}</MenuItem>
-                              ))
-                            }
-                          </Select>
-                        </FormControl>
-                      </Grid>
-                    </Grid>
-                  ))
-                }
+                    </TextField>
+                  </Grid>
+                  <Grid item lg={6}>
+                    <TextField
+                      label="Password"
+                      placeholder='Enter user password...'
+                      type='password'
+                      variant='outlined'
+                      fullWidth
+                      onChange={(e) => {
+                        setAddingUser(pre => {
+                          return { ...pre, password: e.target.value }
+                        })
+                      }}
+                    >
+                    </TextField>
+                  </Grid>
+                  <Grid item lg={12}>
+                    <FormControl fullWidth>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        onChange={(e) => {
+                          setAddingUser(pre => {
+                            return { ...pre, roleId: e.target.value }
+                          })
+                        }}
+                      >
+                        {twoRoleList.map((role) => (
+                          <MenuItem value={role.id}>{role.name}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
               </Paper>
             </div>
           </Modal>

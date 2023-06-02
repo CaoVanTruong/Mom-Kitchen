@@ -1,5 +1,5 @@
 export function getAllSessionPackage() {
-    return fetch('https://momkitchen.azurewebsites.net/api/Session/getallsessionpackagewithstatuson', {
+    return fetch('https://momkitchen.azurewebsites.net/api/Session/getallsessionpackagewithsessionstatuson', {
         method: 'GET',
     }).then(res => res.json())
 }

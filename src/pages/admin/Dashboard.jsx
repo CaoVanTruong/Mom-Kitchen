@@ -10,6 +10,35 @@ import { Container, Row, Col } from 'react-bootstrap'
 import { Grid, Paper, TextField, Box } from '@mui/material'
 import { getAllOrder } from '../../API/admin/dashboard'
 function Dashboard() {
+    const [orders, setOrders] = useState()
+    const [customers, setCustomers] = useState()
+    const [revenues, setRevenues] = useState()
+    const fetchAllOrder = () => {
+        fetch('https://momkitchen.azurewebsites.net/api/Order/countorder').then(res => {
+            return res.json()
+        }).then(data => {
+            setOrders(data)
+        })
+    }
+    const fetchAllCustomer = () => {
+        fetch('https://momkitchen.azurewebsites.net/api/Account/countcustomer').then(res => {
+            return res.json()
+        }).then(data => {
+            setCustomers(data)
+        })
+    }
+    const fetchAllRevenue = () => {
+        fetch('https://momkitchen.azurewebsites.net/api/Order/counttotalprice').then(res => {
+            return res.json()
+        }).then(data => {
+            setRevenues(data)
+        })
+    }
+    useEffect(() => {
+        fetchAllOrder()
+        fetchAllCustomer()
+        fetchAllRevenue()
+    }, [])
     return (
         <div style={{
             backgroundColor: '#F8FAFC',
@@ -42,7 +71,7 @@ function Dashboard() {
                                         title={<span style={{
                                             fontSize: 24
                                         }}>Orders</span>}
-                                        value={12346}
+                                        value={orders}
                                     />
                                 </Col>
                                 <Col>
@@ -63,7 +92,7 @@ function Dashboard() {
                                         title={<span style={{
                                             fontSize: 24
                                         }}>Customers</span>}
-                                        value={12345} />
+                                        value={customers} />
                                 </Col>
                                 <Col>
                                     <DashboardCard
@@ -83,7 +112,7 @@ function Dashboard() {
                                             }}>Revenue</span>
                                         }
                                         value={
-                                            1235
+                                            revenues
                                         }
                                     />
                                 </Col>
@@ -197,7 +226,8 @@ function RecentOrders() {
                             title: 'Create date',
                             dataIndex: 'date',
                             width: 300,
-                            sorter: (a, b) => new Date(a.date) - new Date(b.date),
+                            defaultSortOrder: 'ascend',
+                            sorter: (a, b) => new Date(b.date) - new Date(a.date),
                         },
                         {
                             title: 'Customer phone',
@@ -213,7 +243,7 @@ function RecentOrders() {
                         {
                             title: "Total price",
                             dataIndex: "totalPrice",
-                            key:'totalPrice'
+                            key: 'totalPrice'
                         },
                         {
                             title: 'Batch',

@@ -68,13 +68,15 @@ const FoodDetails = () => {
     })
   }
   const { price, foodPackage, remainQuantity } = food || {}
-  const { name, image, description, foodPackageStyle } = foodPackage || {}
-  const { title, foodPackageStyleId } = foodPackageStyle || {}
+  const { image, description, foodPackageStyle } = foodPackage || {}
+  const title = foodPackage?.name
+  // const { title, foodPackageStyleId } = foodPackageStyle || {}
   const [previewImg, setPreviewImg] = useState(image);
   console.log("foodpackagestyle là" + foodPackageStyle?.id)
 
   console.log(price)
   console.log(description)
+  console.log("name là", title)
   const addItem = () => {
     // const { name, defaultPrice, image, description } = foodPackage
     dispatch(
@@ -99,8 +101,8 @@ const FoodDetails = () => {
   }, [image]);
   const showCart = useSelector((state) => state.cartUi.cartIsVisible);
   const relatedProduct = allProducts?.filter((i) => (
-    i.foodPackage.foodPackageStyleId === foodPackageStyle?.id
-  )).splice(0,4)
+    i.foodPackage?.foodPackageStyleId === foodPackageStyle?.id
+  )).splice(0, 4)
   return (
     <Helmet title="Product-details">
       <Header />
@@ -119,21 +121,36 @@ const FoodDetails = () => {
               <Col lg="2" md="2" style={{
                 marginRight: -50
               }}>
-                {
-                  allDishInFoodPackage.map((item, index) => (
-                    <div key={index}
+                <div>
+                  {Array.isArray(allDishInFoodPackage) ? (
+                    allDishInFoodPackage.map((item, index) => (
+                      <div
+                        key={index}
+                        className="img__item mb-3"
+                        onClick={() => setPreviewImg(item.dish.image)}
+                      >
+                        <img src={item.dish.image} alt="" className="w-50" />
+                        <div style={{
+                          display: 'flex',
+                          marginTop: 5
+                        }}>{item.dish.name}</div>
+                      </div>
+                    ))
+                  ) : (
+                    // Handle the case when allDishInFoodPackage is not an array
+                    // This could include displaying an error message or rendering an alternative UI
+                    <div
                       className="img__item mb-3"
-                      onClick={() => setPreviewImg(item.dish.image)}
+                      onClick={() => setPreviewImg(allDishInFoodPackage?.dish?.image)}
                     >
-                      <img src={item.dish.image} alt="" className="w-50" />
+                      <img src={allDishInFoodPackage?.dish?.image} alt="" className="w-50" />
                       <div style={{
                         display: 'flex',
                         marginTop: 5
-                      }}>{item.dish.name}</div>
+                      }}>{allDishInFoodPackage?.dish?.name}</div>
                     </div>
-                  ))
-
-                }
+                  )}
+                </div>
               </Col>
               <Col lg="10" md="10">
                 <Space>
@@ -147,7 +164,7 @@ const FoodDetails = () => {
                   }}>
                     <h6 className="product__title mb-3" style={{
                       fontSize: 24
-                    }}>{name}</h6>
+                    }}>{title}</h6>
                     <Space>
                       <p className="product__price">
                         Price: {price} VND
@@ -163,7 +180,7 @@ const FoodDetails = () => {
                         padding: 10,
                         fontSize: 20,
                         color: 'green'
-                      }}>{title}</Tag>
+                      }}>{foodPackageStyle?.title}</Tag>
                     </p>
                     <button onClick={addItem} className="addTOCart__btn">
                       Add to Cart
@@ -281,3 +298,17 @@ export default FoodDetails;
         //                   <div>{defaultPrice}</div>
         //                   </div>
         //                 </Col> */}
+
+
+                      // allDishInFoodPackage.map((item, index) => (
+                  //   <div key={index}
+                  //     className="img__item mb-3"
+                  //     onClick={() => setPreviewImg(item.dish.image)}
+                  //   >
+                  //     <img src={item.dish.image} alt="" className="w-50" />
+                  //     <div style={{
+                  //       display: 'flex',
+                  //       marginTop: 5
+                  //     }}>{item.dish.name}</div>
+                  //   </div>
+                  // ))

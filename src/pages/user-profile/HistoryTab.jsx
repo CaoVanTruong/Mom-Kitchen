@@ -1,6 +1,6 @@
 
 import { Grid, Paper, TextField, Box } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Container } from 'react-bootstrap'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
@@ -64,6 +64,18 @@ const HistoryTab = () => {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+    const [orders, setOrders] = useState([])
+    useEffect(() => {
+        fetchAllOrder()
+    }, [])
+    const fetchAllOrder = () => {
+        fetch(`https://momkitchen.azurewebsites.net/api/Order/getorderbyemailcustomer?emailcustomer=${localStorage.getItem('user-infor')}`).then(res => {
+            return res.json()
+        }).then(data => {
+            setOrders(data)
+        })
+    }
+    console.log(JSON.stringify(orders))
     return (
         <div>
             <Header />
@@ -85,27 +97,44 @@ const HistoryTab = () => {
                             <TabPanel value="1" style={{
                                 backgroundColor: '#E0E8EF'
                             }}>
-                                {
+                                {/* {
                                     order.map((order) => (
                                         <div>
                                             <OrderTag props={order} />
                                         </div>
                                     ))
+                                } */}
+                                {
+                                    orders
+                                        .filter((order) => order.deliveryStatus === "Completed")
+                                        .map((order) => (
+                                            <div>
+                                                <OrderTag props={order} />
+                                            </div>
+                                        ))
                                 }
                             </TabPanel>
                             <TabPanel value="2" style={{
                                 backgroundColor: '#E0E8EF'
                             }}>  {
-                                    order.map((order) => (
+                                orders
+                                .filter((order) => order.deliveryStatus === "New")
+                                .map((order) => (
+                                    <div>
                                         <OrderTag props={order} />
-                                    ))
+                                    </div>
+                                ))
                                 }</TabPanel>
                             <TabPanel value="3" style={{
                                 backgroundColor: '#E0E8EF'
                             }}>  {
-                                    order.map((order) => (
+                                orders
+                                .filter((order) => order.deliveryStatus === "Failed")
+                                .map((order) => (
+                                    <div>
                                         <OrderTag props={order} />
-                                    ))
+                                    </div>
+                                ))
                                 }</TabPanel>
                         </TabContext>
                     </Box>

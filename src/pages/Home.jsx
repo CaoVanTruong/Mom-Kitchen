@@ -52,16 +52,17 @@ const Home = () => {
   const chefValueId = cartItem.map((i) => i.chef)[0];
   const dispatch = useDispatch();
   useEffect(() => {
-    if (getAllSessionPackage) {
+    if (getAllSessionPackage()) {
       getAllSessionPackage().then(response => {
+        console.log("response trong hàm get là",response)
         setAllProducts(response)
       })
     } else {
       alert("Something went wrong at loading ! Try again")
     }
   }, [])
-  console.log("allproduct là" + JSON.stringify(allProducts[0]))
-  const filteredArray = chefValueId ? allProducts.filter((item) => item.foodPackage.chefId === chefValueId) : [];
+  console.log("allproduct bện home là" + allProducts)
+  const filteredArray = chefValueId ? allProducts.filter((item) => item.foodPackage?.chefId === chefValueId) : [];
   console.log("filtered array là : " + JSON.stringify(filteredArray[0]))
 
   // function handleFilter(chefId) {
@@ -202,66 +203,13 @@ const Home = () => {
                 <Tag color='geekblue'>Dinner: 17h30-20h30</Tag>
               </Paper>
             </Col>
-
-            {/* <Col lg="12">
-              <div className="food__category d-flex align-items-center justify-content-center gap-4">
-                <button
-                  className={`all__btn  ${
-                    category === "ALL" ? "foodBtnActive" : ""
-                  } `}
-                  onClick={() => setCategory("ALL")}
-                >
-                  All
-                </button>
-                <button
-                  className={`d-flex align-items-center gap-2 ${
-                    category === "BURGER" ? "foodBtnActive" : ""
-                  } `}
-                  onClick={() => setCategory("BURGER")}
-                >
-                  <img src={foodCategoryImg01} alt="" />
-                  Burger
-                </button>
-
-                <button
-                  className={`d-flex align-items-center gap-2 ${
-                    category === "PIZZA" ? "foodBtnActive" : ""
-                  } `}
-                  onClick={() => setCategory("PIZZA")}
-                >
-                  <img src={foodCategoryImg02} alt="" />
-                  Pizza
-                </button>
-
-                <button
-                  className={`d-flex align-items-center gap-2 ${
-                    category === "BREAD" ? "foodBtnActive" : ""
-                  } `}
-                  onClick={() => setCategory("BREAD")}
-                >
-                  <img src={foodCategoryImg03} alt="" />
-                  Bread
-                </button>
-              </div>
-            </Col> */}
-            {/* {
-              chef ? allProducts.filter((item) => (item.chefId === chef)).map(filteredFood => (
-                <Col lg="3" md="4" sm="6" xs="6" key={filteredFood.id} className="mt-5">
-                  <ProductCard item={filteredFood} />
-                </Col>
-              )) : allProducts.map((item) => (
-                <Col lg="3" md="4" sm="6" xs="6" key={item.id} className="mt-5">
-                  <ProductCard item={item} />
-                </Col>
-              ))
-            } */}
             {
               (chefValueId == "" || chefValueId == null) ?
-                allProducts.map((item) => (
+                allProducts.filter((item)=> item.remainQuantity > 0 ).map((item) => (
                   <Col lg="3" md="4" sm="6" xs="6" key={item.id} className="mt-5">
                     <ProductCard item={item} />
                   </Col>
-                )) : filteredArray.map((item) => (
+                )) : filteredArray.filter((item)=> item.remainQuantity > 0).map((item) => (
                   <Col lg="3" md="4" sm="6" xs="6" key={item.id} className="mt-5">
                     <ProductCard item={item} />
                   </Col>

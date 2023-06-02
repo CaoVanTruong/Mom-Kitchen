@@ -9,11 +9,12 @@ import { cartActions } from "../../../store/shopping-cart/cartSlice";
 import { Tag, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 const ProductCard = (props) => {
-  const { id, price, sessionId, foodPackage, remainQuantity } = props.item;
-  const image = foodPackage.image
-  const foodPackageId = foodPackage.id
-  const chefId = foodPackage.chefId
-  const title = foodPackage.name
+  const { id, price, session, foodPackage, remainQuantity } = props.item;
+  const sessionId = session?.id
+  const image = foodPackage?.image
+  const foodPackageId = foodPackage?.id
+  const chefId = foodPackage?.chefId 
+  const title = foodPackage?.name
   const dispatch = useDispatch();
   const navigate = useNavigate()
   console.log("sessionId là", sessionId)
@@ -36,7 +37,7 @@ const ProductCard = (props) => {
       boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)'
     }}>
       <div className="product__img">
-        <img src={foodPackage.image} alt="product-img" className="w-100" onClick={() => navigate(`/foods/${id}`)} />
+        <img src={foodPackage?.image} alt="product-img" className="w-100" onClick={() => navigate(`/foods/${id}`)} />
       </div>
       <div className="product__content">
         <Typography style={{
@@ -45,9 +46,9 @@ const ProductCard = (props) => {
           fontWeight: 'bold',
           marginBottom: 10
         }}
-          onClick={() => navigate(`/foods/${foodPackage.id}`)}
+          onClick={() => navigate(`/foods/${foodPackage?.id}`)}
         >
-          {foodPackage.name}
+          {foodPackage?.name}
         </Typography>
         <div style={{
           fontSize: 12,

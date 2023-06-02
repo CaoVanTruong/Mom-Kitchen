@@ -9,11 +9,15 @@ import { v4 } from 'uuid';
 import { render } from 'react-dom'
 import { PictureOutlined } from '@ant-design/icons'
 import { useEffect } from 'react'
+import { Menu } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import { AppstoreOutlined, UserOutlined, ShoppingCartOutlined, SolutionOutlined, LogoutOutlined, IdcardOutlined, ApartmentOutlined } from '@ant-design/icons'
 const UserSideBar = () => {
     const [imageUpload, setImageUpload] = useState(null)
     const [Url, setUrl] = useState(null)
     const [data, setData] = useState({})
     const [defaultImage, setDefaultImage] = useState("")
+    const navigate = useNavigate()
     const uploadImage = async () => {
         if (imageUpload == null) return;
         setUrl('Getting Url Link...')
@@ -34,17 +38,42 @@ const UserSideBar = () => {
         uploadImage()
     }, [imageUpload])
     useEffect(() => {
-        fetch('https://momkitchen.azurewebsites.net/api/Account/getallcustomerbyemail?email=' + localStorage.getItem('user-infor'), {
+        fetch('https://momkitchen.azurewebsites.net/api/Account/getallcustomerbyemail?email=' + localStorage.getItem('user-infor' || ""), {
             method: 'GET'
-        }).then(response => {
-            return response.json()
-        }).then(data => {
-            setData(data)
         })
-
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setData(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }, [])
-    const {image}  = data
+    const { image } = data
     console.log(image)
+    const menuItem = [
+        {
+            key: '/profile',
+            label: "Your information",
+            icon: <AppstoreOutlined />
+        },
+        {
+            key: '/history',
+            label: "Order history",
+            icon: <ShoppingCartOutlined />
+        },
+        {
+            key: '/home',
+            label: 'Log out',
+            icon: <LogoutOutlined />,
+            danger: true,
+        },
+    ]
     return (
         <Paper style={{
             display: 'flex',
@@ -66,7 +95,8 @@ const UserSideBar = () => {
                     width: 150,
                     cursor: 'pointer',
                     borderRadius: 5,
-                    marginTop: -150
+                    marginTop: -150,
+                    borderRadius: 10
                 }}
                     onClick={() => document.querySelector(".input-field").click()}
                 >
@@ -87,13 +117,14 @@ const UserSideBar = () => {
                     ></input>
                     {
                         uploadImage ? <img src={Url ? Url : image} style={{
-                            width: 150,
-                            height: 230
+                            width: 140,
+                            height: 140,
+                            borderRadius: 10
                         }}></img> : <PictureOutlined size={120} />
                     }
                 </form>
             </div>
-            <div className='userProfile'>
+            {/* <div className='userProfile'>
                 <div className='userProfile_Item'>
                     <i class="ri-account-circle-line"></i>
                     <Link to='/profile'><p>Your information</p></Link>
@@ -106,8 +137,31 @@ const UserSideBar = () => {
                     <i class="ri-logout-circle-line"></i>
                     <Link to='/home' onClick={() => localStorage.clear()}><p>Log out</p></Link>
                 </div>
+            </div> */}
+            <div>
+                <Menu
+                style={{
+                    marginTop:10,
+                    textDecoration:'none'
+                }}
+                    mode='vertical'
+                    onClick={(item) => {
+                        navigate(item.key)
+                        if (item.key === '/home') {
+                            localStorage.clear()
+                        }
+                    }}
+                    items={
+                        menuItem
+                    }
+                >
+                    <div style={{
+                        borderBottomColor: 'black'
+                    }}>menuItem</div>
+                </Menu>
             </div>
         </Paper >
+
     )
 }
 

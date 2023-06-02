@@ -177,6 +177,20 @@ const SessionAndBatch = () => {
       }
     })
   }
+  const chooseSessionForBatch = (id,value) => {
+    console.log("record batch là" + value + id)
+    fetch('https://momkitchen.azurewebsites.net/api/Session/choosesessionforbatch?batchid=' + id + "&sessionid=" + value, {
+      method: 'GET',
+      headers: { "Content-Type": "application/json" },
+    }).then(response => {
+      if (response.ok) {
+        fetchAllBatch()
+        console.log("thanh cong")
+      } else {
+        console.log("that bai")
+      }
+    })
+  }
   const onCreateNewSession = () => {
     fetch('https://momkitchen.azurewebsites.net/api/Session', {
       method: 'POST',
@@ -348,7 +362,7 @@ const SessionAndBatch = () => {
                   title: 'Create Date',
                   dataIndex: "createDate",
                   defaultSortOrder: 'ascend',
-                  sorter: (a, b) => new Date(a.createDate) - new Date(b.createDate)
+                  sorter: (a, b) => new Date(b.createDate) - new Date(a.createDate)
                 },
 
                 {
@@ -369,7 +383,7 @@ const SessionAndBatch = () => {
                           onClick={() => onChangeStatusSession(record)}
                           style={{
                             cursor: 'pointer',
-                          }}>On</Tag> : <Tag color='green' style={{ cursor: 'pointer' }} onClick={() => onChangeStatusSession(record)}>Off</Tag>}
+                          }}>Off</Tag> : <Tag color='green' style={{ cursor: 'pointer' }} onClick={() => onChangeStatusSession(record)}>On</Tag>}
                       </Badge>
                     </>
                   )
@@ -467,13 +481,27 @@ const SessionAndBatch = () => {
                   dataIndex: "session.title",
                   key: 'session',
                   width: 100,
-                  render: (_, record) => (
-                    <div>
-                      {
-                        record.session.title
-                      }
-                    </div>
-                  )
+                  render: (_, record) => {
+                    // const defaultValue = record.shipper.name
+                    return (
+                      <Select
+                        style={{ width: 200 }}
+                        value={record.session?.title}
+                        onChange={(value) => {
+                          chooseSessionForBatch(record.id, value)
+                          // chooseShipperForBatch(record.id)
+                        }
+                        }
+                      >
+                        {
+                          dataSource.map((option) => (
+                            <MenuItem key={option.id} value={option.id}>
+                              {option.title}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    )
+                  }
                 },
                 {
                   title: 'Shipper',

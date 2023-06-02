@@ -5,6 +5,7 @@ import { Container, Row, Col } from "reactstrap";
 import ProductCard from "../components/UI/product-card/ProductCard";
 import ReactPaginate from "react-paginate";
 import { Box, MenuItem, Select, FormControl, Menu } from '@mui/material'
+import { getAllSessionPackage } from "../API/user/userAPI.jsx";
 
 import "../styles/all-foods.css";
 import "../styles/pagination.css";
@@ -26,107 +27,28 @@ const AllFoods = () => {
   const [productList, setProductList] = useState([])
   const [filterValue, setFilterValue] = useState("Default")
   const chefValueId = cartItem.map((i) => i.chef)[0];
-  const filteredArray = chefValueId ? allProducts.filter((item) => item.foodPackage.chefId === chefValueId) : [];
   useEffect(() => {
-    async function getAllFood() {
-      try {
-        const requestUrl = 'https://momkitchen.azurewebsites.net/api/FoodPackage'
-        const response = await fetch(requestUrl)
-        const responseJSON = await response.json()
-        const newFood = responseJSON
-        setAllProducts(newFood)
-        setProductList(newFood)
-      } catch (error) {
-        console.log("Failed", error.message)
-      }
+    if (getAllSessionPackage) {
+      getAllSessionPackage().then(response => {
+        setAllProducts(response)
+        setProductList(response)
+      })
+    } else {
+      alert("Something went wrong at loading ! Try again")
     }
-    getAllFood();
   }, [])
+  console.log("all product là", allProducts)
+  const filteredArray = chefValueId ? allProducts.filter((item) => item.foodPackage?.chefId === chefValueId) : [];
+
   const searchedProduct = allProducts.filter((item) => {
-    const name = item.foodPackage.name
-    if (name.toLowerCase().includes(searchTerm.toLowerCase())) {
+    const name = item.foodPackage?.name
+    if (name?.toLowerCase().includes(searchTerm.toLowerCase())) {
       return item;
     } else {
       return console.log("not found");
     }
     // alert(item.foodPackage.name)
   });
-  // const handleFilter = (event) => {
-  //   setFilterValue(event.target.value)
-  //   if (filterValue === "Lowest price") {
-  //     async function getAllFood() {
-  //       try {
-  //         const requestUrl = 'https://6425860f9e0a30d92b34796d.mockapi.io/packageFood'
-  //         const response = await fetch(requestUrl)
-  //         const responseJSON = await response.json()
-  //         const newFood = responseJSON
-  //         setAllProducts(newFood)
-  //       } catch (error) {
-  //         console.log("Failed", error.message)
-  //       }
-  //     }
-  //     const lowestPriceGoods = allProducts.sort((a, b) => a.price - b.price);
-  //     console.log("Vao dc lowest")
-  //     setAllProducts([lowestPriceGoods]);
-  //   } else if (filterValue === "Highest price") {
-  //     async function getAllFood() {
-  //       try {
-  //         const requestUrl = 'https://6425860f9e0a30d92b34796d.mockapi.io/packageFood'
-  //         const response = await fetch(requestUrl)
-  //         const responseJSON = await response.json()
-  //         const newFood = responseJSON
-  //         setAllProducts(newFood)
-  //       } catch (error) {
-  //         console.log("Failed", error.message)
-  //       }
-  //     }
-  //     const highestPriceGoods = allProducts.sort((a, b) => b.price - a.price);
-  //     console.log("Vao dc highest")
-  //     setAllProducts([...highestPriceGoods]);
-  //   } else if (filterValue === "Default") {
-  //     async function getAllFood() {
-  //       try {
-  //         const requestUrl = 'https://6425860f9e0a30d92b34796d.mockapi.io/packageFood'
-  //         const response = await fetch(requestUrl)
-  //         const responseJSON = await response.json()
-  //         const newFood = responseJSON
-  //         setAllProducts(newFood)
-  //       } catch (error) {
-  //         console.log("Failed", error.message)
-  //       }
-  //     }
-  //     getAllFood();
-  //     setAllProducts(allProducts);
-  //   }
-  // }
-  // const handleChange = (e) => {
-  //   setFilterValue(e.target.value)
-  //   const data = filterValue
-  //   if (data === "Lowest price") {
-  //     const lowestPriceGoods = allProducts.sort((a, b) => b.price - a.price);
-  //     console.log("Vao dc lowest")
-  //     setAllProducts([...lowestPriceGoods]);
-  //   }
-  //   if (data === "Highest price") {
-  //     const highestPriceGoods = allProducts.sort((a, b) => a.price - b.price);
-  //     console.log("Vao dc highest")
-  //     setAllProducts([...highestPriceGoods]);
-  //   }
-  //   if (data === "Default") {
-  //     async function getAllFood() {
-  //       try {
-  //         const requestUrl = 'https://momkitchen.azurewebsites.net/api/FoodPackage'
-  //         const response = await fetch(requestUrl)
-  //         const responseJSON = await response.json()
-  //         const newFood = responseJSON
-  //         setAllProducts(newFood)
-  //       } catch (error) {
-  //         console.log("Failed", error.message)
-  //       }
-  //     }
-  //     getAllFood();
-  //   }
-  // }
   useEffect(() => {
     const data = filterValue
     console.log(data)
@@ -140,21 +62,21 @@ const AllFoods = () => {
       console.log("Vao dc highest")
       setAllProducts([...highestPriceGoods]);
     }
-    if (filterValue === "Default") {
-      console.log("Vao dc default")
-      async function getAllFood() {
-        try {
-          const requestUrl = 'https://momkitchen.azurewebsites.net/api/FoodPackage'
-          const response = await fetch(requestUrl)
-          const responseJSON = await response.json()
-          const newFood = responseJSON
-          setAllProducts(newFood)
-        } catch (error) {
-          console.log("Failed", error.message)
-        }
-      }
-      getAllFood();
-    }
+    // if (filterValue === "Default") {
+    //   console.log("Vao dc default")
+    //   async function getAllFood() {
+    //     try {
+    //       const requestUrl = 'https://momkitchen.azurewebsites.net/api/FoodPackage'
+    //       const response = await fetch(requestUrl)
+    //       const responseJSON = await response.json()
+    //       const newFood = responseJSON
+    //       setAllProducts(newFood)
+    //     } catch (error) {
+    //       console.log("Failed", error.message)
+    //     }
+    //   }
+    //   getAllFood();
+    // }
   }, [filterValue])
   // const filterDropdown = () => {
   //   // setFilterValue(e.target.value)
@@ -198,6 +120,7 @@ const AllFoods = () => {
                 <input
                   type="text"
                   placeholder="I'm looking for...."
+                  defaultValue=""
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   style={{
@@ -232,25 +155,22 @@ const AllFoods = () => {
                     <MenuItem value="Default">Default</MenuItem>
                     <MenuItem value="Highest price">Highest price</MenuItem>
                     <MenuItem value="Lowest price">Lowest price</MenuItem>
-
                   </Select>
                 </FormControl>
               </Box>
             </Col>
-
             {
               (chefValueId == "" || chefValueId == null) ?
-                displayPage.map((item) => (
+                displayPage.filter((item) => item.remainQuantity > 0).map((item) => (
                   <Col lg="3" md="4" sm="6" xs="6" key={item.id} className="mt-5">
                     <ProductCard item={item} />
                   </Col>
-                )) : filteredArray.map((item) => (
+                )) : filteredArray.filter((item) => item.remainQuantity > 0).map((item) => (
                   <Col lg="3" md="4" sm="6" xs="6" key={item.id} className="mt-5">
                     <ProductCard item={item} />
                   </Col>
                 ))
             }
-
             <div>
               <ReactPaginate
                 pageCount={pageCount}

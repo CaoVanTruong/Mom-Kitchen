@@ -20,10 +20,33 @@ const OrderForm = () => {
   const showCart = useSelector((state) => state.cartUi.cartIsVisible);
   const cartProducts = useSelector((state) => state.cart.cartItems);
   const [totalPrice, setTotalPrice] = useState(totalAmount)
-  const [note, setNote] = useState("")
+  const [note, setNote] = useState(localStorage.getItem(''))
   const [inforUser, setInforUser] = useState({})
+  // const [buildingOnChange,setBuildingOnChange] = useState()
+  // const [phoneOnChange,setPhoneOnChange] = useState()
+  const [buildingOnChange, setBuildingOnChange] = useState()
+  const [nameOnChange, setNameOnChange] = useState()
+  const [phoneOnChange, setPhoneOnChange] = useState()
   console.log("email hiện tại là " + localStorage.getItem('user-infor'))
   console.log("sessionId hiện tại là" + JSON.stringify(cartProducts))
+  console.log("note là", note)
+  const dispatch = useDispatch();
+  const handleNoteChange = (event) => {
+    const newNote = event.target.value;
+    setNote(newNote);
+    localStorage.setItem('note', newNote);
+    dispatch(cartActions.addNoteString(event.target.value))
+  };
+  const handleBuildingChange = (event)=>{
+    setBuildingOnChange(event.target.value)
+    const newBuilding = event.target.value
+    localStorage.setItem('building',newBuilding)
+  }
+  const handlePhoneChange = (event)=>{
+    const newPhone = event.target.value
+    setPhoneOnChange(event.target.value)
+    localStorage.setItem('phone',newPhone)
+  }
   useEffect(() => {
     if (totalAmount === 0) {
       setTotalPrice(1)
@@ -46,9 +69,7 @@ const OrderForm = () => {
     })
   }, [])
   // const { name, defaultBuilding, phone } = inforUser
-  const [buildingOnChange, setBuildingOnChange] = useState()
-  const [nameOnChange, setNameOnChange] = useState()
-  const [phoneOnChange, setPhoneOnChange] = useState()
+
   return (
     <Helmet title="Cart">
       <Header />
@@ -99,7 +120,7 @@ const OrderForm = () => {
                       defaultValue="1"
                       value={buildingOnChange}
                       InputProps={{ inputProps: { min: 1, max: 15 } }}
-                      onChange={(e) => setBuildingOnChange(e.target.value)}
+                      onChange={handleBuildingChange}
                       style={{
                         width: "100%"
                       }}>
@@ -112,7 +133,7 @@ const OrderForm = () => {
                       type="phone"
                       defaultValue="038 1111 2222"
                       value={phoneOnChange}
-                      onChange={(e) => setPhoneOnChange(e.target.value)}
+                      onChange={handlePhoneChange}
                       required
                       style={{
                         width: "100%"
@@ -204,7 +225,8 @@ const OrderForm = () => {
                       width={1000}
                       placeholder="Note here for chef..."
                       minRows={2}
-                      onChange={(e) => setNote(e.target.value)}
+                      value={note}
+                      onChange={handleNoteChange}
                     />
                   </div>
                 </ListItem>
@@ -228,7 +250,7 @@ const OrderForm = () => {
               justifyContent: 'center',
               alignItems: 'center'
             }}  >
-              <PaypalCheckout price={totalPrice} email={localStorage.getItem('user-infor')} note={note} building={buildingOnChange} phone={phoneOnChange}/>
+              <PaypalCheckout price={totalPrice} email={localStorage.getItem('user-infor')}/>
             </div>
           </Paper>
         </Container>
