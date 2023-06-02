@@ -65,6 +65,9 @@ function SideMenu() {
                     menuItem
                 }
             >
+                    <div style={{
+                        borderBottomColor:'black'
+                    }}>menuItem</div>
             </Menu>
         </div>
     )

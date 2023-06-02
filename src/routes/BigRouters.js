@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate} from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "../pages/Home";
 import AllFoods from "../pages/AllFoods";
 import FoodDetails from "../pages/FoodDetails";
@@ -16,10 +16,15 @@ import HistoryTab from "../pages/user-profile/HistoryTab";
 import OrderDetail from "../components/UI/order/OrderDetail";
 import AccountManagement from "../pages/admin/AccountManagement";
 import SessionAndBatch from "../pages/admin/SessonAndBatch";
+import { Toaster, toast } from "react-hot-toast";
+import { useEffect } from "react";
+import { Fragment } from "react";
 
 const BigRouters = () => {
   return (
+    <Fragment>
     <Routes>
+      {/* <Route element={<Toaster />} /> */}
       <Route path="/" element={<Navigate to="/home" />} />
       <Route path="/user" element={<Home />} />
       <Route path="/userManagement" element={<UserManagement />} />
@@ -38,9 +43,8 @@ const BigRouters = () => {
       <Route path="/orderDetail" element={<OrderDetail />} />
       <Route path="/accountManagement" element={<AccountManagement />} />
       <Route path="/sessionAndBatch" element={<SessionAndBatch />} />
-
     </Routes>
-
+    </Fragment>
   );
 };
 

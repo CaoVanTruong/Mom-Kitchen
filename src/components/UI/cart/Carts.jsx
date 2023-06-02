@@ -6,17 +6,29 @@ import CartItem from "./CartItem";
 
 import { useDispatch, useSelector } from "react-redux";
 import { cartUiActions } from "../../../store/shopping-cart/cartUiSlice";
-
+import { useNavigate } from "react-router-dom";
 import "../../../styles/shopping-cart.css";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const Carts = () => {
   const dispatch = useDispatch();
   const cartProducts = useSelector((state) => state.cart.cartItems);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
-
+  const [account, setAccount] = useState(localStorage.getItem('user-infor'))
+  const navigate = useNavigate()
   const toggleCart = () => {
     dispatch(cartUiActions.toggle());
   };
+
+  const checkAccount = () => {
+    if (account === null) {
+      navigate("/login")
+      alert("You have to sign in first.")
+    } else {
+      navigate('/orderForm')
+    }
+  }
   return (
     <div className="cart__container">
       <ListGroup className="cart">
@@ -38,14 +50,17 @@ const Carts = () => {
 
         <div className="cart__bottom d-flex align-items-center justify-content-between">
           <h6>
-            Subtotal : <span>{totalAmount} VNĐ</span>
+            Subtotal : <span>{totalAmount} VND</span>
           </h6>
-          <button>
-            <Link to="/orderForm" onClick={toggleCart}>
-              Checkout
-            </Link>
+          <button onClick={() => {
+            toggleCart()
+            checkAccount()
+          }
+          }>
+            Checkout
           </button>
         </div>
+
       </ListGroup>
     </div>
   );

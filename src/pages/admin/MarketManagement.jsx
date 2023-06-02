@@ -5,11 +5,13 @@ import BootstrapNavbar from '../../components/Sidebar/BootstrapNavbar'
 import SideMenu from '../../components/Sidebar/SideMenu'
 import { useEffect } from 'react'
 import { getAllProducts } from '../../API/recentOrder'
-import { Space, Typography, Table, Avatar, Rate, Modal, Image } from 'antd'
+import { Space, Typography, Table, Avatar, Rate, Modal, Image, Tag } from 'antd'
 import {
-  DeleteOutlined, CloseOutlined, CheckCircleOutlined, EyeOutlined
+  DeleteOutlined, CloseOutlined, CheckCircleOutlined, EyeOutlined, CheckCircleFilled
 } from '@ant-design/icons'
 import { NonceProvider } from 'react-select'
+import { getAllSessionPackage } from '../../API/admin/market'
+import { render } from '@testing-library/react'
 const MarketManagement = () => {
   const userTemplate = [
     {
@@ -37,6 +39,9 @@ const MarketManagement = () => {
   const [loading, setLoading] = useState(false)
   const [dataSource, setDataSource] = useState([])
   const [productArray, setProductArray] = useState([])
+  const [sessionPackage, setSessionPackage] = useState()
+  const [sessionPackageArray, setSessionPackageArray] = useState([])
+  const [allDishArray, setAllDishArray] = useState([])
   const onDeleteRecord = (record) => {
     Modal.confirm({
       title: 'Are you sure, you want to delete this record?',
@@ -44,21 +49,30 @@ const MarketManagement = () => {
       okType: 'danger',
       cancelText: <div>Cancel</div>,
       onOk: () => {
-        setDataSource(pre => {
-          return pre.filter(product => product.id !== record.id)
-        })
+        console.log("id là", record.id)
+        if (record.status === 2) {
+          console.log("vao dc cho nay khong")
+          return changeStatusSessionPackage(record.id, 3);
+        } else if (record.status === 0) {
+          console.log("vao dc cho nay khong 2")
+          return changeStatusSessionPackage(record.id, 2)
+        } else if (record.status === 1) {
+          return changeStatusSessionPackage(record.id, 3)
+        }
       }
     })
   }
   const onEditRecord = (record) => {
     setIsEditing(true)
     setEditingProduct({ ...record })
+    fetchAllDishByFoodPackageId(record?.foodPackage?.id)
   }
   function handleFilter(event) {
-    const newData = productArray.filter(row => {
-      return row.title.toLowerCase().includes(event.target.value.toLowerCase())
-    })
-    setDataSource(newData)
+    const searchValue = event.target?.value || "";
+    const newData = sessionPackageArray.filter(row => {
+      return row.foodPackage?.name.toLowerCase().includes(searchValue.toLowerCase());
+    });
+    setSessionPackage(newData);
   }
   const resetEditing = () => {
     setIsEditing(false)
@@ -75,8 +89,36 @@ const MarketManagement = () => {
       setDataSource(res.products)
       setLoading(false)
     })
+    fetchAllSessionPackage()
   }, [])
 
+  const fetchAllSessionPackage = () => {
+    getAllSessionPackage().then(res => {
+      setSessionPackage(res)
+      setSessionPackageArray(res)
+      setLoading(false)
+    })
+  }
+  // const  id  = editingProduct.id || 0
+  const fetchAllDishByFoodPackageId = (id) => {
+    fetch('https://momkitchen.azurewebsites.net/api/FoodPackage/getalldishbyid?dishid=' + id).then(response => {
+      return response.json()
+    }).then(data => {
+      console.log({ data })
+      setAllDishArray(data)
+    })
+  }
+  const changeStatusSessionPackage = (id, status) => {
+    fetch(`https://momkitchen.azurewebsites.net/api/FoodPackageInSession?id=${id}&status=${status}`, {
+      method: 'PATCH',
+    }).then(response => {
+      return fetchAllSessionPackage()
+    }).catch(error => {
+      return alert("Change fail")
+    })
+
+  }
+  // console.log(editingProduct?.foodPackage?.id)
   return (
     <div>
       <BootstrapNavbar />
@@ -124,17 +166,22 @@ const MarketManagement = () => {
                       },
                       {
                         title: "Image",
-                        dataIndex: "thumbnail",
-                        render: (link) => {
-                          return <Avatar src={link} style={{
+                        dataIndex: "foodPackage.image",
+                        key: "image",
+                        render: (_, record) => (
+                          < Avatar src={record.foodPackage?.image} style={{
                             width: 100,
                             height: 100
                           }} />
-                        },
+                        ),
                       },
                       {
                         title: 'Title',
-                        dataIndex: "title"
+                        dataIndex: "foodPackage.name",
+                        key: "name",
+                        render: (_, record) => (
+                          <div>{record && record.foodPackage?.name}</div>
+                        )
                       },
                       {
                         title: 'Chef',
@@ -147,58 +194,101 @@ const MarketManagement = () => {
                         sorter: (a, b) => a.price - b.price
                       }, {
                         title: 'Session',
-                        dataIndex: "rating",
-                        filters: [
-                          {
-                            text: 'Session 1',
-                            value: 'Session 2'
-                          },
-                          {
-                            text: 'Session 2',
-                            value: 'Session 2'
-                          },
-                        ],
+                        dataIndex: "session.title",
+                        key: 'title',
+                        defaultSortOrder: 'descend',
+                        sorter: (a, b) => a.sessionId - b.sessionId,
+                        render: (_, record) => (
+                          <div>{record.session.title}</div>
+                        )
                         // onFilter:(value,record) => record.rating.indexOf(value)===0
                       }
                       ,
                       {
-                        title: 'Remain Quantity',
-                        dataIndex: "stock",
+                        title: 'Quantity',
+                        dataIndex: "quantity",
                         width: 50,
                         defaultSortOrder: 'ascend',
-                        sorter: (a, b) => a.stock - b.stock
+                        sorter: (a, b) => a.quantity - b.quantity
                       },
                       {
                         title: 'Create date',
-                        dataIndex: "brand"
+                        dataIndex: "createDate"
+                      },
+                      {
+                        title: 'Status',
+                        dataIndex: "status",
+                        key: 'status',
+                        filters: [
+                          {
+                            text: 'New',
+                            value:0,
+                          },
+                          {
+                            text: 'Approve',
+                            value: 1,
+                          },
+                          {
+                            text: 'Reject',
+                            value: 2,
+                          },
+                          {
+                            text: 'Cancel',
+                            value: 3,
+                          },
+                        ],
+                        filterMode: 'tree',
+                        filterSearch: true,
+                        onFilter: (value, record) => record.status === value,
+                        width: '30%',
+                        render: (_, record) => (
+                          <>
+                            {
+                              record.status == 0 ? <Tag color='geekblue'>New</Tag> : record.status == 1 ? <Tag color='yellow'>Approve</Tag> : record.status == 2 ? <Tag color='red'>Reject</Tag> : <Tag color='grey'>Cancel</Tag>
+                            }
+                          </>
+                        )
                       },
                       {
                         title: "Actions",
                         render: (record) => {
                           return (
-                            <div>
+                            <div style={{
+                              display: 'flex'
+                            }}>
                               <EyeOutlined
-                                onClick={() => onEditRecord(record)}
+                                onClick={() => {
+                                  onEditRecord(record)
+                                }}
                               />
                               <DeleteOutlined
                                 onClick={() => onDeleteRecord(record)}
-                                style={{ color: "red", marginLeft: 12 }} />
-                              <CheckCircleOutlined
-                                onClick={() => { }}
-                                style={{
-                                  color: 'green',
-                                  marginLeft: 12
-                                }} />
+                                style={{ color: "red", marginLeft: 12 }}
+                              />
+
+                              {
+                                record.status == 0 ? <CheckCircleOutlined
+                                  onClick={() => { changeStatusSessionPackage(record.id, 1) }}
+                                  style={{
+                                    color: 'green',
+                                    marginLeft: 12
+                                  }} /> : <CheckCircleFilled
+                                  style={{
+                                    color: 'grey',
+                                    marginLeft: 12
+                                  }} />
+                              }
+
                             </div>
                           )
                         }
                       }
                     ]}
                   loading={loading}
-                  dataSource={dataSource}
+                  dataSource={sessionPackage}
                   pagination={
                     {
-                      pageSize: 7
+                      pageSize: 10
                     }
                   }
                 >
@@ -207,14 +297,16 @@ const MarketManagement = () => {
             </div>
           </Space>
           <div>
-            {/* modal edit */}
+            {/* modal view detail */}
             <Modal
               width={1000}
               title="View detail"
               open={isEditing}
-              okButtonProps={{style:{
-                display:'none'
-              }}}
+              okButtonProps={{
+                style: {
+                  display: 'none'
+                }
+              }}
               onCancel={() => {
                 resetEditing()
               }
@@ -232,135 +324,136 @@ const MarketManagement = () => {
                 borderRadius: 20
               }}>
                 <Image style={{
-                  borderRadius: 20
-                }} src={editingProduct?.thumbnail}></Image>
+                  borderRadius: 20,
+                  width: 300,
+                  height: 300
+                }} src={editingProduct?.foodPackage?.image}></Image>
               </div>
               <div>
                 <Paper style={{
                   marginTop: 20
                 }} component={Box} p={4} mx="auto">
-                  {
-                    userTemplate.map((user, index) => (
-                      <Grid
-                        container
-                        spacing={3}
-                        key={index}
-                        className='inputGroup'
+
+                  <Grid
+                    container
+                    spacing={3}
+
+                    className='inputGroup'
+                  >
+                    <Grid item lg={6}>
+                      <TextField
+                        label="Title"
+                        placeholder='Title...'
+                        variant='outlined'
+                        fullWidth
+                        defaultValue={editingProduct?.foodPackage?.name}
+                        disabled={true}
                       >
-                        <Grid item lg={6}>
-                          <TextField
-                            label="Title"
-                            placeholder='Title...'
-                            variant='outlined'
-                            fullWidth
-                            value={editingProduct?.title}
-                            disabled={true}
-                          >
-                          </TextField>
-                        </Grid>
-                        <Grid item lg={6}>
-                          <TextField
-                            label="Price"
-                            placeholder='Price'
-                            variant='outlined'
-                            fullWidth
-                            value={editingProduct?.price}
-                            disabled={true}
-                          >
-                          </TextField>
-                        </Grid>
-                        <Grid item lg={6}>
-                          <TextField
-                            label="Chef"
-                            placeholder='Brand...'
-                            variant='outlined'
-                            fullWidth
-                            value={editingProduct?.brand}
-                            disabled={true}
+                      </TextField>
+                    </Grid>
+                    <Grid item lg={6}>
+                      <TextField
+                        label="Price"
+                        variant='outlined'
+                        fullWidth
+                        defaultValue={editingProduct?.price}
+                        disabled={true}
+                      >
+                      </TextField>
+                    </Grid>
+                    <Grid item lg={6}>
+                      <TextField
+                        label="Chef"
+                        variant='outlined'
+                        fullWidth
+                        defaultValue={editingProduct?.foodPackage?.chefId}
+                        disabled={true}
 
-                          >
-                          </TextField>
-                        </Grid>
-                        <Grid item lg={6}>
-                          <TextField
-                            label="Food style"
-                            placeholder='Category...'
-                            variant='outlined'
-                            fullWidth
-                            value={editingProduct?.category}
-                            disabled={true}
+                      >
+                      </TextField>
+                    </Grid>
+                    <Grid item lg={6}>
+                      <TextField
+                        label="Food style"
+                        variant='outlined'
+                        fullWidth
+                        defaultValue={editingProduct?.foodPackage?.foodPackageStyleId}
+                        disabled={true}
 
-                          >
-                          </TextField>
-                        </Grid>
-                        <Grid item lg={6}>
-                          <TextField
-                            label="Quantity"
-                            placeholder='Category...'
-                            variant='outlined'
-                            fullWidth
-                            value={editingProduct?.category}
-                            disabled={true}
+                      >
+                      </TextField>
+                    </Grid>
+                    <Grid item lg={6}>
+                      <TextField
+                        label="Quantity"
+                        variant='outlined'
+                        fullWidth
+                        defaultValue={editingProduct?.quantity}
+                        disabled={true}
 
-                          >
-                          </TextField>
-                        </Grid>
-                        <Grid item lg={12}>
-                          <TextField
-                            label="Description"
-                            placeholder='Category...'
-                            variant='outlined'
-                            fullWidth
-                            value={editingProduct?.category}
-                            disabled={true}
+                      >
+                      </TextField>
+                    </Grid>
+                    <Grid item lg={12}>
+                      <TextField
+                        label="Description"
+                        variant='outlined'
+                        fullWidth
+                        defaultValue={editingProduct?.foodPackage?.description}
+                        disabled={true}
 
-                          >
-                          </TextField>
-                        </Grid>
-                        <Grid item lg={12}
-                          className='dishInPackage'
-                        >
-                          <div><h5>Dish in package</h5></div>
+                      >
+                      </TextField>
+                    </Grid>
+                    <Grid item lg={12}
+                      className='dishInPackage'
+                    >
+                      <div><h5>Dish in package</h5></div>
+                      {
+                        Array.isArray(allDishArray) &&
+                        allDishArray.map((i) => (
                           <div style={{
                             marginBottom: 10
                           }}>
                             <Space className='itemInDish'>
-                              <Image src={editingProduct?.thumbnail} style={{
-                                height: 50,
-                                width: 50
+                              <Image src={i?.dish.image} style={{
+                                height: 100,
+                                width: 100
                               }}></Image>
-                              <h5>Title</h5>
-                              <h5>Dish Type</h5>
+                              <h5>{i?.dish.name}</h5>
+                              <h5>{i?.dish.dishType}</h5>
                             </Space>
                           </div>
-                          <div style={{
-                            marginBottom: 10
-                          }}>
-                            <Space className='itemInDish'>
-                              <Image src={editingProduct?.thumbnail} style={{
-                                height: 50,
-                                width: 50
-                              }}></Image>
-                              <h5>Title</h5>
-                              <h5>Dish Type</h5>
-                            </Space>
-                          </div>
-                          <div style={{
-                            marginBottom: 10
-                          }}>
-                            <Space className='itemInDish'>
-                              <Image src={editingProduct?.thumbnail} style={{
-                                height: 50,
-                                width: 50
-                              }}></Image>
-                              <h5>Title</h5>
-                              <h5>Dish Type</h5>
-                            </Space>
-                          </div>
-                        </Grid>
-                      </Grid>
-                    ))
-                  }
+                        ))
+                      }
+
+                      {/* <div style={{
+                        marginBottom: 10
+                      }}>
+                        <Space className='itemInDish'>
+                          <Image src={editingProduct?.thumbnail} style={{
+                            height: 50,
+                            width: 50
+                          }}></Image>
+                          <h5>Title</h5>
+                          <h5>Dish Type</h5>
+                        </Space>
+                      </div>
+                      <div style={{
+                        marginBottom: 10
+                      }}>
+                        <Space className='itemInDish'>
+                          <Image src={editingProduct?.thumbnail} style={{
+                            height: 50,
+                            width: 50
+                          }}></Image>
+                          <h5>Title</h5>
+                          <h5>Dish Type</h5>
+                        </Space>
+                      </div> */}
+                    </Grid>
+                  </Grid>
+
                 </Paper>
               </div>
             </Modal>

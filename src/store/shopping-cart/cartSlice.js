@@ -11,17 +11,33 @@ const totalQuantity =
   localStorage.getItem("totalQuantity") !== null
     ? JSON.parse(localStorage.getItem("totalQuantity"))
     : 0;
+// const note =
+//   localStorage.getItem("note") !== null
+//     ? JSON.parse(localStorage.getItem("note"))
+//     : "";
+let note = "";
+const storedNote = localStorage.getItem("note");
+if (storedNote !== null) {
+  try {
+    note = JSON.parse(storedNote);
+  } catch (error) {
+    console.error("Error parsing stored note:", error);
+  }
+}
 const setItemFunc = (item, totalAmount, totalQuantity) => {
   localStorage.setItem("cartItems", JSON.stringify(item));
   // state.cartItems.map((item) => item),
   localStorage.setItem("totalAmount", JSON.stringify(totalAmount));
   localStorage.setItem("totalQuantity", JSON.stringify(totalQuantity));
 };
-
+const setNoteFunc = (note) => {
+  localStorage.setItem("note", note)
+}
 const initialState = {
   cartItems: items,
   totalQuantity: totalQuantity,
   totalAmount: totalAmount,
+  note: note
 };
 
 const cartSlice = createSlice({
@@ -35,16 +51,17 @@ const cartSlice = createSlice({
         (item) => item.id === newItem.id
       );
       state.totalQuantity++;
-
       if (!existingItem) {
         // ===== note: if you use just redux you should not mute state array instead of clone the state array, but if you use redux toolkit that will not a problem because redux toolkit clone the array behind the scene
         state.cartItems.push({
           id: newItem.id,
           title: newItem.title,
-          image01: newItem.image01,
+          image: newItem.image,
           price: newItem.price,
           quantity: 1,
           totalPrice: newItem.price,
+          chef: newItem.chefId,
+          sessionId: newItem.sessionId
         });
       } else {
         existingItem.quantity++;
@@ -54,7 +71,6 @@ const cartSlice = createSlice({
 
       state.totalAmount = state.cartItems.reduce(
         (total, item) => total + Number(item.price) * Number(item.quantity),
-
         0
       );
 
@@ -63,10 +79,13 @@ const cartSlice = createSlice({
         state.totalAmount,
         state.totalQuantity
       );
-    } ,
-
+    },
+    addNoteString(state, action) {
+      const note = action.payload;
+      state.note = note;
+      setNoteFunc(state.note)
+    },
     // ========= remove item ========
-
     removeItem(state, action) {
       const id = action.payload;
       const existingItem = state.cartItems.find((item) => item.id === id);

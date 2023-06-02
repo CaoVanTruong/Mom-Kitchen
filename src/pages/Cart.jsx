@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import CommonSection from "../components/UI/common-section/CommonSection";
 import Helmet from "../components/Helmet/Helmet";
@@ -10,44 +10,80 @@ import { Link } from "react-router-dom";
 import Header from "../components/Header/Header.jsx";
 import Footer from "../components/Footer/Footer.jsx";
 import Carts from "../components/UI/cart/Carts.jsx";
+import { useNavigate } from "react-router-dom";
+import { forEach } from "mathjs";
+import { Table } from "antd";
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
+  const totalQuantity = useSelector((state) => state.cart.totalQuantity)
   const totalAmount = useSelector((state) => state.cart.totalAmount);
   const showCart = useSelector((state) => state.cartUi.cartIsVisible);
+  const account = localStorage.getItem('user-infor')
+  const dispatch = useDispatch();
 
+  const deleteItem = (id) => {
+    dispatch(cartActions.deleteItem(id));
+  };
+  const navigate = useNavigate()
+  const checkAccount = () => {
+    if (account === null) {
+      navigate("/login")
+      alert("You have to sign in first.")
+    } else {
+      navigate('/orderForm')
+      // setToggleCart1(toggleCart)
+    }
+  }
   return (
     <Helmet title="Cart">
       <Header />
       {showCart && <Carts />}
       <CommonSection title="Your Cart" />
-      <section>
+      <section style={{
+        backgroundColor: '#FFFFFF'
+      }}>
         <Container>
           <Row>
             <Col lg="12">
-              {cartItems.length === 0 ? (
-                <h5 className="text-center">Your cart is empty</h5>
-              ) : (
-                <table className="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Image</th>
-                      <th>Product Title</th>
-                      <th>Price</th>
-                      <th>Quantity</th>
-                      <th>Delete</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cartItems.map((item) => (
-                      <Tr item={item} key={item.id} />
-                    ))}
-                  </tbody>
-                </table>
-              )}
-
+              <Table
+                dataSource={cartItems}
+                columns={[
+                  {
+                    title: "Image",
+                    dataIndex: 'image',
+                    render: (_, record) => (
+                      <img src={record.image} style={{
+                        width: "100px",
+                        height: "100px",
+                        borderRadius: 20
+                      }}></img>
+                    )
+                  },
+                  {
+                    title: 'Product title',
+                    dataIndex: 'title'
+                  },
+                  {
+                    title: 'Price',
+                    dataIndex: 'price'
+                  },
+                  {
+                    title: 'Quantity',
+                    dataIndex: 'quantity'
+                  },
+                  {
+                    title: "Action",
+                    render: (_, record) => (
+                      <i className="ri-delete-bin-line" onClick={() => deleteItem(record.id)}></i>
+                    )
+                  }
+                ]}
+              >
+              </Table>
+              {/* )} */}
               <div className="mt-4">
                 <h6>
-                  Subtotal: 
+                  Subtotal:
                   <span className="cart__subtotal">{totalAmount} VND</span>
                 </h6>
                 <p>Taxes and shipping will calculate at checkout</p>
@@ -55,8 +91,10 @@ const Cart = () => {
                   <button className="addTOCart__btn me-4">
                     <Link to="/foods">Continue Shopping</Link>
                   </button>
-                  <button className="addTOCart__btn">
-                    <Link to="/orderForm">Proceed to checkout</Link>
+                  <button className="addTOCart__btn" onClick={() => checkAccount()}>
+                    {/* <Link to="/orderForm">Proceed to checkout</Link>
+                   */}
+                    Proceed to checkout
                   </button>
                 </div>
               </div>
@@ -64,30 +102,8 @@ const Cart = () => {
           </Row>
         </Container>
       </section>
-      <Footer/>
+      <Footer />
     </Helmet>
-  );
-};  
-
-const Tr = (props) => {
-  const { id, image01, title, price, quantity} = props.item;
-  const dispatch = useDispatch();
-
-  const deleteItem = () => {
-    dispatch(cartActions.deleteItem(id));
-  };
-  return (
-    <tr>
-      <td className="text-center cart__img-box">
-        <img src={image01} alt="" />
-      </td>
-      <td className="text-center">{title}</td>
-      <td className="text-center">{price} VND</td>
-      <td className="text-center">{quantity}x</td>
-      <td className="text-center cart__item-del">
-        <i className="ri-delete-bin-line" onClick={deleteItem}></i>
-      </td>
-    </tr>
   );
 };
 

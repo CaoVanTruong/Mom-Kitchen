@@ -10,31 +10,40 @@ import { useSelector } from "react-redux";
 import { Typography, Divider } from "antd";
 import logo from "../assets/images/mom-logo.png"
 import '../styles/loginPage.css'
+import toast, { Toaster } from "react-hot-toast";
+
 const Register = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [error, setError] = useState("")
   const navigate = useNavigate()
   const submitHandler = (e) => {
     e.preventDefault();
-    // const data = { email, password }
-    fetch("https://momkitchen.azurewebsites.net/api/Registration", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        email: email,
-        password: password
-      })
-    }).then((res) => {
-      if (res.ok) {
-        alert("Save successfully.")
-      } else {
-        alert("Something wrong! Cannot create your account.")
-      }
-      navigate('/login')
-    }).catch((err) => {
 
-      console.log(err.message)
-    })
+    // const data = { email, password }
+    if (password === confirmPassword) {
+      fetch("https://momkitchen.azurewebsites.net/api/Registration", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      }).then(res => {
+        if (res) {
+          navigate('/login')
+          alert("Create account completed.")
+        } else {
+          setError("Email is exist.")
+        }
+      }).catch((err) => {
+        console.log(err.message)
+      })
+    } else {
+      setError("Password and Confirm password not same!")
+    }
+
   };
   const showCart = useSelector((state) => state.cartUi.cartIsVisible);
   return (
@@ -48,15 +57,29 @@ const Register = () => {
               <form className="form mb-5" onSubmit={submitHandler}>
                 <Typography.Title>Welcome to Mom-Kitchen!</Typography.Title>
                 <div className="form__group">
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
+                  <div style={{
+                    display: 'flex',
+                  }}>
+                    <i class="ri-mail-send-line" style={{
+                      fontSize: 24,
+                      marginRight: 10
+                    }}></i>
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
                 </div>
-                <div className="form__group">
+                <div className="form__group" style={{
+                  display: 'flex'
+                }}>
+                  <i class="ri-lock-line" style={{
+                    fontSize: 24,
+                    marginRight: 10
+                  }}></i>
                   <input
                     type="password"
                     placeholder="Password"
@@ -64,6 +87,31 @@ const Register = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                </div>
+                <div className="form__group" style={{
+                  display: 'flex'
+                }}>
+                  <i class="ri-lock-fill" style={{
+                    fontSize: 24,
+                    marginRight: 10
+                  }}></i>
+                  <input
+                    type="password"
+                    placeholder="Confirm password"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  fontStyle: 'italic',
+                  fontSize: 14,
+                  color: 'red'
+                }}>
+                  {error}
                 </div>
                 <button className="addTOCart__btn" block type="submit" style={{
                   width: "100%",

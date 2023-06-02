@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import '../../styles/sessionAndBatchManagement.css'
-import { Grid, Paper, TextField, Box } from '@mui/material'
+import { Grid, Paper, TextField, Box, Menu } from '@mui/material'
 import BootstrapNavbar from '../../components/Sidebar/BootstrapNavbar'
 import SideMenu from '../../components/Sidebar/SideMenu'
 import { useEffect } from 'react'
 import { getAllUsers } from '../../API/recentOrder'
-import { Space, Typography, Table, Avatar, Rate, Button, Input, Modal, Image, Badge, Tag } from 'antd'
+import { Space, Typography, Table, Avatar, Rate, Button, Input, Modal, Image, Badge, Tag, Select } from 'antd'
 import {
   PlusCircleOutlined, EditOutlined, DeleteOutlined, CloseOutlined,
 } from '@ant-design/icons'
@@ -17,8 +17,9 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { createNewSession, deleteSesion, getAllSession } from '../../API/admin/SessionAndBatch'
+import { createNewSession, deleteBatch, deleteSesion, getAllBatch, getAllSession, getAllShipper } from '../../API/admin/SessionAndBatch'
+import { re } from 'mathjs'
+import { render } from '@testing-library/react'
 const SessionAndBatch = () => {
   const userTemplate = [
     {
@@ -27,20 +28,6 @@ const SessionAndBatch = () => {
       password: "",
       phone: "",
       address: ""
-    }
-  ]
-  const shipperList = [
-    {
-      id: 1,
-      name: "truong1",
-    },
-    {
-      id: 2,
-      name: "truong2",
-    },
-    {
-      id: 3,
-      name: "truong3",
     }
   ]
   const sessionList = [
@@ -54,27 +41,28 @@ const SessionAndBatch = () => {
       title: 3
     }
   ]
-  const [shipper, setShipper] = useState(shipperList)
-  const [age, setAge] = React.useState('');
+  const [shipper, setShipper] = useState()
 
+  const [session, setSession] = useState()
   const handleChange = (event) => {
-    setAge(event.target.value);
     setShipper(event.target.value)
   };
-  const [chosenShipper, setChosenShipper] = useState("")
-  const handleShipper = (value) => {
-    setChosenShipper(value.target.value)
+  const handleSession = (event) => {
+    setSession(event.target.value)
   }
-  const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [isAddingBatch, setIsAddingBatch] = useState(false)
-
-  const [isAddingUser, setIsAddingUser] = useState(null)
-  const [editingUser, setEditingUser] = useState(null)
+  const [isAddingSession, setIsAddingSession] = useState(false)
   const [loading, setLoading] = useState(false)
   const [dataSource, setDataSource] = useState([])
+  const [dataSourceBatch, setDataSourceBatch] = useState([])
   const [sessionArray, setSessionArray] = useState([])
-  const [toggle, setToggle] = useState(false)
+  const [shipperList, setShipperList] = useState([])
+  const [sessionTitle, setSessionTitle] = useState()
+  const [batchArray, setBatchArray] = useState([])
+  const [sessionOnChange, setSessionOnChange] = useState()
+  const [batchStatusOnChange, setBatchStatusOnChange] = useState()
+  const [recordBatch, setRecordBatch] = useState({})
   const onDeleteRecord = (record) => {
     Modal.confirm({
       title: 'Are you sure, you want to delete this record?',
@@ -88,67 +76,127 @@ const SessionAndBatch = () => {
       }
     })
   }
-  const toggleSession = (record) => {
+  const onChangeShipper = (e) => {
+    const value = e.target.value
+    setShipper(value)
+  }
+  const onChangeStatusSession = (record) => {
     setLoading(true)
-    let status
-    console.log("id la gi" + record.id)
-    console.log("status cua record hien tai la" +record.status)
-    if(record.status === true) {
-      status = false
-    } else if (record.status === false) {
-      status = true
-    }
-    console.log("Status la" + status)
-
-    fetch('https://momkitchen.azurewebsites.net/api/Session?id=' + record.id + '&status=' + status,
+    fetch('https://momkitchen.azurewebsites.net/api/Session/enablestarttime?id=' + record.id,
       {
-        method: 'PATCH',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+
+        })
       }).then(res => {
         if (res.ok) {
-          setLoading(true)
-          getAllSession().then((res) => {
-            setDataSource(res)
-          }
-          )
-          setLoading(false)
+          fetchAllSession()
         } else {
           alert("Update fail!")
         }
       })
+  }
+  useEffect(() => {
+    setLoading(true)
+    fetchAllSession()
+    fetchAllBatch()
+    fetchAllShipper()
+  }, [])
+  // function fetchAllSession() {
+  //   getAllSession().then(data => {
+  //     return setSessionArray(data)
+  //     setLoading(false)
+  //   }
+  //   )
+  // }
 
-  }
-  const onEditRecord = (record) => {
-    setIsEditing(true)
-    setEditingUser({ ...record })
-  }
   function handleFilter(event) {
     const newData = sessionArray.filter(row => {
-      return row.firstName.toLowerCase().includes(event.target.value.toLowerCase())
+      return row.title.toLowerCase().includes(event.target.value.toLowerCase())
     })
     setDataSource(newData)
   }
+  function handleFilterBatch(event) {
+    const newData = batchArray.filter(row => {
+      return row.session.title.toLowerCase().includes(event.target.value.toLowerCase())
+    })
+    setDataSourceBatch(newData)
+  }
   const resetAdding = () => {
     setIsAdding(false)
-    setIsAddingUser(null)
+    setIsAddingSession(false)
   }
 
   const resetAddingBatch = () => {
     setIsAddingBatch(false)
   }
-  useEffect(() => {
-    setLoading(true)
+
+  const fetchAllSession = () => {
     getAllSession().then(res => {
       setSessionArray(res)
       setDataSource(res)
       setLoading(false)
     })
-  }, [])
+  }
+  const fetchAllBatch = () => {
+    getAllBatch().then(res => {
+      setBatchArray(res)
+      setDataSourceBatch(res)
+      setLoading(false)
+    })
+  }
+  const fetchAllShipper = async () => {
+    try {
+      const response = await fetch('https://momkitchen.azurewebsites.net/api/Batch');
+      if (response) {
+        const responseData = await response.json();
+        setShipperList(responseData);
+        console.log(response.ok)
+        console.log(responseData)
+
+      } else {
+        throw new Error('Failed to fetch data');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const chooseShipperForBatch = (value, id) => {
+    console.log("record batch là" + value + id)
+    fetch('https://momkitchen.azurewebsites.net/api/Batch/chooseshipperforbatch?batchid=' + id + "&emailshipper=" + value, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+    }).then(response => {
+      if (response.ok) {
+        fetchAllBatch()
+        console.log("thanh cong")
+      } else {
+        console.log("that bai")
+      }
+    })
+  }
+  const chooseSessionForBatch = (id,value) => {
+    console.log("record batch là" + value + id)
+    fetch('https://momkitchen.azurewebsites.net/api/Session/choosesessionforbatch?batchid=' + id + "&sessionid=" + value, {
+      method: 'GET',
+      headers: { "Content-Type": "application/json" },
+    }).then(response => {
+      if (response.ok) {
+        fetchAllBatch()
+        console.log("thanh cong")
+      } else {
+        console.log("that bai")
+      }
+    })
+  }
   const onCreateNewSession = () => {
     fetch('https://momkitchen.azurewebsites.net/api/Session', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        title: sessionTitle
       })
     }).then(res => {
       if (res.ok) {
@@ -182,6 +230,7 @@ const SessionAndBatch = () => {
             getAllSession().then(res => {
               setDataSource(res)
               setLoading(false)
+              setIsAddingSession(false)
               alert("Delete session successfully.")
             })
           } else {
@@ -192,6 +241,45 @@ const SessionAndBatch = () => {
       }
     })
   }
+  const onDeleteBatchRecord = (record) => {
+    Modal.confirm({
+      title: 'Are you sure, you want to delete this record?',
+      okText: <div>Yes</div>,
+      okType: 'danger',
+      cancelText: <div>Cancel</div>,
+      onOk: () => {
+        deleteBatch(record.id).then(res => {
+          if (res.ok) {
+            fetchAllBatch()
+          } else {
+            alert("Delete fail.")
+          }
+        })
+      }
+    })
+  }
+  const createNewBatch = () => {
+    fetch('https://momkitchen.azurewebsites.net/api/Batch', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        status: batchStatusOnChange,
+        sessionId: sessionOnChange
+      })
+    })
+      .then(res => {
+        if (res.ok) {
+          fetchAllBatch()
+          alert("Create new batch completed.")
+        } else {
+          alert("Can not create new batch!")
+        }
+      })
+      .catch(error => {
+        console.error("Error creating new batch:", error);
+        alert("An error occurred while creating new batch.");
+      });
+  };
   return (
     <div>
       <BootstrapNavbar />
@@ -241,7 +329,7 @@ const SessionAndBatch = () => {
                 }}
                 onClick={
                   // onAddNewUser
-                  () => onCreateNewSession()
+                  () => setIsAddingSession(true)
                 }
               >
                 <PlusCircleOutlined style={{
@@ -267,8 +355,14 @@ const SessionAndBatch = () => {
                   dataIndex: "id"
                 },
                 {
+                  title: 'Title',
+                  dataIndex: "title"
+                },
+                {
                   title: 'Create Date',
-                  dataIndex: "createDate"
+                  dataIndex: "createDate",
+                  defaultSortOrder: 'ascend',
+                  sorter: (a, b) => new Date(b.createDate) - new Date(a.createDate)
                 },
 
                 {
@@ -286,10 +380,10 @@ const SessionAndBatch = () => {
                     <>
                       <Badge key={record.id}>
                         {(record.status === true) ? <Tag color='geekblue'
-                          onClick={() => toggleSession(record)}
+                          onClick={() => onChangeStatusSession(record)}
                           style={{
                             cursor: 'pointer',
-                          }}>Off</Tag> : <Tag color='green' style={{ cursor: 'pointer' }} onClick={() => toggleSession(record)}>On</Tag>}
+                          }}>Off</Tag> : <Tag color='green' style={{ cursor: 'pointer' }} onClick={() => onChangeStatusSession(record)}>On</Tag>}
                       </Badge>
                     </>
                   )
@@ -336,7 +430,7 @@ const SessionAndBatch = () => {
                   label="Search"
                   type="search"
                   variant="filled"
-                  onChange={handleFilter}
+                  onChange={handleFilterBatch}
                   style={{
                     width: 300,
                     marginLeft: 0,
@@ -384,40 +478,69 @@ const SessionAndBatch = () => {
                 },
                 {
                   title: 'Session',
-                  dataIndex: "id",
-                  width: 100
+                  dataIndex: "session.title",
+                  key: 'session',
+                  width: 100,
+                  render: (_, record) => {
+                    // const defaultValue = record.shipper.name
+                    return (
+                      <Select
+                        style={{ width: 200 }}
+                        value={record.session?.title}
+                        onChange={(value) => {
+                          chooseSessionForBatch(record.id, value)
+                          // chooseShipperForBatch(record.id)
+                        }
+                        }
+                      >
+                        {
+                          dataSource.map((option) => (
+                            <MenuItem key={option.id} value={option.id}>
+                              {option.title}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    )
+                  }
                 },
                 {
                   title: 'Shipper',
-                  dataIndex: "email",
+                  dataIndex: "shipper.name",
+                  key: "shipper",
                   width: 200,
-                  render: (_, record) => (
-                    <Box sx={{ minWidth: 120 }}>
-                      <FormControl fullWidth>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={shipper.name}
-                          onChange={handleChange}
-                          EditOutlined='none'
-                        >
-                          {
-                            shipperList.map((shipper) => (
-                              <MenuItem value={shipper.id}>{shipper.name}</MenuItem>
-                            ))
-                          }
-                        </Select>
-                      </FormControl>
-                    </Box>
-                  )
+                  render: (_, record) => {
+                    // const defaultValue = record.shipper.name
+                    return (
+                      <Select
+                        style={{ width: 200 }}
+                        value={record.shipper?.name}
+                        onChange={(value) => {
+                          chooseShipperForBatch(value, record.id)
+                          // chooseShipperForBatch(record.id)
+                        }
+                        }
+                      >
+                        {
+                          shipperList.map((option) => (
+                            <MenuItem key={option.id} value={option.email}>
+                              {option.name}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    )
+                  }
                 },
-
                 {
                   title: 'Status',
-                  dataIndex: "id",
+                  key: "status",
                   width: 50,
-                  defaultSortOrder: 'ascend',
-                  sorter: (a, b) => a.id - b.id
+                  render: (_, record) => (
+
+                    <Badge key={record.id}>
+                      {(record.status == false) ? <Tag color='geekblue'
+                      >Collect</Tag> : <Tag color='green'>Delivery</Tag>}
+                    </Badge>
+                  )
                 },
                 {
                   title: "Actions",
@@ -429,7 +552,7 @@ const SessionAndBatch = () => {
                           }
                           style={{ marginLeft: 0 }} /> */}
                         <DeleteOutlined
-                          onClick={() => onDeleteRecord(record)}
+                          onClick={() => onDeleteBatchRecord(record)}
                           style={{ color: "red", marginLeft: 10 }} />
                       </div>
                     )
@@ -438,7 +561,7 @@ const SessionAndBatch = () => {
                 }
               ]}
               loading={loading}
-              dataSource={dataSource}
+              dataSource={dataSourceBatch}
               pagination={
                 {
                   pageSize: 5
@@ -452,7 +575,7 @@ const SessionAndBatch = () => {
           {/* Modal add session */}
           <Modal
             title="Add session"
-            open={isAdding}
+            open={isAddingSession}
             okText={<div>Save</div>}
             onCancel={() => {
               resetAdding()
@@ -460,15 +583,13 @@ const SessionAndBatch = () => {
             }
             }
             cancelText={<div>Cancel</div>}
-            // onOk={
-            //   // () => {
-            //   //   resetAdding()
-            //   // }
-            // }
+            onOk={() => {
+              onCreateNewSession()
+              setIsAddingSession(false)
+            }
+            }
             closeIcon={
-              <div style={{
-                marginLeft: -30
-              }}><CloseOutlined /></div>}
+              <div><CloseOutlined /></div>}
           >
             <div>
               <Paper style={{
@@ -482,63 +603,13 @@ const SessionAndBatch = () => {
                       key={index}
                       className='inputGroup'
                     >
-                      <Grid item lg={6}>
+                      <Grid item lg={12}>
                         <TextField
-                          label="E-mail"
-                          placeholder='Enter user email...'
+                          label="Title"
+                          placeholder='Enter session title...'
                           variant='outlined'
                           fullWidth
-                          value={editingUser?.email}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, email: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Password"
-                          placeholder='Enter user password...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.password}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, password: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Phone Number"
-                          placeholder='Enter phone number...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.phone}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, phone: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Role"
-                          placeholder='Enter role...'
-                          variant='outlined'
-                          fullWidth
-                          value={editingUser?.phone}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, phone: e.target.value }
-                            })
-                          }}
+                          onChange={(e) => setSessionTitle(e.target.value)}
                         >
                         </TextField>
                       </Grid>
@@ -559,75 +630,60 @@ const SessionAndBatch = () => {
             }
             }
             cancelText={<div>Cancel</div>}
-            // onOk={
-            //   // () => {
-            //   //   resetAdding()
-            //   // }
-            // }
+            onOk={
+              () => {
+                createNewBatch()
+                setIsAddingBatch(false)
+              }
+            }
             closeIcon={
               <div style={{
                 marginLeft: -30
               }}><CloseOutlined /></div>}
           >
             {/* new batch */}
-            <div>
-              <Paper style={{
-                marginTop: 20
-              }} component={Box} p={4} mx="auto">
-                {
-                  userTemplate.map((user, index) => (
-                    <Grid
-                      container
-                      spacing={3}
-                      key={index}
-                      className='inputGroup'
+            <Paper style={{
+              marginTop: 20
+            }} component={Box} p={4} mx="auto">
+              {
+                <Grid
+                  container
+                  spacing={3}
+                  className='inputGroup'
+                >
+                  <Grid item lg={12}>
+                    <Select
+                      defaultValue="Select session"
+                      value={sessionOnChange}
+                      onChange={(value) => setSessionOnChange(value)}
                     >
-                      <Grid item lg={6}>
-                        <select style={{
-                          height: 50,
-                          borderRadius: 10
-                        }}>
-                          <Box sx={{ Width: 120 }}>
-                            <FormControl fullWidth>
-                              <InputLabel id="demo-simple-select-helper-label">Session</InputLabel>
-                              <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={shipper.name}
-                                label="Choose session"
-                                onChange={handleChange}
-                                EditOutlined='none'
-                              >
-                                {
-                                  shipperList.map((shipper) => (
-                                    <MenuItem value={shipper.id}>{shipper.name}</MenuItem>
-                                  ))
-                                }
-                              </Select>
-                            </FormControl>
-                          </Box>
-                        </select>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Role"
-                          placeholder='Enter role...'
-                          variant='outlined'
-                          fullWidth
-                        >
-                        </TextField>
-                      </Grid>
-                    </Grid>
-                  ))
-                }
-              </Paper>
-            </div>
+                      {dataSource.map((option) => (
+                        <MenuItem key={option.id} value={option.id}>
+                          {option.title}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Grid>
+                  <Grid item lg={12}>
+                    <Select
+                      defaultValue="Select batch status"
+                      value={batchStatusOnChange}
+                      onChange={value => setBatchStatusOnChange(value)}
+                    >
+                      <MenuItem value="true">Delivery</MenuItem>
+                      <MenuItem value="false">Collect</MenuItem>
+                    </Select>
+                  </Grid>
+                </Grid>
+              }
+
+            </Paper>
+
           </Modal>
         </div>
       </div >
     </div >
   )
 }
-
 export default SessionAndBatch
 

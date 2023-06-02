@@ -2,8 +2,25 @@ import { Paper } from '@material-ui/core'
 import { Space, Image } from 'antd'
 import React from 'react'
 import "../../../styles/orderTag.css"
+import { useState } from 'react'
+import { useEffect } from 'react'
 const OrderTag = ({ props }) => {
-  const { id, userName, quantity, image, date, building,title, totalPrice, status, email , phone } = props
+  const [foodPackage, setFoodPackage] = useState([])
+  const { id, userName, quantity, date, buildingId, title, totalPrice, status, customer , deliveryStatus } = props
+  console.log("id là", id)
+  useEffect(() => {
+    fetchFoodPackageByOrderId()
+  }, [])
+  const fetchFoodPackageByOrderId = () => {
+    fetch('https://momkitchen.azurewebsites.net/api/Order/getsessionpackagebyorderid?orderid=' + id).then(res => {
+      return res.json()
+    }).then(data => {
+      console.log(data)
+      setFoodPackage(data)
+    })
+  }
+    const {name} = customer || {}
+  console.log(foodPackage)
   return (
     <Paper className='OrderTag'
     >
@@ -18,40 +35,59 @@ const OrderTag = ({ props }) => {
           fontStyle: 'italic'
         }}> Status: <span style={{
           color: 'red'
-        }}>{status}</span></div>
+        }}>{deliveryStatus}</span></div>
       </Space>
 
       <div>
-        <div>Customer Name: {userName}</div>
+        <div>Customer Name: {name}</div>
+
         <Space>
           <div style={{
-            marginBottom:10
+            marginBottom: 10
           }}>
             <h5>Ordered:</h5>
             <div style={{
-              marginLeft:5
+              marginLeft: 5
             }}>
-              <span>{quantity}x</span>
-              <Image src={image} style={{
-                width: 50,
-                height: 50,
-                marginLeft:10
-              }}></Image>
-              <span style={{
-                marginLeft:10
-              }}>{title}</span>
+              <span>Quantity: {quantity}</span>
+              {
+                foodPackage.map((i) => (
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: 10
+
+                    }}>
+                      <span>
+                        <Image src={i?.foodPackage?.image} style={{
+                          width: 50,
+                          height: 50,
+                          borderRadius: 10,
+                        }}></Image>
+                      </span>
+                      <span style={{
+                        fontSize: 24,
+                        color: 'red',
+                        marginLeft: 20
+                      }}>{i.foodPackage.name}</span>
+                    </div>
+                  </div>
+                ))
+              }
+              <span>{title}</span>
               <span style={{
                 color: 'red',
-                marginLeft:10
+                fontSize: 20
               }}>Total Price: {totalPrice} VND
               </span>
             </div>
           </div>
         </Space>
-        <div>Chef: {email}</div>
-        <div>Chef's Phone: {phone}</div>
-
-        <div>Building: {building}</div>
+        <div>Building: {buildingId}</div>
         <div style={{
           color: 'grey'
         }}>Order Date: {date}</div>

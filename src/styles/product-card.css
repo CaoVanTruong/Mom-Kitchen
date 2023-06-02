@@ -3,6 +3,7 @@
   text-align: center;
   padding: 30px;
   cursor: pointer;
+  border-radius: 10px;
 }
 
 .product__img {
@@ -12,6 +13,8 @@
 .product__img img{
   width: 200px;
   height: 200px;
+  border-radius:10px;
+
 }
 
 .product__img:hover {

@@ -5,6 +5,7 @@
     align-items: flex-start;
     height: 100vh;
     margin-bottom: 20px;
+    margin-right: 10px;
 }
 .HorizontalTable {
     display: flex;

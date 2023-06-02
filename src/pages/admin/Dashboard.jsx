@@ -1,16 +1,49 @@
 import React, { useState, useEffect } from 'react'
-import { ShoppingCartOutlined, UserOutlined, DollarCircleOutlined } from "@ant-design/icons"
-import { Card, Space, Statistic, Typography, Table } from 'antd'
+import { ShoppingCartOutlined, UserOutlined, DollarCircleOutlined, EyeOutlined, CloseOutlined } from "@ant-design/icons"
+import { Card, Space, Statistic, Typography, Table, Modal, Image } from 'antd'
 import BootstrapNavbar from '../../components/Sidebar/BootstrapNavbar'
 import SideMenu from '../../components/Sidebar/SideMenu'
 import { getRecentOrders } from '../../API/recentOrder'
 import '../../styles/dashboard.css'
 import { Button } from '@mui/material'
 import { Container, Row, Col } from 'react-bootstrap'
-
+import { Grid, Paper, TextField, Box } from '@mui/material'
+import { getAllOrder } from '../../API/admin/dashboard'
 function Dashboard() {
+    const [orders, setOrders] = useState()
+    const [customers, setCustomers] = useState()
+    const [revenues, setRevenues] = useState()
+    const fetchAllOrder = () => {
+        fetch('https://momkitchen.azurewebsites.net/api/Order/countorder').then(res => {
+            return res.json()
+        }).then(data => {
+            setOrders(data)
+        })
+    }
+    const fetchAllCustomer = () => {
+        fetch('https://momkitchen.azurewebsites.net/api/Account/countcustomer').then(res => {
+            return res.json()
+        }).then(data => {
+            setCustomers(data)
+        })
+    }
+    const fetchAllRevenue = () => {
+        fetch('https://momkitchen.azurewebsites.net/api/Order/counttotalprice').then(res => {
+            return res.json()
+        }).then(data => {
+            setRevenues(data)
+        })
+    }
+    useEffect(() => {
+        fetchAllOrder()
+        fetchAllCustomer()
+        fetchAllRevenue()
+    }, [])
     return (
-        <div>
+        <div style={{
+            backgroundColor: '#F8FAFC',
+            height: "100vh"
+        }}>
             <BootstrapNavbar />
             <SideMenu />
             <div className='SideMenuAndPageContentDashboard'>
@@ -20,7 +53,7 @@ function Dashboard() {
                             marginLeft: 10
                         }}>Dashboard</Typography.Title>
                     </div>
-                    <div>
+                    <div className='Widgets'>
                         <Container>
                             <Row>
                                 <Col>
@@ -32,13 +65,14 @@ function Dashboard() {
                                                 backgroundColor: "rgba(0,255,0,0.25)",
                                                 borderRadius: 20,
                                                 fontSize: 24,
-                                                padding: 8
+                                                padding: 8,
                                             }}
                                         />}
                                         title={<span style={{
                                             fontSize: 24
                                         }}>Orders</span>}
-                                        value={12345} />
+                                        value={orders}
+                                    />
                                 </Col>
                                 <Col>
                                     <DashboardCard
@@ -49,13 +83,16 @@ function Dashboard() {
                                                 backgroundColor: "rgba(0,0,255,0.25)",
                                                 borderRadius: 20,
                                                 fontSize: 24,
-                                                padding: 8
+                                                padding: 8,
+                                                WebkitBoxShadow: "2px 4px 10px 1px rgba(201,201,201,0.47)",
+                                                boxShadow: "2px 4px 10px 1px rgba(201,201,201,0.47)"
+
                                             }}
                                         />}
                                         title={<span style={{
                                             fontSize: 24
                                         }}>Customers</span>}
-                                        value={12345} />
+                                        value={customers} />
                                 </Col>
                                 <Col>
                                     <DashboardCard
@@ -75,14 +112,12 @@ function Dashboard() {
                                             }}>Revenue</span>
                                         }
                                         value={
-                                            1235
+                                            revenues
                                         }
                                     />
                                 </Col>
                             </Row>
                         </Container>
-
-
                     </div>
                     <Space style={{
                         marginTop: 10
@@ -97,29 +132,77 @@ function Dashboard() {
 }
 function DashboardCard({ icon, title, value }) {
     return (
-        <Card>
-            <Space direction='horizontal'>
-                {icon}
+        <Card style={{
+            borderWidth: "2px",
+            boxShadow: '1px 2px 9px #F4AAB9',
+        }}>
+            <Space direction='horizontal' style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                boxShadow: "#F8FAFC",
+            }}>
                 <Statistic style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }} title={title} value={value} />
+                    color: 'blue',
+                    marginLeft: 0,
+                }} title={title} value={value}>
+                </Statistic>
+                {icon}
+
             </Space>
         </Card>
     )
 }
 function RecentOrders() {
+    const orderTemplate = [
+        {
+            id: 0,
+            date: "",
+            customerId: 0,
+            batchId: 0,
+            deliveryStatus: "",
+            buildingId: 0,
+            quantity: 0,
+            sessionId: 0,
+            email: "",
+            customerPhone: "",
+            deliveryTime: "",
+            note: ""
+        }
+    ]
     const [dataSource, setDataSource] = useState([])
     const [loading, setLoading] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
+    const [editingProduct, setEditingProduct] = useState(null)
+    const [order, setOrder] = useState(orderTemplate)
+    const resetEditing = () => {
+        setIsEditing(false)
+        setEditingProduct(null)
+    }
+    const onEditRecord = (record) => {
+        setIsEditing(true)
+        setEditingProduct({ ...record })
+    }
     useEffect(() => {
         setLoading(true)
-        getRecentOrders().then(res => {
-            setDataSource(res.products.splice(0, 3));
+        getAllOrder().then(data => {
+            setDataSource(data);
             setLoading(false)
         })
     }, [])
+
+    const fetchPaymentByOrderId = (id) => {
+        fetch(`https://momkitchen.azurewebsites.net/api/Order/getpaymentbyorderid?orderid=${id}`)
+            .then((res) => res.json())
+            .then((data) => {
+                return <div>{data.amount}</div>
+            })
+            .catch((error) => {
+                console.log('Error:', error);
+            });
+    };
+
     return (
         <div>
             <div>
@@ -140,18 +223,15 @@ function RecentOrders() {
                         },
 
                         {
-                            title: 'Package food',
-                            dataIndex: 'title',
-                            width: 300
-                        },
-                        {
-                            title: 'Customer',
-                            dataIndex: 'title',
-                            width: 200
+                            title: 'Create date',
+                            dataIndex: 'date',
+                            width: 300,
+                            defaultSortOrder: 'ascend',
+                            sorter: (a, b) => new Date(b.date) - new Date(a.date),
                         },
                         {
                             title: 'Customer phone',
-                            dataIndex: 'title',
+                            dataIndex: 'customerPhone',
                             width: 200
                         },
                         {
@@ -161,25 +241,50 @@ function RecentOrders() {
 
                         },
                         {
+                            title: "Total price",
+                            dataIndex: "totalPrice",
+                            key: 'totalPrice'
+                        },
+                        {
                             title: 'Batch',
-                            dataIndex: 'discountedPrice',
+                            dataIndex: 'batchId',
                             width: 50
                         },
                         {
-                            title: 'Total',
-                            dataIndex: 'price',
-                            width: 50
-                        },
-                        {
-                            title: 'Order date',
-                            dataIndex: 'date',
+                            title: 'Status',
+                            dataIndex: 'status',
                             width: 200
                         },
                         {
                             title: 'Delivery status',
-                            dataIndex: 'date',
+                            dataIndex: 'deliveryStatus',
                             width: 50
                         },
+                        {
+                            title: 'Building',
+                            dataIndex: 'buildingId',
+                            key: 'buildingId',
+                            width: 50
+                        },
+                        {
+                            title: 'Session',
+                            dataIndex: 'sessionId',
+                            width: 50
+                        },
+                        {
+                            title: 'Action',
+                            render: (record) => {
+                                return (
+                                    <div style={{
+                                        display: 'flex'
+                                    }}>
+                                        <EyeOutlined
+                                            onClick={() => onEditRecord(record)}
+                                        />
+                                    </div>
+                                )
+                            }
+                        }
 
                     ]
                     }
@@ -189,6 +294,116 @@ function RecentOrders() {
                 >
                 </Table>
             </div>
+            <Modal
+                width={1000}
+                title="View detail"
+                open={isEditing}
+                okButtonProps={{
+                    style: {
+                        display: 'none'
+                    }
+                }}
+                onCancel={() => {
+                    resetEditing()
+                }
+                }
+                cancelText={<div>Cancel</div>}
+                onOk={false}
+                closeIcon={<div style={{
+                    marginLeft: -30
+                }}><CloseOutlined /></div>}
+            >
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 20
+                }}>
+                    <Image style={{
+                        borderRadius: 20
+                    }} src={editingProduct?.thumbnail}></Image>
+                </div>
+                <div>
+                    <Paper style={{
+                        marginTop: 20
+                    }} component={Box} p={4} mx="auto">
+                        {
+                            orderTemplate.map((order, index) => (
+                                <Grid
+                                    container
+                                    spacing={3}
+                                    key={index}
+                                    className='inputGroup'
+                                >
+                                    <Grid item lg={6}>
+                                        <TextField
+                                            label="Order ID"
+                                            variant='outlined'
+                                            fullWidth
+                                            value={editingProduct?.id}
+                                            disabled={true}
+                                        >
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item lg={6}>
+                                        <TextField
+                                            label="Batch"
+                                            variant='outlined'
+                                            fullWidth
+                                            value={editingProduct?.batchId}
+                                            disabled={true}
+                                        >
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item lg={6}>
+                                        <TextField
+                                            label="Delivery status"
+                                            variant='outlined'
+                                            fullWidth
+                                            value={editingProduct?.buildingId}
+                                            disabled={true}
+
+                                        >
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item lg={6}>
+                                        <TextField
+                                            label="Quantity"
+                                            variant='outlined'
+                                            fullWidth
+                                            value={editingProduct?.quantity}
+                                            disabled={true}
+
+                                        >
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item lg={6}>
+                                        <TextField
+                                            label="Session title"
+                                            variant='outlined'
+                                            fullWidth
+                                            value={editingProduct?.sessionId}
+                                            disabled={true}
+
+                                        >
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item lg={12}>
+                                        <TextField
+                                            label="Customer's Email"
+                                            variant='outlined'
+                                            fullWidth
+                                            value={editingProduct?.email}
+                                            disabled={true}
+                                        >
+                                        </TextField>
+                                    </Grid>
+                                </Grid>
+                            ))
+                        }
+                    </Paper>
+                </div>
+            </Modal>
         </div >
     )
 }
