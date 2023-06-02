@@ -15,15 +15,6 @@ import Select from '@mui/material/Select';
 import { getAllAccount } from '../../API/admin/getAllAccounts'
 import Dropdown from 'react-bootstrap/Dropdown';
 const AccountManagement = () => {
-  const userTemplate = [
-    {
-      name: "",
-      email: "",
-      password: "",
-      phone: "",
-      address: ""
-    }
-  ]
   const roleList = [
     {
       id: 1,
@@ -42,60 +33,62 @@ const AccountManagement = () => {
       name: "Shipper"
     }
   ]
-
   const twoRoleList = [
     {
-      id: 3,
+      id: "3",
       name: "Chef",
     },
     {
-      id: 4,
+      id: "4",
       name: "Shipper"
     }
   ]
-
-  const [role, setRole] = useState(roleList)
-  const [value, setValue] = useState()
-  const handleChange = (value) => {
-    setValue(value)
-  }
   const [isEditing, setIsEditing] = useState(false)
-  const [isAdding, setIsAdding] = useState(false)
-  const [addingUser, setAddingUser] = useState(null)
+  const [isAddingAccount, setIsAddingAccount] = useState(false)
+  const [addingAccount, setAddingAccount] = useState({})
   const [editingUser, setEditingUser] = useState(null)
   const [loading, setLoading] = useState(false)
   const [dataSource, setDataSource] = useState([])
   const [userArray, setUserArray] = useState([])
-  const onDeleteRecord = ({ record }) => {
-    Modal.confirm({
-      title: 'Are you sure, you want to delete this record?',
-      okText: <div>Yes</div>,
-      okType: 'danger',
-      cancelText: <div>Cancel</div>,
-      onOk: () => {
-        fetch('https://momkitchen.azurewebsites.net/api/Account/' + record.id,
-          {
-            method: 'DELETE'
-          }
-        ).then((res) => {
-          if (res.ok) {
-            alert("Delete successfully.")
-            fetchAccount()
-          } else {
-            console.log("something went wrong!")
-          }
-        }).catch((error) => {
-          console.log(error.message)
-        })
-      }
+  const [emailAccount, setEmailAccount] = useState("")
+  const [passwordAccount, setPasswordAccount] = useState("")
+  const [roleAccount, setRoleAccount] = useState("")
+  const [searchTerm, setSearchTerm] = useState("")
+  useEffect(() => {
+    setLoading(true)
+    fetchAccount()
+  }, [])
+  // function handleFilter(event) {
+  //   const filterValue = event.target.value.toLowerCase();
+  //   const newData = filterValue === "" ? dataSource : dataSource.filter(row => {
+  //     return row.email.toLowerCase().includes(filterValue);
+  //   });
+  //   setDataSource(newData);
+  // }
+  function handleFilter(event) {
+    const newData = userArray.filter(row => {
+      return row.email?.toLowerCase().includes(event.target.value.toLowerCase())
     })
+    setDataSource(newData)
   }
   const onEditRecord = (record) => {
     setIsEditing(true)
     setEditingUser({ ...record })
   }
+  const resetEditing = () => {
+    setIsEditing(false)
+    setEditingUser(null)
+  }
+  const resetAdding = () => {
+    setIsAddingAccount(false)
+    setAddingAccount("")
+    setEmailAccount("")
+    setPasswordAccount("")
+    // setRoleAccount(null)
+    // setAddingAccount(null)
+    // resetAdding()
+  }
   const updateAccount = () => {
-    console.log("console là " + editingUser.email + editingUser.roleId)
     fetch('https://momkitchen.azurewebsites.net/api/Account?email=' + editingUser.email, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -107,8 +100,8 @@ const AccountManagement = () => {
       if (response.ok) {
         getAllAccount().then(res => {
           setDataSource(res)
-        }
-        )
+          setUserArray(res)
+        })
       } else {
         console.log("Something went wrong!")
       }
@@ -117,25 +110,24 @@ const AccountManagement = () => {
     resetEditing()
   }
   const onAddNewUser = () => {
-    console.log(addingUser?.email, addingUser?.password, addingUser?.roleId)
     fetch('https://momkitchen.azurewebsites.net/api/Registration/registerchefandshipper', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: addingUser?.email,
-        password: addingUser?.password,
-        roleId: addingUser?.roleId
+        password: passwordAccount,
+        email: emailAccount,
+        roleId: roleAccount,
       })
-    }).then(response => {
-      if (response.ok) {
+    }).then(res => {
+      if (res.ok) {
         fetchAccount()
-        alert("Create new account successfully.")
+        alert("Add new account successfully.")
       } else {
-        alert("Can not add new account!")
+        alert("Have to fill all field in form.")
       }
-    }).catch(error => {
-      console.log(error)
     })
+    // resetAdding()
+    // resetAdding()
   };
   const fetchAccount = () => {
     getAllAccount().then(data => {
@@ -146,29 +138,17 @@ const AccountManagement = () => {
       alert("Loi add account" + error)
     })
   }
-  function handleFilter(event) {
-    const newData = userArray.filter(row => {
-      return row.email.toLowerCase().includes(event.target.value.toLowerCase())
-    })
-    setDataSource(newData)
-  }
-
-  const resetEditing = () => {
-    setIsEditing(false)
-    setEditingUser(null)
-  }
-  const resetAdding = () => {
-    setIsAdding(false)
-    setAddingUser(null)
-
-  }
+  // function handleFilter(event) {
+  //   const newData = dataSource.filter(row => {
+  //     return row.email.toLowerCase().includes(event.target.value.toLowerCase())
+  //   })
+  //   setDataSource(newData)
+  // }
 
   // alert(isAddingUser?.email)
-  console.log(addingUser?.email + addingUser?.password + addingUser?.roleId)
-  useEffect(() => {
-    setLoading(true)
-    fetchAccount()
-  }, [])
+  // console.log(addingUser?.email + addingUser?.password + addingUser?.roleId)
+
+
   const onBanAccount = (record) => {
     setLoading(true)
     let status
@@ -191,8 +171,8 @@ const AccountManagement = () => {
           alert("Update fail!")
         }
       })
-
   }
+
   return (
     <div>
       <BootstrapNavbar />
@@ -228,7 +208,7 @@ const AccountManagement = () => {
                 height: 55
               }}
               onClick={
-                () => setIsAdding(true)
+                () => setIsAddingAccount(true)
               }
             >
               <PlusCircleOutlined style={{
@@ -318,9 +298,6 @@ const AccountManagement = () => {
                           onClick={() => onEditRecord(record)
                           }
                           style={{ marginLeft: 0 }} />
-                        <DeleteOutlined
-                          onClick={() => onDeleteRecord(record)}
-                          style={{ color: "red", marginLeft: 12 }} />
                       </div>
                     )
                   }
@@ -356,79 +333,75 @@ const AccountManagement = () => {
               <Paper style={{
                 marginTop: 20
               }} component={Box} p={4} mx="auto">
-                {
-                  userTemplate.map((user, index) => (
-                    <Grid
-                      container
-                      spacing={3}
-                      key={index}
-                      className='inputGroup'
+
+                <Grid
+                  container
+                  spacing={3}
+                  className='inputGroup'
+                >
+                  <Grid item lg={6}>
+                    <TextField
+                      label="Email"
+                      placeholder='Enter user e-mail'
+                      variant='outlined'
+                      fullWidth
+                      disabled
+                      value={editingUser?.email}
+                      onChange={(e) => {
+                        setEditingUser(pre => {
+                          return { ...pre, email: e.target.value }
+                        })
+                      }}
                     >
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Email"
-                          placeholder='Enter user e-mail'
-                          variant='outlined'
-                          fullWidth
-                          disabled
-                          value={editingUser?.email}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, email: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={6}>
-                        <TextField
-                          label="Password"
-                          placeholder='Enter user password...'
-                          variant='outlined'
-                          fullWidth
-                          disabled
-                          value={editingUser?.password}
-                          onChange={(e) => {
-                            setEditingUser(pre => {
-                              return { ...pre, password: e.target.value }
-                            })
-                          }}
-                        >
-                        </TextField>
-                      </Grid>
-                      <Grid item lg={12}>
-                        <FormControl fullWidth>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={editingUser?.roleId}
-                            onChange={(e) => {
-                              setEditingUser(
-                                pre => {
-                                  return { ...pre, roleId: e.target.value }
-                                }
-                              )
-                            }}
-                            EditOutlined='none'
-                          >
-                            {
-                              roleList.map((role) => (
-                                <MenuItem value={role.id}>{role.name}</MenuItem>
-                              ))
+                    </TextField>
+                  </Grid>
+                  <Grid item lg={6}>
+                    <TextField
+                      label="Password"
+                      placeholder='Enter user password...'
+                      variant='outlined'
+                      fullWidth
+                      disabled
+                      value={editingUser?.password}
+                      onChange={(e) => {
+                        setEditingUser(pre => {
+                          return { ...pre, password: e.target.value }
+                        })
+                      }}
+                    >
+                    </TextField>
+                  </Grid>
+                  <Grid item lg={12}>
+                    <FormControl fullWidth>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={editingUser?.roleId}
+                        onChange={(e) => {
+                          setEditingUser(
+                            pre => {
+                              return { ...pre, roleId: e.target.value }
                             }
-                          </Select>
-                        </FormControl>
-                      </Grid>
-                    </Grid>
-                  ))
-                }
+                          )
+                        }}
+                        EditOutlined='none'
+                      >
+                        {
+                          roleList.map((role) => (
+                            <MenuItem value={role.id}>{role.name}</MenuItem>
+                          ))
+                        }
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
               </Paper>
             </div>
           </Modal>
           {/* Modal add account */}
           <Modal
             title="Add account"
-            open={isAdding}
+            open={isAddingAccount}
             okText={<div>Save</div>}
             onCancel={() => {
               resetAdding()
@@ -438,7 +411,8 @@ const AccountManagement = () => {
             cancelText={<div>Cancel</div>}
             onOk={() => {
               onAddNewUser()
-              // resetAdding()
+              resetAdding()
+              setIsAddingAccount(false)
             }
             }
             closeIcon={
@@ -452,34 +426,31 @@ const AccountManagement = () => {
                 <Grid
                   container
                   spacing={3}
-                  className='inputGroup'
                 >
                   <Grid item lg={6}>
                     <TextField
                       label="E-mail"
-                      placeholder='Enter user email...'
+                      defaultValue={emailAccount}
                       variant='outlined'
                       fullWidth
-                      onChange={(e) => {
-                        setAddingUser(pre => {
-                          return { ...pre, email: e.target.value }
-                        })
-                      }}
+                      value={emailAccount}
+                      onChange={(e) =>
+                        setEmailAccount(e.target.value)
+                      }
                     >
                     </TextField>
                   </Grid>
                   <Grid item lg={6}>
                     <TextField
                       label="Password"
-                      placeholder='Enter user password...'
+                      defaultValue=""
                       type='password'
                       variant='outlined'
                       fullWidth
-                      onChange={(e) => {
-                        setAddingUser(pre => {
-                          return { ...pre, password: e.target.value }
-                        })
-                      }}
+                      value={passwordAccount}
+                      onChange={(e) =>
+                        setPasswordAccount(e.target.value)
+                      }
                     >
                     </TextField>
                   </Grid>
@@ -488,11 +459,10 @@ const AccountManagement = () => {
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        onChange={(e) => {
-                          setAddingUser(pre => {
-                            return { ...pre, roleId: e.target.value }
-                          })
-                        }}
+                        value={roleAccount}
+                        onChange={(e) =>
+                          setRoleAccount(e.target.value)
+                        }
                       >
                         {twoRoleList.map((role) => (
                           <MenuItem value={role.id}>{role.name}</MenuItem>
@@ -511,4 +481,3 @@ const AccountManagement = () => {
 }
 
 export default AccountManagement
-
