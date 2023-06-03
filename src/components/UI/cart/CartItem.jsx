@@ -8,8 +8,8 @@ import { cartActions } from "../../../store/shopping-cart/cartSlice";
 import { Link } from "react-router-dom";
 import { Divider } from "@mui/material";
 const CartItem = ({ item }) => {
-  const { id, title, price, image, quantity, totalPrice ,foodPackageId} = item;
-  console.log("foodkacage id bên cart item là",foodPackageId)
+  const { id, title, price, image, quantity, totalPrice, foodPackageId } = item;
+  console.log(JSON.stringify(foodPackageId))
   const dispatch = useDispatch();
   const incrementItem = () => {
     dispatch(
@@ -33,7 +33,7 @@ const CartItem = ({ item }) => {
   return (
     <ListGroupItem className="border-0 cart__item">
       <div className="cart__item-info d-flex gap-2">
-        <Link to={`/foods/${id}`}>
+        <Link to={`/foods/${foodPackageId}`}>
           <img src={image} alt="product-img" />
         </Link>
         <div className="cart__product-info w-100 d-flex align-items-center gap-4 justify-content-between">
@@ -58,9 +58,9 @@ const CartItem = ({ item }) => {
         </div>
       </div>
       <Divider style={{
-        backgroundColor:'black',
-        height:"1px",
-        marginTop:10
+        backgroundColor: 'black',
+        height: "1px",
+        marginTop: 10
       }} />
     </ListGroupItem>
   );

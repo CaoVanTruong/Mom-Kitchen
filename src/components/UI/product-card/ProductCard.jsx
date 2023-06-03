@@ -13,7 +13,7 @@ const ProductCard = (props) => {
   const sessionId = session?.id
   const image = foodPackage?.image
   const foodPackageId = foodPackage?.id
-  const chefId = foodPackage?.chefId 
+  const chefId = foodPackage?.chefId
   const title = foodPackage?.name
   const dispatch = useDispatch();
   const navigate = useNavigate()
@@ -27,7 +27,8 @@ const ProductCard = (props) => {
         image,
         price,
         chefId,
-        sessionId
+        sessionId,
+        foodPackageId
       })
     );
   };
@@ -37,7 +38,7 @@ const ProductCard = (props) => {
       boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)'
     }}>
       <div className="product__img">
-        <img src={foodPackage?.image} alt="product-img" className="w-100" onClick={() => navigate(`/foods/${id}`)} />
+        <img src={foodPackage?.image} alt="product-img" className="w-100" onClick={() => navigate(`/foods/${foodPackage?.id}`)} />
       </div>
       <div className="product__content">
         <Typography style={{

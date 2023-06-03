@@ -65,15 +65,20 @@ const HistoryTab = () => {
         setValue(newValue);
     };
     const [orders, setOrders] = useState([])
-    useEffect(() => {
-        fetchAllOrder()
-    }, [])
     const fetchAllOrder = () => {
-        fetch(`https://momkitchen.azurewebsites.net/api/Order/getorderbyemailcustomer?emailcustomer=${localStorage.getItem('user-infor')}`).then(res => {
-            return res.json()
-        }).then(data => {
-            setOrders(data)
-        })
+        fetch(`https://momkitchen.azurewebsites.net/api/Order/getorderbyemailcustomer?emailcustomer=${localStorage.getItem('user-infor')}`)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Response not OK');
+                }
+                return res.json();
+            })
+            .then(data => {
+                setOrders(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
     console.log(JSON.stringify(orders))
     return (
@@ -117,24 +122,24 @@ const HistoryTab = () => {
                             <TabPanel value="2" style={{
                                 backgroundColor: '#E0E8EF'
                             }}>  {
-                                orders
-                                .filter((order) => order.deliveryStatus === "New")
-                                .map((order) => (
-                                    <div>
-                                        <OrderTag props={order} />
-                                    </div>
-                                ))
+                                    orders
+                                        .filter((order) => order.deliveryStatus === "New")
+                                        .map((order) => (
+                                            <div>
+                                                <OrderTag props={order} />
+                                            </div>
+                                        ))
                                 }</TabPanel>
                             <TabPanel value="3" style={{
                                 backgroundColor: '#E0E8EF'
                             }}>  {
-                                orders
-                                .filter((order) => order.deliveryStatus === "Failed")
-                                .map((order) => (
-                                    <div>
-                                        <OrderTag props={order} />
-                                    </div>
-                                ))
+                                    orders
+                                        .filter((order) => order.deliveryStatus === "Failed")
+                                        .map((order) => (
+                                            <div>
+                                                <OrderTag props={order} />
+                                            </div>
+                                        ))
                                 }</TabPanel>
                         </TabContext>
                     </Box>

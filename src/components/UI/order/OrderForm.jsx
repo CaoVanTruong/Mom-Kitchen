@@ -37,15 +37,15 @@ const OrderForm = () => {
     localStorage.setItem('note', newNote);
     dispatch(cartActions.addNoteString(event.target.value))
   };
-  const handleBuildingChange = (event)=>{
+  const handleBuildingChange = (event) => {
     setBuildingOnChange(event.target.value)
     const newBuilding = event.target.value
-    localStorage.setItem('building',newBuilding)
+    localStorage.setItem('building', newBuilding)
   }
-  const handlePhoneChange = (event)=>{
+  const handlePhoneChange = (event) => {
     const newPhone = event.target.value
     setPhoneOnChange(event.target.value)
-    localStorage.setItem('phone',newPhone)
+    localStorage.setItem('phone', newPhone)
   }
   useEffect(() => {
     if (totalAmount === 0) {
@@ -57,16 +57,33 @@ const OrderForm = () => {
     }
   }, [totalAmount])
   useEffect(() => {
+    // fetch('https://momkitchen.azurewebsites.net/api/Account/getallcustomerbyemail?email=' + localStorage.getItem('user-infor'), {
+    //   method: 'GET'
+    // }).then(response => {
+    //   return response.json()
+    // }).then(data => {
+    //   setInforUser(data)
+    //   setBuildingOnChange(data.defaultBuilding)
+    //   setNameOnChange(data.name)
+    //   setPhoneOnChange(data.phone)
+    // })
     fetch('https://momkitchen.azurewebsites.net/api/Account/getallcustomerbyemail?email=' + localStorage.getItem('user-infor'), {
       method: 'GET'
     }).then(response => {
-      return response.json()
+      try {
+        return response.json();
+      } catch (error) {
+        console.error('Error parsing response:', error);
+        throw error;
+      }
     }).then(data => {
-      setInforUser(data)
-      setBuildingOnChange(data.defaultBuilding)
+      setInforUser(data);
+      setBuildingOnChange(data.defaultBuilding);
       setNameOnChange(data.name)
       setPhoneOnChange(data.phone)
-    })
+    }).catch(error => {
+      console.error('Error fetching data:', error);
+    });
   }, [])
   // const { name, defaultBuilding, phone } = inforUser
 
@@ -250,7 +267,7 @@ const OrderForm = () => {
               justifyContent: 'center',
               alignItems: 'center'
             }}  >
-              <PaypalCheckout price={totalPrice} email={localStorage.getItem('user-infor')}/>
+              <PaypalCheckout price={totalPrice} email={localStorage.getItem('user-infor')} />
             </div>
           </Paper>
         </Container>
