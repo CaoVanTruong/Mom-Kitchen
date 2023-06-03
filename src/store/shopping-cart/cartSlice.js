@@ -61,7 +61,8 @@ const cartSlice = createSlice({
           quantity: 1,
           totalPrice: newItem.price,
           chef: newItem.chefId,
-          sessionId: newItem.sessionId
+          sessionId: newItem.sessionId,
+          foodPackageId:newItem.foodPackageId
         });
       } else {
         existingItem.quantity++;

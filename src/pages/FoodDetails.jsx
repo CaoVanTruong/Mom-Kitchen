@@ -268,7 +268,7 @@ const FoodDetails = () => {
                 </div>
               )} */}
               </Col>
-              <Col lg="12" className="mb-5 mt-4" style={{
+              {/* <Col lg="12" className="mb-5 mt-4" style={{
                 borderTop: "1px solid #fde4e4"
               }}>
                 <h2 className="related__Product-title">You might also like</h2>
@@ -276,8 +276,8 @@ const FoodDetails = () => {
               {relatedProduct.map((item) => (
                 <Col lg="3" md="4" sm="6" xs="6" className="mb-4" key={item.id} >
                   <ProductCard item={item} />
-                </Col>
-              ))}
+                </Col> */}
+              {/* ))} */}
             </Row>
           </Container>
         </Paper>
